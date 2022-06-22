@@ -1,17 +1,12 @@
 import "../css/StoreSelectable.css";
 import { dbRef } from "../js/firebase_init";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { child, get } from "firebase/database";
 import { useEffect, useState } from "react";
 import $ from "jquery";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Formik, useFormik } from "formik";
 
 function StoreSelectable() {
-  //   const pin = {
-  //     TestiKirppis: ["Jarii1", "spr1234", "6899bc73da4ace09"],
-  //     Vaasa: ["D0ED5D57F47580F2", "spr9876", "Vas183"],
-  //     Seinäjoki: ["a1a1a1a1a1a1a1a1", "spr9999", "Seina19"],
-  //     Kokkola: ["regT863", "spr0000", "b4b8bb4ceeaa2aee"],
-  //   };
   let navigate = useNavigate();
   const [count, setCount] = useState([]);
 
@@ -84,6 +79,7 @@ function StoreSelectable() {
     <div className="Store-Selectable">
       <h2 id="store-intro">Myymälä</h2>
       <table id="place_option" align="center" style={{ tableLayout: "fixed" }} className="radioButtons collapseBorder">
+        
         <tbody id="store-table">
           {count.map((data, index) => (
             <tr key={"place" + index.toString()}>

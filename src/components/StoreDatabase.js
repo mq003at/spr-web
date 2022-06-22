@@ -1,3 +1,4 @@
+import { Alert } from "react-bootstrap";
 import { child, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
 import "../css/StoreDatabase.css";
@@ -11,10 +12,11 @@ function StoreDatabase(props) {
 
   const watchMessage = () => {
     return onValue(child(dbRef, `shop_data/${shopId}/message_data`), (snap) => {
+      console.log(snap.val());
       let val = snap.val();
       Object.keys(val).forEach((key) => {
-        setModMessage(modMessage => [...modMessage, [val[key].name, val[key].message]])
-      })
+        setModMessage((modMessage) => [...modMessage, [val[key].name, val[key].message, val[key].date]]);
+      });
     });
   };
 
@@ -24,16 +26,30 @@ function StoreDatabase(props) {
 
   return (
     <div className="store-database">
-      <div id="message-section">
-        {modMessage.map((message, index) => (
-          <div className="message" key={"message" + index}>
-            <div className="message-name">{message[0]}</div>
-            <div className="message-data">{message[1]}</div>
-          </div>
-        ))}
+      <div className="message-section">
+        <Alert variant="success">
+          <Alert.Heading>Message Board</Alert.Heading>
+          <table className="message-table">
+            <tbody>
+              {modMessage.map((message, index) => (
+                <tr className="message" key={"message" + index}>
+                  <td className="message-date" width={"15%"}>{message[2]}</td>
+                  <td className="message-name" width={"10%"}>
+                    {message[0]}
+                  </td>
+                  <td className="message-data" width={"75%"}>
+                    {message[1]}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Alert>
       </div>
 
-      <div id="select-function">What do you need for today?</div>
+      <div id="select-function">
+        
+      </div>
     </div>
   );
 }

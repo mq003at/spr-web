@@ -13,7 +13,7 @@ function Management(props) {
   
 
   const checkUser = () => {
-    if (user == "employer") {
+    if (user === "employer") {
       return (
         <>
           <StoreDatabase shopChosen={shopChosen} shopId={shopId} user={user} />
@@ -27,13 +27,6 @@ function Management(props) {
       </>
     );
   };
-
-  useEffect(() => {
-  }, []);
-
-  useEffect(() => {
-
-  },)
 
   return <div id="management">{checkUser()}</div>;
 }

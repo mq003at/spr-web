@@ -41,6 +41,11 @@
     margin-top: 10px;
 }
 
+.sidebar th button {
+    color: var(--red-wine);
+    font-weight: bolder;
+}
+
 .employee-list-shop-title {
     font-size: 1.4em;
 }

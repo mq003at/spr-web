@@ -1,6 +1,29 @@
+:root {
+    --grey-hair: rgb(178, 178, 178);
+}
+
 .store-database {
     position: absolute;
     top: 3.15rem;
     width: 75%;
     height: 100%;
+}
+
+.message-section {
+    padding: 2em 4em;
+    font-size: 1em;
+}
+
+.message-table {
+    border-spacing: 0px;
+    margin-bottom: 0px;
+}
+
+.message-data {
+    text-align: left;
+}
+
+.message{
+    width: 100%;
+    display: inline-table;
 }
