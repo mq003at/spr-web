@@ -6,7 +6,7 @@
     position: absolute;
     top: 3.15rem;
     width: 75%;
-    height: 100%;
+    height: 90%;
 }
 
 .message-section {
@@ -26,4 +26,9 @@
 .message{
     width: 100%;
     display: inline-table;
+}
+
+.manager-function {
+    display: flex;
+    justify-content: center;
 }

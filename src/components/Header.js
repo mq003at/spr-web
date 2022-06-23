@@ -27,7 +27,7 @@ function Header() {
     <header>
       <span align="left" id="show-path">
         {pathArr.map((data, index) => {
-          if (data != "") {
+          if (data !== "") {
             return (
               <div key={"header" + index}>
                 <div className="header">{">>"}</div>
@@ -39,7 +39,7 @@ function Header() {
           } else return(<div className="header" />)
         })}
       </span>
-      {pathArr[0] != "" && (
+      {pathArr[0] !== "" && (
         <span align="right" id="extra">
           <label id="logout" className="header" onClick={() => logout()}>
             LOGOUT

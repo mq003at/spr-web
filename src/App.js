@@ -15,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<StoreSelectable />}></Route>
           <Route path="/management" element={<Management />}></Route>
+          <Route path="/management/message" element={<Management />}></Route>
           <Route path="*" element={<ErrorPage />}></Route>
         </Routes>
         <Footer></Footer>

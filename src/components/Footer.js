@@ -6,7 +6,8 @@ function Footer(){
         position: "fixed",    
         bottom: 0,
         left: 0,
-        width: "100%",
+        width: "75%",
+        height: "10%",
         display: "block",
         textAlign: "left",
         padding: "15px"

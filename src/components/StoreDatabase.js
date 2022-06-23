@@ -1,11 +1,18 @@
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { child, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../css/StoreDatabase.css";
 import { dbRef } from "../js/firebase_init";
+import FunctionSelector from "./FunctionSelector";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
+  const [chosenFunction, setChosenFunction] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const mode = "";
   const user = props.user;
   const shopChosen = props.shopChosen;
   const shopId = props.shopId;
@@ -24,10 +31,16 @@ function StoreDatabase(props) {
     watchMessage();
   }, []);
 
+  useEffect (() => {
+    let getPath = location.pathname.split("/");
+    getPath = getPath[2]
+    setChosenFunction(() => getPath.toString())
+  }, [location])
+
   return (
     <div className="store-database">
       <div className="message-section">
-        <Alert variant="success">
+        <Alert variant="success" dismissible>
           <Alert.Heading>Message Board</Alert.Heading>
           <table className="message-table">
             <tbody>
@@ -47,8 +60,11 @@ function StoreDatabase(props) {
         </Alert>
       </div>
 
-      <div id="select-function">
-        
+      <div id="manager-function">
+        {chosenFunction === ""
+         ? <FunctionSelector />
+         : console.log("...")
+        }
       </div>
     </div>
   );

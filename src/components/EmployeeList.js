@@ -52,7 +52,7 @@ function EmployeeList(props) {
   };
 
   const watchEmployeeState = () => {
-    onChildChanged(qState, (snap) => {
+    const watchState = onChildChanged(qState, (snap) => {
       let key = snap.key;
       let changedState = snap.val()["actual_state"];
       console.log(snap.val());
@@ -76,20 +76,36 @@ function EmployeeList(props) {
   const handleInOut = (id, direction) => {
     let date = new Date();
     let year = date.getFullYear();
-    let month = date.getMonth();
-    let day = date.getDate();
-    let time = "" + date.getHours() + date.getMinutes() + date.getSeconds() + date.getMilliseconds();
-    console.log("DateStamp: " + time)
-    // if (direction === "in") {
-    //   update(child(shopRef(shopId), id), {
-    //     actual_state: "out"
-    //   })
+    let month = ("0"+ (date.getMonth()+1)).slice(-2);
+    let day = ("0"+ date.getDate()).slice(-2);
+    let hour = ("0"+ date.getHours()).slice(-2);
+    let minute = ("0"+ date.getMinutes()).slice(-2);
+    let second = ("0"+ date.getSeconds()).slice(-2);
+    let milisec = (""+ date.getMilliseconds()).slice(-1);
+    let documentStamp = year + month + day + hour + minute + second + milisec
+    let timeStamp = year + month + day + hour + minute + second;
+    let dateStamp = year + month + day;
+    // console.log("DateStamp: " + time)
+    if (direction === "in") {
+      set(child(shopRef(shopId), `${id}/log_events/${documentStamp}`), {
+        dateStamp: dateStamp,
+        direction: "out",
+        timeStamp: timeStamp
+      })
+      update(child(shopRef(shopId), id), {
+        actual_state: "out"
+      })
       
-    // } else {
-    //   update(child(shopRef(shopId), id), {
-    //     actual_state: "in"
-    //   })
-    // }
+    } else {
+      set(child(shopRef(shopId), `${id}/log_events/${documentStamp}`), {
+        dateStamp: dateStamp,
+        direction: "in",
+        timeStamp: timeStamp
+      })
+      update(child(shopRef(shopId), id), {
+        actual_state: "in"
+      })
+    }
   }
 
   useEffect(() => {
