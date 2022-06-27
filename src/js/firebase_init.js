@@ -23,4 +23,5 @@ const employeePath = (shopId) => "shop_data/" + shopId + "/employee_data/";
 const shopPath = (shopId) => "shop_events/" + shopId + "/authorised_id/";
 const empRef = (shopId) => child(dbRef, employeePath(shopId));
 const shopRef = (shopId) => child(dbRef, shopPath(shopId));
-export { dbRef, employeePath, shopPath, empRef, shopRef };
+const messRef = (shopId) => child(dbRef, "shop_data/" + shopId + "/message_data/")
+export { dbRef, employeePath, shopPath, empRef, shopRef, messRef };

@@ -5,6 +5,11 @@
     --red-wine: #BD1D1D;
 }
 
+.function-selector {
+    padding: 2em 2em;
+    display:block;
+    text-align: center;
+}
 
 .function-selector button {
     margin: 1em 5em;

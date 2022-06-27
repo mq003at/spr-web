@@ -2,13 +2,15 @@ import { get, child, onValue, orderByChild, query, equalTo, onChildChanged, onCh
 import { dbRef, employeePath, shopPath, empRef, shopRef } from "../js/firebase_init";
 import { useEffect, useState, useRef, Fragment } from "react";
 import "../css/EmployeeList.css";
+import Session from "react-session-api"
 import * as FaIcons from "react-icons/fa";
 import { Button } from "react-bootstrap";
 
 function EmployeeList(props) {
-  const [shopId, setShopId] = useState(props.shopId);
-  const [shopChosen, setShopChosen] = useState(props.shopChosen);
+  const [shopId, setShopId] = useState(Session.get("shop_id"));
+  const [shopChosen, setShopChosen] = useState(Session.get("shop_chosen"));
   const [sidebar, setSidebar] = useState(false);
+  const [refresh, setRefresh] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
   const empListRef = useRef([]);
 
@@ -55,58 +57,94 @@ function EmployeeList(props) {
     const watchState = onChildChanged(qState, (snap) => {
       let key = snap.key;
       let changedState = snap.val()["actual_state"];
-      console.log(snap.val());
+      // console.log(snap.val());
       if (empListRef) {
         const newArr = empListRef.current.map((nested) => {
           return {
             group: nested.group,
             employee: nested.employee.map((elem) => {
-              if (elem.id === key) {return {
-                ...elem,
-                state: changedState
-              }} else return {...elem}
-            })
-          }
-        })
-        setEmployeeList(newArr.map((x) => x))
+              if (elem.id === key) {
+                return {
+                  ...elem,
+                  state: changedState,
+                };
+              } else return { ...elem };
+            }),
+          };
+        });
+        setEmployeeList(newArr.map((x) => x));
       }
-    })
+    });
   };
 
-  const handleInOut = (id, direction) => {
+  const refreshEmp = () => {
+    getAllEmployee();
+  };
+
+  const getDateData = () => {
     let date = new Date();
     let year = date.getFullYear();
-    let month = ("0"+ (date.getMonth()+1)).slice(-2);
-    let day = ("0"+ date.getDate()).slice(-2);
-    let hour = ("0"+ date.getHours()).slice(-2);
-    let minute = ("0"+ date.getMinutes()).slice(-2);
-    let second = ("0"+ date.getSeconds()).slice(-2);
-    let milisec = (""+ date.getMilliseconds()).slice(-1);
-    let documentStamp = year + month + day + hour + minute + second + milisec
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let day = ("0" + date.getDate()).slice(-2);
+    let hour = ("0" + date.getHours()).slice(-2);
+    let minute = ("0" + date.getMinutes()).slice(-2);
+    let second = ("0" + date.getSeconds()).slice(-2);
+    let milisec = ("" + date.getMilliseconds()).slice(-1);
+    let documentStamp = year + month + day + hour + minute + second + milisec;
     let timeStamp = year + month + day + hour + minute + second;
     let dateStamp = year + month + day;
-    // console.log("DateStamp: " + time)
+
+    let obj = {
+      documentStamp: documentStamp,
+      timeStamp: timeStamp,
+      dateStamp: dateStamp,
+    };
+
+    return obj;
+  };
+
+  function logInOrOut(shopId, id, direction, today) {
     if (direction === "in") {
-      set(child(shopRef(shopId), `${id}/log_events/${documentStamp}`), {
-        dateStamp: dateStamp,
+      set(child(shopRef(shopId), `${id}/log_events/${today.documentStamp}`), {
+        dateStamp: today.dateStamp,
         direction: "out",
-        timeStamp: timeStamp
-      })
+        timeStamp: today.timeStamp,
+      });
       update(child(shopRef(shopId), id), {
-        actual_state: "out"
-      })
-      
+        actual_state: "out",
+      });
     } else {
-      set(child(shopRef(shopId), `${id}/log_events/${documentStamp}`), {
-        dateStamp: dateStamp,
+      set(child(shopRef(shopId), `${id}/log_events/${today.documentStamp}`), {
+        dateStamp: today.dateStamp,
         direction: "in",
-        timeStamp: timeStamp
-      })
+        timeStamp: today.timeStamp,
+      });
       update(child(shopRef(shopId), id), {
-        actual_state: "in"
-      })
+        actual_state: "in",
+      });
     }
   }
+
+  const handleInOut = (id, direction) => {
+    let today = getDateData();
+    // console.log("DateStamp: " + time)
+    logInOrOut(shopId, id, direction, today);
+  };
+
+  const logOutEveryone = () => {
+    if (employeeList) {
+      employeeList.map((nested) =>
+        nested.employee.map((empData, index) => {
+          if (empData.state === "in") {
+            let today = getDateData();
+            // console.log("DateStamp: " + time)
+            logInOrOut(shopId, empData.id, empData.state, today);
+          }
+        })
+      );
+      getAllEmployee();
+    }
+  };
 
   useEffect(() => {
     getAllEmployee();
@@ -125,8 +163,16 @@ function EmployeeList(props) {
             </th>
           </tr>
           <tr id="employee-list-functionality">
-            <th colSpan={"1"}><Button variant="transparent">Refresh</Button></th>
-            <th colSpan={"2"}><Button variant="transparent">Logout</Button></th>
+            <th colSpan={"1"}>
+              <Button variant="transparent" onClick={() => refreshEmp()}>
+                Refresh
+              </Button>
+            </th>
+            <th colSpan={"2"}>
+              <Button variant="transparent" onClick={() => logOutEveryone()}>
+                Logout
+              </Button>
+            </th>
           </tr>
         </tbody>
         <tbody id="log_user">
@@ -150,9 +196,15 @@ function EmployeeList(props) {
                               {empData.state === "in" ? <FaIcons.FaBriefcase title={"Working"} /> : <FaIcons.FaBed title={"Absent"} />}
                             </td>
                             <td className={"employee-list-inout"} width={"20%"}>
-                              {empData.state === "out" 
-                               ? <Button type="button" className="inout" variant="outline-success" onClick={() => handleInOut(empData.id, empData.state)}><FaIcons.FaSignInAlt /></Button> 
-                               : <Button type="button" className="inout" variant="outline-danger"onClick={() => handleInOut(empData.id, empData.state)}><FaIcons.FaSignOutAlt /></Button>}
+                              {empData.state === "out" ? (
+                                <Button type="button" className="inout" variant="outline-success" onClick={() => handleInOut(empData.id, empData.state)}>
+                                  <FaIcons.FaSignInAlt />
+                                </Button>
+                              ) : (
+                                <Button type="button" className="inout" variant="outline-danger" onClick={() => handleInOut(empData.id, empData.state)}>
+                                  <FaIcons.FaSignOutAlt />
+                                </Button>
+                              )}
                             </td>
                           </tr>
                         );

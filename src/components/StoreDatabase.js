@@ -4,18 +4,19 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/StoreDatabase.css";
 import { dbRef } from "../js/firebase_init";
+import Session from "react-session-api"
 import FunctionSelector from "./FunctionSelector";
+import Message from "./Message";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
+  const [showMessage, setShowMessage] = useState(true);
   const [chosenFunction, setChosenFunction] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
   const mode = "";
-  const user = props.user;
-  const shopChosen = props.shopChosen;
-  const shopId = props.shopId;
+  const shopId = Session.get("shop_id");
 
   const watchMessage = () => {
     return onValue(child(dbRef, `shop_data/${shopId}/message_data`), (snap) => {
@@ -27,45 +28,53 @@ function StoreDatabase(props) {
     });
   };
 
+  const goToFunction = (chosenFunction) => {
+    switch (chosenFunction) {
+      case "message":
+        return <Message />;
+      default:
+        return <FunctionSelector />;
+    }
+  };
+
   useEffect(() => {
     watchMessage();
   }, []);
 
-  useEffect (() => {
+  useEffect(() => {
     let getPath = location.pathname.split("/");
-    getPath = getPath[2]
-    setChosenFunction(() => getPath.toString())
-  }, [location])
+    getPath[2] ? (getPath = getPath[2]) : (getPath = "");
+    setChosenFunction(() => getPath.toString());
+  }, [location]);
 
   return (
     <div className="store-database">
       <div className="message-section">
-        <Alert variant="success" dismissible>
-          <Alert.Heading>Message Board</Alert.Heading>
-          <table className="message-table">
-            <tbody>
-              {modMessage.map((message, index) => (
-                <tr className="message" key={"message" + index}>
-                  <td className="message-date" width={"15%"}>{message[2]}</td>
-                  <td className="message-name" width={"10%"}>
-                    {message[0]}
-                  </td>
-                  <td className="message-data" width={"75%"}>
-                    {message[1]}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Alert>
+        {showMessage && (
+          <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>
+            <Alert.Heading>Message Board</Alert.Heading>
+            <table className="message-table">
+              <tbody>
+                {modMessage.map((message, index) => (
+                  <tr className="message" key={"message" + index}>
+                    <td className="message-date" width={"15%"}>
+                      {message[2]}
+                    </td>
+                    <td className="message-name" width={"10%"}>
+                      {message[0]}
+                    </td>
+                    <td className="message-data" width={"75%"}>
+                      {message[1]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Alert>
+        )}
       </div>
 
-      <div id="manager-function">
-        {chosenFunction === ""
-         ? <FunctionSelector />
-         : console.log("...")
-        }
-      </div>
+      <div id="manager-function">{goToFunction(chosenFunction)}</div>
     </div>
   );
 }

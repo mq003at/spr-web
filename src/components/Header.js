@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import Session from "react-session-api";
 import * as FaIcons from "react-icons/fa";
 import "../css/Header.css";
 
@@ -9,7 +10,7 @@ function Header() {
 
   const [pathArr, setPathArr] = useState([]);
   const logout = () => {
-    sessionStorage.clear();
+    Session.clear();
     navigate("/");
   };
 
@@ -29,14 +30,14 @@ function Header() {
         {pathArr.map((data, index) => {
           if (data !== "") {
             return (
-              <div key={"header" + index}>
+              <div key={"header" + data}>
                 <div className="header">{">>"}</div>
                 <label className="header" onClick={() => goTo(data)}>
                   {data.toUpperCase()}
                 </label>
               </div>
             );
-          } else return(<div className="header" />)
+          } else return(<div key={"none"} className="header" />)
         })}
       </span>
       {pathArr[0] !== "" && (
