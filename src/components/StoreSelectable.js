@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import $ from "jquery";
 import { useNavigate } from "react-router-dom";
 import { Formik, useFormik } from "formik";
-import Session from 'react-session-api';
 
 function StoreSelectable() {
   let navigate = useNavigate();
@@ -30,17 +29,29 @@ function StoreSelectable() {
         switch (pinInput) {
           case count[shopChosen][2]:
             //Employer Pin
-            Session.set("user", "employer");
-            Session.set("shop_chosen", count[shopChosen][1]);
-            Session.set("shop_id", count[shopChosen][0]);
-            navigate("/management");
+            sessionStorage.setItem("user", "employer");
+            sessionStorage.setItem("shop_chosen", count[shopChosen][1]);
+            sessionStorage.setItem("shop_id", count[shopChosen][0]);
+            navigate("/management", {
+              state: {
+                user: "employer",
+                shopChosen: count[shopChosen][1],
+                shopId: count[shopChosen][0]
+              }
+            });
             break;
           case count[shopChosen][3]:
             //Employee Pin
-            Session.set("user", "employee");
-            Session.set("shop_chosen", count[shopChosen][0]);
-            Session.set("shop_id", count[shopChosen][0]);
-            navigate("/management");
+            sessionStorage.setItem("user", "employee");
+            sessionStorage.setItem("shop_chosen", count[shopChosen][0]);
+            sessionStorage.setItem("shop_id", count[shopChosen][0]);
+            navigate("/management", {
+              state: {
+                user: "employee",
+                shopChosen: count[shopChosen][1],
+                shopId: count[shopChosen][0]
+              }
+            });
             break;
           default:
             // Wrong pin
@@ -52,9 +63,15 @@ function StoreSelectable() {
   };
 
   useEffect(() => {
-    if (Session.get("user") == null) getStore();
+    if (sessionStorage.getItem("user") == null) getStore();
     else {
-      navigate("/management");
+      navigate("/management", {
+        state: {
+          user: sessionStorage.getItem("user"),
+          shopChosen: sessionStorage.getItem("shop_chosen"),
+          shopId: sessionStorage.getItem("shop_id")
+        }
+      });
     }
   }, []);
 

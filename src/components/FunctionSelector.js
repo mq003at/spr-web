@@ -11,7 +11,7 @@ function FunctionSelector() {
     <div className="function-selector">
       <div className="button-wrap">
         <Button onClick={() => goToMessage()}>Message</Button>
-        <Button>Report</Button>
+        <Button onClick={() => navigate("./report")}>Report</Button>
         <Button>CSV Management</Button>
         <Button>Schedule</Button>
         <Button>Employee Management</Button>

@@ -4,8 +4,9 @@
 
 .store-database {
     position: absolute;
+    text-align: left;
+    display: block;
     top: 3.15rem;
-    width: 75%;
     height: 90%;
 }
 

@@ -2,13 +2,12 @@ import { get, child, onValue, orderByChild, query, equalTo, onChildChanged, onCh
 import { dbRef, employeePath, shopPath, empRef, shopRef } from "../js/firebase_init";
 import { useEffect, useState, useRef, Fragment } from "react";
 import "../css/EmployeeList.css";
-import Session from "react-session-api"
 import * as FaIcons from "react-icons/fa";
 import { Button } from "react-bootstrap";
 
 function EmployeeList(props) {
-  const [shopId, setShopId] = useState(Session.get("shop_id"));
-  const [shopChosen, setShopChosen] = useState(Session.get("shop_chosen"));
+  const shopId = props.shopId;
+  const shopChosen = props.shopChosen;
   const [sidebar, setSidebar] = useState(false);
   const [refresh, setRefresh] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
@@ -35,7 +34,7 @@ function EmployeeList(props) {
           employee: [],
         });
         let empVal = snap.val()[key]["employees"];
-        if (empVal != undefined) {
+        if (empVal !== undefined) {
           Object.keys(empVal).forEach((key) => {
             get(child(dbRef, `${shopPath(shopId)}/${empVal[key].tag_id}/actual_state`)).then((snap) => {
               empName = empVal[key].name;
@@ -151,70 +150,77 @@ function EmployeeList(props) {
     watchEmployeeState();
   }, []);
 
-  useEffect(() => {}, [employeeList]);
+  useEffect(() => {console.log("Sidebar", sidebar)}, [sidebar]);
 
   return (
     <div className="sidebar" overflow-y="scroll" height="100vh">
-      <table id="intro-table" align="center">
-        <tbody id="list-opener">
-          <tr>
-            <th colSpan={"5"}>
-              <label className="employee-list-shop-title">{shopChosen} Kirppis</label>
-            </th>
-          </tr>
-          <tr id="employee-list-functionality">
-            <th colSpan={"1"}>
-              <Button variant="transparent" onClick={() => refreshEmp()}>
-                Refresh
-              </Button>
-            </th>
-            <th colSpan={"2"}>
-              <Button variant="transparent" onClick={() => logOutEveryone()}>
-                Logout
-              </Button>
-            </th>
-          </tr>
-        </tbody>
-        <tbody id="log_user">
-          {employeeList
-            ? employeeList.map((nested) => {
-                return (
-                  <Fragment key={"group-" + nested.group}>
-                    <tr className="group-head">
-                      <td colSpan={"100%"}>
-                        <div>--- {nested.group} ---</div>
-                      </td>
-                    </tr>
-                    {nested.employee &&
-                      nested.employee.map((empData, index) => {
-                        return (
-                          <tr key={"personal-" + index}>
-                            <td className="employee-list-name" width={"60%"}>
-                              {empData.name}
-                            </td>
-                            <td className={"employee-list-status " + empData.state} width={"20%"}>
-                              {empData.state === "in" ? <FaIcons.FaBriefcase title={"Working"} /> : <FaIcons.FaBed title={"Absent"} />}
-                            </td>
-                            <td className={"employee-list-inout"} width={"20%"}>
-                              {empData.state === "out" ? (
-                                <Button type="button" className="inout" variant="outline-success" onClick={() => handleInOut(empData.id, empData.state)}>
-                                  <FaIcons.FaSignInAlt />
-                                </Button>
-                              ) : (
-                                <Button type="button" className="inout" variant="outline-danger" onClick={() => handleInOut(empData.id, empData.state)}>
-                                  <FaIcons.FaSignOutAlt />
-                                </Button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </Fragment>
-                );
-              })
-            : console.log("emp")}
-        </tbody>
-      </table>
+      <div className="button-nav">
+        <label className="header" onClick={() => toggleSidebar()}>
+          <FaIcons.FaBars />
+        </label>
+      </div>
+      <div className={"table-area " + sidebar}>
+        <table id="intro-table" align="center">
+          <tbody id="list-opener">
+            <tr>
+              <th colSpan={"5"}>
+                <label className="employee-list-shop-title">{shopChosen} Kirppis</label>
+              </th>
+            </tr>
+            <tr id="employee-list-functionality">
+              <th colSpan={"1"}>
+                <Button variant="transparent" onClick={() => refreshEmp()}>
+                  Refresh
+                </Button>
+              </th>
+              <th colSpan={"2"}>
+                <Button variant="transparent" onClick={() => logOutEveryone()}>
+                  Logout
+                </Button>
+              </th>
+            </tr>
+          </tbody>
+          <tbody id="log_user">
+            {employeeList
+              ? employeeList.map((nested) => {
+                  return (
+                    <Fragment key={"group-" + nested.group}>
+                      <tr className="group-head">
+                        <td colSpan={"100%"}>
+                          <div>--- {nested.group} ---</div>
+                        </td>
+                      </tr>
+                      {nested.employee &&
+                        nested.employee.map((empData, index) => {
+                          return (
+                            <tr key={"personal-" + index}>
+                              <td className="employee-list-name" width={"60%"}>
+                                {empData.name}
+                              </td>
+                              <td className={"employee-list-status " + empData.state} width={"20%"}>
+                                {empData.state === "in" ? <FaIcons.FaBriefcase title={"Working"} /> : <FaIcons.FaBed title={"Absent"} />}
+                              </td>
+                              <td className={"employee-list-inout"} width={"20%"}>
+                                {empData.state === "out" ? (
+                                  <Button type="button" className="inout" variant="outline-success" onClick={() => handleInOut(empData.id, empData.state)}>
+                                    <FaIcons.FaSignInAlt />
+                                  </Button>
+                                ) : (
+                                  <Button type="button" className="inout" variant="outline-danger" onClick={() => handleInOut(empData.id, empData.state)}>
+                                    <FaIcons.FaSignOutAlt />
+                                  </Button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </Fragment>
+                  );
+                })
+              : console.log("emp")}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

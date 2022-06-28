@@ -1,12 +1,12 @@
 import { Alert, Button } from "react-bootstrap";
-import { child, onValue } from "firebase/database";
+import { child, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/StoreDatabase.css";
-import { dbRef } from "../js/firebase_init";
-import Session from "react-session-api"
+import { dbRef, messRef } from "../js/firebase_init";
 import FunctionSelector from "./FunctionSelector";
 import Message from "./Message";
+import Report from "./Report";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
@@ -16,15 +16,17 @@ function StoreDatabase(props) {
   const navigate = useNavigate();
 
   const mode = "";
-  const shopId = Session.get("shop_id");
+  const shopId = props.shopId;
 
   const watchMessage = () => {
     return onValue(child(dbRef, `shop_data/${shopId}/message_data`), (snap) => {
-      console.log(snap.val());
+      let message = [];
       let val = snap.val();
       Object.keys(val).forEach((key) => {
-        setModMessage((modMessage) => [...modMessage, [val[key].name, val[key].message, val[key].date]]);
+        // setModMessage((modMessage) => [...modMessage, [val[key].name, val[key].message, val[key].date]]);
+        message.push([key, val[key].name, val[key].message, val[key].date])
       });
+      setModMessage(() => message);
     });
   };
 
@@ -32,10 +34,16 @@ function StoreDatabase(props) {
     switch (chosenFunction) {
       case "message":
         return <Message />;
+      case "report":
+        return <Report />;
       default:
         return <FunctionSelector />;
     }
   };
+
+  const deleteMess = (key) => {
+    remove(child(messRef(shopId), key))
+  }
 
   useEffect(() => {
     watchMessage();
@@ -53,18 +61,21 @@ function StoreDatabase(props) {
         {showMessage && (
           <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>
             <Alert.Heading>Message Board</Alert.Heading>
-            <table className="message-table">
+            <table className="message-table table table-striped">
               <tbody>
                 {modMessage.map((message, index) => (
                   <tr className="message" key={"message" + index}>
                     <td className="message-date" width={"15%"}>
-                      {message[2]}
+                      {message[3]}
                     </td>
                     <td className="message-name" width={"10%"}>
-                      {message[0]}
-                    </td>
-                    <td className="message-data" width={"75%"}>
                       {message[1]}
+                    </td>
+                    <td className="message-data" width={"70%"}>
+                      {message[2]}
+                    </td>
+                    <td className="message-delete" onClick={() => deleteMess(message[0])}>
+                      X
                     </td>
                   </tr>
                 ))}

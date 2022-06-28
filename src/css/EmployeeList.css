@@ -4,8 +4,16 @@
     --red-wine: #BD1D1D;
 }
 
-.sidebar {
+.button-nav {
     position: absolute;
+    top: 1.9%;
+    color: white;
+    left: 97.5%;
+}
+
+.table-area {
+    display: block;
+    position: fixed;
     top: 3.15rem;
     left: 75%;
     width: 25%;
@@ -16,24 +24,24 @@
     color: var(--red-wine);
 }
 
-.sidebartable {
+/* .table-area table {
     border-collapse: collapse;
     width: 80%;
     color: var(--red-wine);
     margin-left: 2.5em;
-}
+} */
 
-.sidebar .group-header {
+.table-area .group-header {
     border-bottom: 1px solid #ddd;
 }
 
-.sidebar tr {
+.table-area tr {
     display: table-row;
     vertical-align: inherit;
     border-color: inherit;
 }
 
-.sidebar th, td{
+.table-area th, td{
     padding: 8px;
     text-align: center;
     cursor: pointer;
@@ -41,9 +49,13 @@
     margin-top: 10px;
 }
 
-.sidebar th button {
+.table-area th button {
     color: var(--red-wine);
     font-weight: bolder;
+}
+
+.table-area.false {
+    display: none;
 }
 
 .employee-list-shop-title {

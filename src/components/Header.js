@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import Session from "react-session-api";
 import * as FaIcons from "react-icons/fa";
 import "../css/Header.css";
 
-function Header() {
+function Header({sidebar, setSidebar}) {
   const location = useLocation();
   const navigate = useNavigate();
 
   const [pathArr, setPathArr] = useState([]);
   const logout = () => {
-    Session.clear();
+    sessionStorage.clear();
     navigate("/");
   };
 
@@ -46,9 +45,6 @@ function Header() {
             LOGOUT
           </label>
           <div id="empty" className="header"></div>
-          <label className="header">
-            <FaIcons.FaBars />
-          </label>
         </span>
       )}
     </header>

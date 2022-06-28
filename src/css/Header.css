@@ -29,3 +29,7 @@ header #extra {
 div .header{
     font-weight: bold;
 }
+
+#logout {
+    margin-right: 2rem;
+}
