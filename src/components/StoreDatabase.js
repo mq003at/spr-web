@@ -15,7 +15,7 @@ function StoreDatabase(props) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const mode = "";
+  const sidebar = props.sidebar;
   const shopId = props.shopId;
 
   const watchMessage = () => {
@@ -56,7 +56,7 @@ function StoreDatabase(props) {
   }, [location]);
 
   return (
-    <div className="store-database">
+    <div className={"store-database " + sidebar}>
       <div className="message-section">
         {showMessage && (
           <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>

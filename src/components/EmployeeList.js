@@ -6,14 +6,13 @@ import * as FaIcons from "react-icons/fa";
 import { Button } from "react-bootstrap";
 
 function EmployeeList(props) {
+  const sidebar = props.sidebar;
   const shopId = props.shopId;
   const shopChosen = props.shopChosen;
-  const [sidebar, setSidebar] = useState(false);
   const [refresh, setRefresh] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
   const empListRef = useRef([]);
 
-  const toggleSidebar = () => setSidebar(!sidebar);
   const qState = query(shopRef(shopId), orderByChild("actual_state"));
   const qName = query(empRef(shopId), orderByChild("name"));
 
@@ -154,11 +153,6 @@ function EmployeeList(props) {
 
   return (
     <div className="sidebar" overflow-y="scroll" height="100vh">
-      <div className="button-nav">
-        <label className="header" onClick={() => toggleSidebar()}>
-          <FaIcons.FaBars />
-        </label>
-      </div>
       <div className={"table-area " + sidebar}>
         <table id="intro-table" align="center">
           <tbody id="list-opener">

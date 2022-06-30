@@ -4,13 +4,6 @@
     --red-wine: #BD1D1D;
 }
 
-.button-nav {
-    position: absolute;
-    top: 1.9%;
-    color: white;
-    left: 97.5%;
-}
-
 .table-area {
     display: block;
     position: fixed;
