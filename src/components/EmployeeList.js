@@ -1,5 +1,5 @@
-import { get, child, onValue, orderByChild, query, equalTo, onChildChanged, onChildAdded, onChildRemoved, onChildMoved, set, update } from "firebase/database";
-import { dbRef, employeePath, shopPath, empRef, shopRef } from "../js/firebase_init";
+import { get, child, orderByChild, query, onChildChanged, set, update } from "firebase/database";
+import { dbRef, employeePath, shopPath, shopRef } from "../js/firebase_init";
 import { useEffect, useState, useRef, Fragment } from "react";
 import "../css/EmployeeList.css";
 import * as FaIcons from "react-icons/fa";
@@ -9,13 +9,10 @@ function EmployeeList(props) {
   const sidebar = props.sidebar;
   const shopId = props.shopId;
   const shopChosen = props.shopChosen;
-  const [refresh, setRefresh] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
   const empListRef = useRef([]);
 
   const qState = query(shopRef(shopId), orderByChild("actual_state"));
-  const qName = query(empRef(shopId), orderByChild("name"));
-
   empListRef.current = employeeList;
 
   // Get an instance of all employees
