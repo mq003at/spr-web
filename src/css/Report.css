@@ -156,7 +156,11 @@
     font-weight: bold;
 }
 
-.report-td {
-    text-align: left;
+.report .table-section {
+  text-align: left;
+}
+
+.report .table-section .emp-name {
     font-weight: bold;
 }
+
