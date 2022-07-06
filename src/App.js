@@ -4,12 +4,15 @@ import Management from "./components/Management";
 import ErrorPage from "./components/ErrorPage";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { useState } from "react";
-
-
+import { Helmet } from "react-helmet";
 
 function App() {
   return (
+    <div className="App">
+      <Helmet>
+        <title>SPR-Kirppis</title>
+        <meta name="description" content="Employee Management" />
+      </Helmet>
       <Router>
         <Header navigation=""></Header>
         <Routes>
@@ -21,6 +24,7 @@ function App() {
         </Routes>
         <Footer></Footer>
       </Router>
+    </div>
   );
 }
 

@@ -1,25 +1,24 @@
-import { child, endAt, equalTo, get, onValue, orderByChild, query, startAt } from "firebase/database";
-import { useEffect, useRef, useState } from "react";
+import { child, endAt, onValue, orderByChild, query, startAt } from "firebase/database";
+import { createRef, Fragment, useEffect, useState } from "react";
 import { Calendar } from "react-calendar";
-import { dbRef, empRef, shopRef } from "../js/firebase_init";
-
-import "../css/Report.css";
+import { empRef, shopRef } from "../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
+import TableToExcel from "@linways/table-to-excel";
+// import * as XLSX from "xlsx";
+import "../css/Report.css";
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
-  const [startDate, onStartDateChange] = useState(new Date());
-  const [endDate, onEndDateChange] = useState(new Date(Date.now() + 3600 * 1000 * 24));
+  const [startDate, onStartDateChange] = useState(new Date(Date.now() - 3600 * 1000 * 24));
+  const [endDate, onEndDateChange] = useState(new Date());
   const [dateRangeArr, setDateRangeArr] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
   const [logDataArr, setLogDataArr] = useState([]);
 
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(5);
-
+  const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
 
   // Functions handles the date
@@ -33,7 +32,7 @@ function Report() {
     let milisec = ("" + date.getMilliseconds()).slice(-1);
     let documentStamp = year + month + day + hour + minute + second + milisec;
     let timeStamp = year + month + day + hour + minute + second;
-    let dateStamp = year + month + day;
+    let dateStamp = parseInt(year + month + day);
     let dateString = year + "-" + month + "-" + day;
 
     let obj = {
@@ -44,6 +43,61 @@ function Report() {
     };
 
     return obj;
+  }
+
+  // Get the time
+  function findLog(id, date) {
+    let a = logDataArr.filter((person) => person.id === id);
+    let b = [];
+    if (a.length !== 1) return <div>Not present</div>;
+    else {
+      let temp = [];
+      b = a[0].logEvent;
+      b.forEach((log) => {
+        if (log.dateStamp === date) {
+          temp.push({
+            id: log.id,
+            timeStamp: log.timeStamp,
+            direction: log.direction,
+          });
+        }
+      });
+      if (temp.length === 0) return <div>Not present</div>;
+      else{
+        return  (temp.map((data, index, { [index - 1]: previous, [index + 1]: next }) => {
+          return !next ? (
+            <Fragment key={"time-cell" + data.id}>
+              <label title={data.direction}>{data.timeStamp}</label>
+              <label>. </label>
+            </Fragment>
+          ) : data.direction === "in" && next.direction === "out" ? (
+            <Fragment key={"time-cell" + data.id}>
+              <label title={data.direction}>{data.timeStamp}</label>
+              <label>{" - "}</label>
+            </Fragment>
+          ) : data.direction === "out" && next ? (
+            <Fragment key={"time-cell" + data.id}>
+              <label title={data.direction}>{data.timeStamp}</label>
+              <label>, </label>
+            </Fragment>
+          ) : (
+            <label key={"time-cell" + data.id} title={data.direction}>
+              {data.timeStamp}
+            </label>
+          );
+        }))};
+    }
+  }
+
+  // Handling CSV
+  function csvHandler() {
+    TableToExcel.convert(tableRef.current, {
+      name: `SPR-Report-${startDate.toLocaleDateString("fi-FI")}-${endDate.toLocaleDateString("fi-FI")}.csv`,
+      sheet: {
+        name: "Sheet 1",
+      },
+    });
+
   }
 
   // Generate dateRange
@@ -96,62 +150,43 @@ function Report() {
         }
       });
     }
-  }, [chosenGroup, shopId]);
+  }, [chosenGroup, shopId, startDate, endDate]);
 
-  // Getting timeStmp
+  // Getting data
   useEffect(() => {
     if (empDataArr.length > 1) {
-      // empDataArr.forEach((emp) => {
-      //   let tempLogArr = {id: emp.id, log_event: []};
-
-      //   let qLogEvent = query(child(shopRef(shopId), emp.id + "/log_events"), orderByChild("dateStamp"), startAt(fromDay), endAt(toDay));
-      //   const watchLogEmpData = onValue(qLogEvent, (snap) => {
-      //     console.log(snap.val())
-      //     let val = snap.val();
-      //     if (val === null) {}
-      //     else {
-      //       Object.keys(val).forEach(key => {
-      //         let date = val[key].dateStamp;
-      //         let direction = val[key].direction;
-      //         let timeStamp = val[key].timeStamp;
-      //         tempLogArr.log_event.push()
-      //       })
-      //     }
-      //   });
-      // })
-
       let fromDay = parseInt(dateHandler(startDate).dateStamp);
       let toDay = parseInt(dateHandler(endDate).dateStamp);
       let tempLogArr = [];
-      let logEventArr = [];
       empDataArr.forEach((emp) => {
-        tempLogArr.push({
-          id: emp.id,
-          log_event: []
-        })
         let qLogEvent = query(child(shopRef(shopId), emp.id + "/log_events"), orderByChild("dateStamp"), startAt(fromDay), endAt(toDay));
         onValue(qLogEvent, (snap) => {
+          let logEventArr = [];
           let val = snap.val();
-          if (val === null) {}
-          else {
+          if (val === null) {
+          } else {
             Object.keys(val).forEach((key) => {
               let id = key;
               let dateStamp = val[key].dateStamp;
               let direction = val[key].direction;
-              let timeStamp = val[key].timeStamp;
-
-              logEventArr.push({date: dateStamp, day_events: []})
-
-            })
+              let time = val[key].timeStamp + "";
+              let timeStamp = time.substring(8, 10) + ":" + time.substring(10, 12);
+              logEventArr.push({ direction: direction, timeStamp: timeStamp, dateStamp: dateStamp, id: id });
+            });
+            tempLogArr.push({
+              id: emp.id,
+              logEvent: logEventArr,
+            });
           }
         });
       });
+      setLogDataArr(tempLogArr.map((x) => x));
     }
   }, [empDataArr, shopId, startDate, endDate]);
 
   useEffect(() => {
-    console.log(empDataArr);
-  }, [empDataArr]);
+    console.log(logDataArr);
+  }, [logDataArr]);
 
   return (
     <div className="report">
@@ -205,16 +240,16 @@ function Report() {
         <div className="report-showcase">
           <div className="group-list">
             {groupList.length !== 0 ? (
-              <table className="export-report">
+              <table className="report report-showcase export-report" id="export-report" ref={tableRef} data-cols-width="20,35">
                 <thead>
                   <tr>
-                    <th colSpan={"2"}>
-                      <div className="date-range">
+                    <th colSpan={"2"} data-a-h="center" data-f-bold="true">
+                      <div className="date-range" title="Click me to export the report to CSV file" onClick={() => csvHandler()} >
                         {startDate.toLocaleDateString("fi-FI")} - {endDate.toLocaleDateString("fi-FI")}
                       </div>
                     </th>
                   </tr>
-                  <tr>
+                  <tr data-exclude="true">
                     <th colSpan={"2"}>
                       <ButtonGroup className="mb-2 flex-wrap">
                         {groupList.map((group) => {
@@ -227,27 +262,28 @@ function Report() {
                       </ButtonGroup>
                     </th>
                   </tr>
-                  <tr>{chosenGroup.name}</tr>
+                  {chosenGroup.length !== 0 && <tr><th colSpan={"2"} data-a-h="center" data-f-bold="true">{chosenGroup[1]}</th></tr>}
                 </thead>
                 {empDataArr.length !== 0 &&
                   empDataArr.map((data, index) => (
                     <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                       <tr className="report table-section table-row">
-                        <td className="report table-section emp-name" colSpan={"2"}>
+                        <td className="report table-section emp-name" colSpan={"2"} data-f-bold={true}>
                           <span>-- {data.name} --</span>
                         </td>
                       </tr>
-                      {dateRangeArr.length !== 0 &&
+                      {(dateRangeArr.length !== 0 && empDataArr.length > 1) &&
                         dateRangeArr.map((date, index) => (
                           <tr key={"report-" + dateHandler(date).timeStamp} className="report table-section table-row">
                             <td className="report table-section date-cell" width={"11.5%"}>
                               <span>{date.toLocaleDateString("fi-FI")}</span>
                             </td>
                             <td className="report table-section time-stamp-cell">
-                              <span>abc</span>
+                              <span>{findLog(data.id, dateHandler(date).dateStamp)}</span>
                             </td>
                           </tr>
                         ))}
+                        <tr></tr>
                     </tbody>
                   ))}
               </table>

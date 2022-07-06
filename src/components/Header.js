@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import "../css/Header.css";
 
-function Header({sidebar, setSidebar}) {
+function Header({ sidebar, setSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,7 +36,12 @@ function Header({sidebar, setSidebar}) {
                 </label>
               </div>
             );
-          } else return(<div key={"none"} className="header" />)
+          } else
+            return (
+              <div className="header" key={"header-frontpage"}>
+                {">>"}
+              </div>
+            );
         })}
       </span>
       {pathArr[0] !== "" && (

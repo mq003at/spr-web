@@ -1,31 +1,26 @@
 import "../css/StoreSelectable.css";
 import { dbRef } from "../js/firebase_init";
 import { child, get } from "firebase/database";
-import { useEffect, useState } from "react";
-import $ from "jquery";
+import { createRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 
 function StoreSelectable() {
   let navigate = useNavigate();
   const [count, setCount] = useState([]);
+  const inputPinRef = createRef();
 
-  const getStore = () => {
-    get(child(dbRef, "shop_data")).then((snap) => {
-      let val = snap.val();
-      Object.keys(val).forEach((key) => {
-        setCount((count) => [...count, [key, val[key].name, val[key].pin, val[key].pinUser]]);
-      });
-    });
-  };
-
-  const goToStore = () => {
-    let shopChosen = $("input[type=radio][name=place]:checked").val();
-    if (!$("input#pinInput").val()) alert("Input your PIN code to proceed.");
-    else {
-      if (typeof shopChosen == "undefined") alert("Please choose the store.");
+  const formik = useFormik({
+    initialValues: {
+      pinInput: "",
+      place: "",
+    },
+    onSubmit: (values) => {
+      if (values.pinInput === "") alert("Input your PIN code to proceed.");
+      else if (values.place === "") alert("Please choose the store.");
       else {
-        let pinInput = $("input#pinInput").val();
+        let pinInput = values.pinInput;
+        let shopChosen = values.place;
         switch (pinInput) {
           case count[shopChosen][2]:
             //Employer Pin
@@ -36,8 +31,8 @@ function StoreSelectable() {
               state: {
                 user: "employer",
                 shopChosen: count[shopChosen][1],
-                shopId: count[shopChosen][0]
-              }
+                shopId: count[shopChosen][0],
+              },
             });
             break;
           case count[shopChosen][3]:
@@ -49,8 +44,8 @@ function StoreSelectable() {
               state: {
                 user: "employee",
                 shopChosen: count[shopChosen][1],
-                shopId: count[shopChosen][0]
-              }
+                shopId: count[shopChosen][0],
+              },
             });
             break;
           default:
@@ -59,50 +54,64 @@ function StoreSelectable() {
             break;
         }
       }
-    }
+    },
+  });
+
+  const getStore = () => {
+    get(child(dbRef, "shop_data")).then((snap) => {
+      let val = snap.val();
+      Object.keys(val).forEach((key) => {
+        setCount((count) => [...count, [key, val[key].name, val[key].pin, val[key].pinUser]]);
+      });
+    });
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("user") == null) getStore();
+    if (sessionStorage.getItem("user") == null) {
+      getStore();
+      inputPinRef.current.focus();
+    }
     else {
       navigate("/management", {
         state: {
           user: sessionStorage.getItem("user"),
           shopChosen: sessionStorage.getItem("shop_chosen"),
-          shopId: sessionStorage.getItem("shop_id")
-        }
+          shopId: sessionStorage.getItem("shop_id"),
+        },
       });
     }
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
   return (
     <div className="Store-Selectable">
       <h2 id="store-intro">Myymälä</h2>
-      <table id="place_option" align="center" style={{ tableLayout: "fixed" }} className="radioButtons collapseBorder">
-        
-        <tbody id="store-table">
-          {count.map((data, index) => (
-            <tr key={"place" + index.toString()}>
-              <td>
-                <label id={data[0]}>{data[1]}</label>
-              </td>
-              <td className="store-check">
-                <input type="radio" name="place" value={index}></input>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <form onSubmit={formik.handleSubmit}>
+        <table id="place_option" align="center" className="radioButtons collapseBorder">
+          <tbody id="store-table">
+            {count.map((data, index) => (
+              <tr key={"place" + index.toString()}>
+                <td>
+                  <label id={data[0]}>{data[1]}</label>
+                </td>
+                <td className="store-check">
+                  <input type="radio" name="place" value={index} onChange={() => formik.values.place = index}></input>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      <div className="ui labeled input" align="center">
-        <div className="ui label" align="center">
-          PIN
+        <div className="ui labeled input" align="center">
+          <div className="ui label" align="center">
+            PIN
+          </div>
+          <input id="pinInput" name="pinInput" type="password" onChange={formik.handleChange} value={formik.values.pinInput} placeholder="PIN" ref={inputPinRef}></input>
+          <button type="submit" className="button" id="place_confirm">
+            Go
+          </button>
         </div>
-        <input id="pinInput" type="text" placeholder="PIN"></input>
-        <button type="button" className="button" id="place_confirm" onClick={() => goToStore()}>
-          Go
-        </button>
-      </div>
+      </form>
     </div>
   );
 }

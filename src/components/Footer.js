@@ -7,10 +7,10 @@ function Footer(){
         bottom: 0,
         left: 0,
         width: "75%",
-        height: "10%",
+        height: "11%",
         display: "block",
         textAlign: "left",
-        padding: "15px"
+        padding: "15px",
     }
     return (
         <span id="footer" style={logoStyle}><img id="logo-img" src={logo} alt="Logo"></img></span>

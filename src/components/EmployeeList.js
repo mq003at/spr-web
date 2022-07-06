@@ -1,4 +1,4 @@
-import { get, child, orderByChild, query, onChildChanged, set, update } from "firebase/database";
+import { get, child, orderByChild, query, onChildChanged, set, update, onValue } from "firebase/database";
 import { dbRef, employeePath, shopPath, shopRef } from "../js/firebase_init";
 import { useEffect, useState, useRef, Fragment } from "react";
 import "../css/EmployeeList.css";
@@ -17,7 +17,7 @@ function EmployeeList(props) {
 
   // Get an instance of all employees
   const getAllEmployee = () => {
-    get(child(dbRef, employeePath(shopId))).then((snap) => {
+    return onValue(child(dbRef, employeePath(shopId)), (snap) => {
       let dataArr = [];
       let tag_id = "";
       let empName = "";
@@ -45,10 +45,11 @@ function EmployeeList(props) {
           });
         }
       });
-    });
-  };
+    }, {onlyOnce: true}
+  )};
 
   const watchEmployeeState = () => {
+    // eslint-disable-next-line no-unused-vars
     const watchState = onChildChanged(qState, (snap) => {
       let key = snap.key;
       let changedState = snap.val()["actual_state"];
@@ -149,7 +150,7 @@ function EmployeeList(props) {
   useEffect(() => {console.log("Sidebar", sidebar)}, [sidebar]);
 
   return (
-    <div className="sidebar" overflow-y="scroll" height="100vh">
+    <div className="sidebar" overflow-y="scroll">
       <div className={"table-area " + sidebar}>
         <table id="intro-table" align="center">
           <tbody id="list-opener">

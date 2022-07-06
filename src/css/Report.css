@@ -156,11 +156,24 @@
     font-weight: bold;
 }
 
+.date-range:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.date-range:active {
+  color: darkblue;
+}
+
 .report .table-section {
   text-align: left;
 }
 
 .report .table-section .emp-name {
     font-weight: bold;
+}
+
+.report .table-section .time-stamp-cell span {
+  white-space: pre-wrap;
 }
 
