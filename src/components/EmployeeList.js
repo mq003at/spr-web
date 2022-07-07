@@ -147,8 +147,6 @@ function EmployeeList(props) {
     watchEmployeeState();
   }, []);
 
-  useEffect(() => {console.log("Sidebar", sidebar)}, [sidebar]);
-
   return (
     <div className="sidebar" overflow-y="scroll">
       <div className={"table-area " + sidebar}>
