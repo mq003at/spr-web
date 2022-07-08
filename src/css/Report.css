@@ -153,6 +153,10 @@
 }
 
 .date-range {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
   font-weight: bold;
 }
 
@@ -161,8 +165,8 @@
   cursor: pointer;
 }
 
-.date-range:active {
-  color: darkblue;
+.date-range:focus {
+  color: #1087ff;
 }
 
 .report.table-section {
@@ -177,6 +181,40 @@
   white-space: pre-wrap;
 }
 
-.report .table-section .date-cell {
+.report.table-section.total-cell {
+  text-align: center;
+  color: #d10000;
+}
+
+.report.table-section.date-cell {
+  text-align: center;
+}
+.report.table-section.date-cell.date-part {
+  margin-left: 0.6em;
+}
+.report.table-section.date-cell.add-record-part {
+  margin-bottom: 1em;
+}
+.report.table-section.date-cell.add-record-part:hover {
+  color: #d10000;
+}
+.report.table-section.date-cell span:hover {
+  color: #d10000;
+}
+.report.table-section.date-cell.date-part:hover {
+  text-decoration: line-through;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.modal-header {
+  justify-content: center;
+}
+
+.add-record.table-head {
+  border-bottom: none;
+}
+
+.add-record.table input {
   text-align: center;
 }

@@ -4,7 +4,6 @@ import { Calendar } from "react-calendar";
 import { empRef, shopRef } from "../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
-// import * as XLSX from "xlsx";
 import "../css/Report.css";
 import ReportByPerson from "./report-components/ReportByPerson";
 
@@ -22,53 +21,6 @@ function Report() {
 
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
-
-
-
-  // Get the time
-  function findLog(id, date) {
-    let a = logDataArr.filter((person) => person.id === id);
-    let b = [];
-    if (a.length !== 1) return <div>Not present</div>;
-    else {
-      let temp = [];
-      b = a[0].logEvent;
-      b.forEach((log) => {
-        if (log.dateStamp === date) {
-          temp.push({
-            id: log.id,
-            timeStamp: log.timeStamp,
-            direction: log.direction,
-          });
-        }
-      });
-      if (temp.length === 0) return <div>Not present</div>;
-      else {
-        return temp.map((data, index, { [index - 1]: previous, [index + 1]: next }) => {
-          return !next ? (
-            <Fragment key={"time-cell" + data.id}>
-              <label title={data.direction}>{data.timeStamp}</label>
-              <label>. </label>
-            </Fragment>
-          ) : data.direction === "in" && next.direction === "out" ? (
-            <Fragment key={"time-cell" + data.id}>
-              <label title={data.direction}>{data.timeStamp}</label>
-              <label>{" - "}</label>
-            </Fragment>
-          ) : data.direction === "out" && next ? (
-            <Fragment key={"time-cell" + data.id}>
-              <label title={data.direction}>{data.timeStamp}</label>
-              <label>, </label>
-            </Fragment>
-          ) : (
-            <label key={"time-cell" + data.id} title={data.direction}>
-              {data.timeStamp}
-            </label>
-          );
-        });
-      }
-    }
-  }
 
   // Handling CSV
   function csvHandler() {
@@ -114,44 +66,6 @@ function Report() {
       });
     }
   }, [chosenGroup, shopId, startDate, endDate]);
-
-  // Getting data
-  // useEffect(() => {
-  //   if (empDataArr.length > 1) {
-  //     let fromDay = parseInt(dateHandler(startDate).dateStamp);
-  //     let toDay = parseInt(dateHandler(endDate).dateStamp);
-  //     let tempLogArr = [];
-  //     empDataArr.forEach((emp, index) => {
-  //       let qLogEvent = query(child(shopRef(shopId), emp.id + "/log_events"), orderByChild("dateStamp"), startAt(fromDay), endAt(toDay));
-  //       onValue(qLogEvent, (snap) => {
-  //         let logEventArr = [];
-  //         let val = snap.val();
-  //         console.log("listen", snap.val())
-  //         if (val === null) {} 
-  //         else {
-  //           Object.keys(val).forEach((key) => {
-  //             let id = key;
-  //             let dateStamp = val[key].dateStamp;
-  //             let direction = val[key].direction;
-  //             let time = val[key].timeStamp + "";
-  //             let timeStamp = time.substring(8, 10) + ":" + time.substring(10, 12);
-  //             logEventArr.push({ direction: direction, timeStamp: timeStamp, dateStamp: dateStamp, id: id });
-  //           });
-  //           tempLogArr.push({
-  //             id: emp.id,
-  //             logEvent: logEventArr,
-  //           });
-  //           console.log("temp", tempLogArr)
-  //         }
-  //       });
-  //     });
-  //     setLogDataArr(tempLogArr.map((x) => x));
-  //   }
-  // }, [empDataArr, shopId, startDate, endDate]);
-
-  // useEffect(() => {
-  //   console.log(logDataArr);
-  // }, [logDataArr]);
 
   return (
     <div className="report">
@@ -208,14 +122,14 @@ function Report() {
               <table className="report report-showcase export-report" id="export-report" ref={tableRef} data-cols-width="20,35">
                 <thead>
                   <tr>
-                    <th colSpan={"2"} data-a-h="center" data-f-bold="true">
-                      <div className="date-range" title="Click me to export the report to CSV file" onClick={() => csvHandler()}>
+                    <th colSpan={"3"} data-a-h="center" data-f-bold="true">
+                      <button className="date-range" title="Click me to export the report to CSV file" onClick={() => csvHandler()}>
                         {startDate.toLocaleDateString("fi-FI")} - {endDate.toLocaleDateString("fi-FI")}
-                      </div>
+                      </button>
                     </th>
                   </tr>
                   <tr data-exclude="true">
-                    <th colSpan={"2"}>
+                    <th colSpan={"3"}>
                       <ButtonGroup className="mb-2 flex-wrap">
                         {groupList.map((group) => {
                           return (
@@ -229,7 +143,7 @@ function Report() {
                   </tr>
                   {chosenGroup.length !== 0 && (
                     <tr>
-                      <th colSpan={"2"} data-a-h="center" data-f-bold="true">
+                      <th colSpan={"3"} data-a-h="center" data-f-bold="true">
                         {chosenGroup[1]}
                       </th>
                     </tr>
@@ -239,11 +153,11 @@ function Report() {
                   empDataArr.map((data, index) => (
                     <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                       <tr className="report table-section table-row">
-                        <td className="report table-section emp-name" colSpan={"2"} data-f-bold={true}>
+                        <td className="report table-section emp-name" colSpan={"3"} data-f-bold={true}>
                           <span>-- {data.name} --</span>
                         </td>
                       </tr>
-                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} />
+                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} />
                       <tr></tr>
                     </tbody>
                   ))}
