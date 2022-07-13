@@ -1,4 +1,4 @@
-import { child, endAt, onValue, orderByChild, query, startAt } from "firebase/database";
+import { child, onValue, orderByChild, query, startAt } from "firebase/database";
 import { createRef, Fragment, useEffect, useState } from "react";
 import { Calendar } from "react-calendar";
 import { empRef, shopRef } from "../js/firebase_init";
@@ -12,12 +12,10 @@ function Report() {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [startDate, onStartDateChange] = useState(new Date(Date.now() - 3600 * 1000 * 24));
   const [endDate, onEndDateChange] = useState(new Date());
-  const [dateRangeArr, setDateRangeArr] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
-  const [logDataArr, setLogDataArr] = useState([]);
-  const [fbIndex, setfbIndex] = useState([]);
+
 
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");

@@ -1,24 +1,39 @@
-import { Alert, Button } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
 import { child, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../css/StoreDatabase.css";
 import { dbRef, messRef } from "../js/firebase_init";
 import FunctionSelector from "./FunctionSelector";
 import Message from "./Message";
 import Report from "./Report";
+import Schedule from "./Schedule";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
   const [showMessage, setShowMessage] = useState(true);
   const [chosenFunction, setChosenFunction] = useState("");
   const location = useLocation();
-  const navigate = useNavigate();
 
   const sidebar = props.sidebar;
   const shopId = props.shopId;
 
-  const watchMessage = () => {
+  // Extra functions
+  const goToFunction = (chosenFunction) => {
+    switch (chosenFunction) {
+      case "message":
+        return <Message />;
+      case "report":
+        return <Report />;
+      case "schedule":
+        return <Schedule />;
+      default:
+        return <FunctionSelector />;
+    }
+  };
+
+  // ModMessage
+  useEffect(() => {
     return onValue(child(dbRef, `shop_data/${shopId}/message_data`), (snap) => {
       let message = [];
       let val = snap.val();
@@ -28,27 +43,12 @@ function StoreDatabase(props) {
       });
       setModMessage(() => message);
     });
-  };
-
-  const goToFunction = (chosenFunction) => {
-    switch (chosenFunction) {
-      case "message":
-        return <Message />;
-      case "report":
-        return <Report />;
-      default:
-        return <FunctionSelector />;
-    }
-  };
-
+  }, [shopId]);
   const deleteMess = (key) => {
     remove(child(messRef(shopId), key))
   }
 
-  useEffect(() => {
-    watchMessage();
-  }, []);
-
+  // Location Handler
   useEffect(() => {
     let getPath = location.pathname.split("/");
     getPath[2] ? (getPath = getPath[2]) : (getPath = "");

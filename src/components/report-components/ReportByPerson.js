@@ -1,5 +1,5 @@
 import { Modal, Button, CloseButton } from "react-bootstrap";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { createContext, Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { dateHandler } from "../../js/tool_function";
 import ReportByDate from "./ReportByDate";
 import { child, equalTo, orderByChild, query, remove, get, set } from "firebase/database";
@@ -15,7 +15,8 @@ function ReportByPerson(props) {
   const employeeName = props.employeeName;
 
   const [dateRange, setDateRange] = useState([]);
-  const [totalHour, setTotalHour] = useState(parseInt(0));
+  const [totalHour, setTotalHour] = useState();
+  const [hourArr, setHourArr] = useState([]);
   const [showDayModal, setShowDayModal] = useState(false);
   const [showAddRecordToDayModal, setAddRecordToDayModal] = useState(false);
   const [dataForModal, setDataForModal] = useState([]);
@@ -33,12 +34,27 @@ function ReportByPerson(props) {
   });
 
   // Calculate total hour
-  const addHour = useCallback(
-    (hour) => {
-      setTotalHour((totalHour) => totalHour + hour);
-    },
-    [setTotalHour]
-  );
+  const addHour = useCallback((hour, index) => {
+    console.log("receive", hour, index);
+    setHourArr((oldHourArr) => {
+      if (oldHourArr.length === index) return [...oldHourArr, hour];
+      else {
+        const newArr = oldHourArr.map((oldHour, oldIndex) => {
+          if (oldIndex === index) return hour;
+          else return oldHour;
+        });
+        return newArr;
+      }
+    });
+  }, []);
+  useEffect(() => {
+    console.log("hourArr", hourArr);
+    let total = 0;
+    hourArr.forEach((hour) => {
+      if (hour) total = total + hour;
+    });
+    setTotalHour(total);
+  }, [hourArr]);
 
   // Generate array from startDate to endDate
   useEffect(() => {
@@ -88,46 +104,12 @@ function ReportByPerson(props) {
 
   // onSubmit: adding more record to specific day
   function handleAddRecord(inStamp, outStamp) {
-    const validTime = new RegExp("^(((([0-1][0-9])|(2[0-3])):?[0-5][0-9]:?[0-5][0-9]+$))");
+    const validTime = new RegExp("^(?:\((2[0-3]|[0-1][0-9])([0-5][0-9])([0-5][0-9]))|)$");
 
-    if (inStamp === "" && outStamp === "") {
-      setAddRecordStatus("You cannot leave both input empty.");
-    } else if (inStamp !== "" && !validTime.test(inStamp)) {
-      setAddRecordStatus("The time you put in login box is invalid!");
-    } else if (outStamp !== "" && !validTime.test(outStamp)) {
-      setAddRecordStatus("The time you put in logout box is invalid!");
-    } else {
-      if (validTime.test(inStamp)) {
-        console.log(dataForModal[1], "P");
-        let time = inStamp.replace(":", "");
-        let dateStamp = dateHandler(dataForModal[1]).dateStamp;
-        let timeStamp = dateStamp + time;
-        let direction = "in";
-
-        set(child(shopRef(shopId), `${employeeID}/log_events/${timeStamp + employeeID}`), {
-          dateStamp: dateStamp,
-          direction: direction,
-          timeStamp: timeStamp,
-        });
-
-        setAddRecordToDayModal(false);
-        setAddRecordStatus("");
-        if (validTime.test(outStamp)) {
-          let time = outStamp.replace(":", "");
-          let dateStamp = dateHandler(dataForModal[1]).dateStamp;
-          let timeStamp = dateStamp + time;
-          let direction = "out";
-
-          set(child(shopRef(shopId), `${employeeID}/log_events/${timeStamp + employeeID}`), {
-            dateStamp: dateStamp,
-            direction: direction,
-            timeStamp: timeStamp,
-          });
-
-          setAddRecordToDayModal(false);
-          setAddRecordStatus("");
-        }
-      }
+    if (!validTime.test(inStamp) || !validTime.test(outStamp)) setAddRecordStatus("Wrong format. Please double-check the time.");
+    else {
+      handleTimeStamp("in", inStamp);
+      handleTimeStamp("out", outStamp);
     }
   }
 
@@ -135,6 +117,24 @@ function ReportByPerson(props) {
   function cancelAddRecord() {
     setAddRecordToDayModal(false);
     setAddRecordStatus("");
+  }
+
+  // handleTimeStamp
+  function handleTimeStamp(direction, time) {
+    if (time && time.trim() !== "") {
+      let dateStamp = dateHandler(dataForModal[1]).dateStamp;
+      let timeStamp = dateStamp + time;
+      console.log(time, dateStamp, timeStamp);
+
+      set(child(shopRef(shopId), `${employeeID}/log_events/${timeStamp + employeeID}`), {
+        dateStamp: dateStamp,
+        direction: direction,
+        timeStamp: timeStamp,
+      });
+    } 
+
+    formik.resetForm();
+    cancelAddRecord();
   }
 
   return (
@@ -153,7 +153,7 @@ function ReportByPerson(props) {
               </span>
             </td>
             <td className="report table-section time-stamp-cell">
-              <ReportByDate shopId={shopId} date={date} employeeID={employeeID} addHour={addHour} />
+              <ReportByDate shopId={shopId} date={date} employeeID={employeeID} position={index} addHour={addHour} />
             </td>
           </tr>
         ))}
@@ -164,13 +164,15 @@ function ReportByPerson(props) {
         </td>
         <td className="report table-section time-stamp-cell">{totalHour ? <span>{Math.round(totalHour * 100) / 100} hours.</span> : <span>0 hour.</span>}</td>
       </tr>
+
+      {/* Bootstrap modal */}
       <tr className="empty">
         <td>
           <div>
             <Modal show={showDayModal} onHide={() => setShowDayModal(false)}>
               <Modal.Header closeButton>
                 <Modal.Title>
-                  <h5>Delete all records from day {dataForModal[2]}</h5>{" "}                 
+                  <h5>Delete all records from day {dataForModal[2]}</h5>{" "}
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -206,7 +208,7 @@ function ReportByPerson(props) {
                           <input id="inStamp" name="inStamp" type="text" onChange={formik.handleChange} value={formik.values.inStamp} placeholder="00:00:00"></input>
                           <div>
                             <small id="stampHelpBlock" className="form-text text-muted">
-                              Date Format: HH:MM:SS
+                              Date Format: HHMMSS
                             </small>
                           </div>
                         </td>
@@ -215,7 +217,7 @@ function ReportByPerson(props) {
                           <div>
                             {" "}
                             <small id="stampHelpBlock" className="form-text text-muted">
-                              Date Format: HH:MM:SS
+                              Date Format: HHMMSS
                             </small>
                           </div>
                         </td>
@@ -235,8 +237,6 @@ function ReportByPerson(props) {
           </div>
         </td>
       </tr>
-
-      {/* Bootstrap modal functionality */}
     </Fragment>
   );
 }

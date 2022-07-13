@@ -180,6 +180,12 @@
 .report.table-section.time-stamp-cell label {
   white-space: pre-wrap;
 }
+.report.table-section.time-stamp-cell label:hover{
+  font-style: italic;
+  text-decoration: line-through;
+  color: red;
+  cursor: pointer;
+}
 
 .report.table-section.total-cell {
   text-align: center;
