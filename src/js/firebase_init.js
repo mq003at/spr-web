@@ -24,4 +24,15 @@ const shopPath = (shopId) => "shop_events/" + shopId + "/authorised_id/";
 const empRef = (shopId) => child(dbRef, employeePath(shopId));
 const shopRef = (shopId) => child(dbRef, shopPath(shopId));
 const messRef = (shopId) => child(dbRef, "shop_data/" + shopId + "/message_data/")
-export { dbRef, employeePath, shopPath, empRef, shopRef, messRef };
+// const scheRef = (shopId) => child(dbRef, "shop_schedule" + shopId + "/log_schedule")
+
+/**
+* Generate firebase path to get the schedule from one employee
+*
+* @function logSchRef
+* @param {string} shopId - Id of current SPR store.
+* @param {string} empId - Id of the employee.
+* @return {string} - Path to use on firebase read/write functions.
+*/
+const logSchRef = (shopId, empId) => child(dbRef, `shop_data/${shopId}/authorized_id/${empId}/log_schedule`)
+export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef };

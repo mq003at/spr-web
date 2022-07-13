@@ -1,11 +1,14 @@
 import { child, onValue, orderByChild, query, startAt } from "firebase/database";
-import { createRef, Fragment, useEffect, useState } from "react";
+import { createRef, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
 import { empRef, shopRef } from "../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../css/Report.css";
 import ReportByPerson from "./report-components/ReportByPerson";
+import { dateArr, dateHandler } from "../js/tool_function";
+import { CSVLink } from "react-csv";
+import { data } from "jquery";
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -16,14 +19,68 @@ function Report() {
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
 
+  // For CSV
+  const dateRef = useRef([""]);
+  const [dataCsv, setDataCsv] = useState([]);
+  const csvArr = useRef([]);
 
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
 
+  // Function handling CSV
+  const addCsvLog = useCallback((log, id, date) => {
+    let tempArr = [];
+    let finalData = [];
+    console.log("Data receive", log, id, date);
+    if (csvArr.current === 0) csvArr.current([tempArr]);
+    else {
+      let currentTemp = csvArr.current;
+      let temp = currentTemp.filter((dataArr) => {
+        if (dataArr.includes(id) && dataArr.includes(date)) return false;
+        else return true;
+      });
+      temp.push([id, date, log]);
+      csvArr.current = temp;
+      tempArr = csvArr.current.map(item => item[2])
+      tempArr.forEach(elem => elem.forEach(x => finalData.push(x)))
+      setDataCsv([dateRef.current[0], ...finalData]);
+    }
+  }, []);
+
+  const toCsvData = () => {
+    if (csvArr.current.length === 0) return "";
+    else {
+      let data = csvArr.current.map((day) => day[2]);
+      // data.unshift(dateArr.current);
+      console.log([csvArr.current]);
+      return [data];
+    }
+  };
+
+  // Handling CSV !important
+  useEffect(() => {
+    const range = dateArr(startDate, endDate, "csv");
+    const today = dateHandler(new Date()).dateCSV;
+    // dataRef.current = [
+    //   [today, range],
+    //   ["393609", "1", "", "2022-05-23 13:59"],
+    //   ["393609", "1", "", "2022-05-23 13:59"],
+    // ];
+    dateRef.current[0] = [today, range];
+  }, [startDate, endDate]);
+
+  // useEffect(() => {
+  //   setDataCsv([dateRef.current[0], ...csvArr.current])
+  // }, [csvArr])
+
+  useEffect(() => {
+    console.log("state", dataCsv)
+  }, [dataCsv])
+
   // Handling CSV
   function csvHandler() {
     TableToExcel.convert(tableRef.current, {
-      name: `SPR-Report-${startDate.toLocaleDateString("fi-FI")}-${endDate.toLocaleDateString("fi-FI")}.csv`,
+      name: `SPR-Report-${dateArr(startDate, endDate, "range")}.xlsx`,
       sheet: {
         name: "Sheet 1",
       },
@@ -47,6 +104,7 @@ function Report() {
 
   // Getting employee's info
   useEffect(() => {
+    csvArr.current = [];
     if (chosenGroup.length > 1) {
       const watchEmpList = onValue(child(empRef(shopId), chosenGroup[0] + "/employees"), (snap) => {
         let val = snap.val();
@@ -121,9 +179,18 @@ function Report() {
                 <thead>
                   <tr>
                     <th colSpan={"3"} data-a-h="center" data-f-bold="true">
-                      <button className="date-range" title="Click me to export the report to CSV file" onClick={() => csvHandler()}>
-                        {startDate.toLocaleDateString("fi-FI")} - {endDate.toLocaleDateString("fi-FI")}
+                      <button className="date-range" title="Click me to export the report to Excel file" onClick={() => csvHandler()}>
+                        {dateArr(startDate, endDate, "range")}
                       </button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th colSpan={"3"} data-exclude="true">
+                      {dataCsv.length > 0 && (
+                        <CSVLink data={dataCsv} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>
+                          Export as CSV {"(+" + (dataCsv.length-1) + " updates)"}.
+                        </CSVLink>
+                      )}
                     </th>
                   </tr>
                   <tr data-exclude="true">
@@ -155,7 +222,7 @@ function Report() {
                           <span>-- {data.name} --</span>
                         </td>
                       </tr>
-                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} />
+                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} />
                       <tr></tr>
                     </tbody>
                   ))}

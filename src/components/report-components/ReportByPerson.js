@@ -153,7 +153,7 @@ function ReportByPerson(props) {
               </span>
             </td>
             <td className="report table-section time-stamp-cell">
-              <ReportByDate shopId={shopId} date={date} employeeID={employeeID} position={index} addHour={addHour} />
+              <ReportByDate shopId={shopId} date={date} employeeID={employeeID} position={index} addHour={addHour} addCsvLog={props.addCsvLog} />
             </td>
           </tr>
         ))}

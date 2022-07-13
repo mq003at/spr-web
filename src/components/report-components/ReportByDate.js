@@ -8,10 +8,13 @@ function ReportByDate(props) {
   const date = props.date;
   const employeeID = props.employeeID;
   const addHour = props.addHour;
+  const addCsvLog = props.addCsvLog;
   const position = props.position;
 
   const [logData, setLogData] = useState([]);
   const [hour, setHour] = useState();
+  const [csvData, setCsvData] = useState([]);
+  
 
   // After having dateRange -> loop through day -> attach listener to each day
   useEffect(() => {
@@ -43,7 +46,12 @@ function ReportByDate(props) {
   // Total hours for a day
   useEffect(() => {
     if (logData.length > 0) {
-      console.log("logdata", logData)
+      setCsvData(logData.map(data => {
+        let direction = "0";
+        if (data.direction === "in") direction = "1";
+        return [employeeID, direction, "" , `${date.toLocaleDateString("sv-SE")} ${data.timeStamp}`]
+      }))
+
       const tempArr = logData
         .map((data, index, { [index - 1]: previous, [index + 1]: next }) => {
           if (next) {
@@ -54,7 +62,6 @@ function ReportByDate(props) {
         })
         .filter((data) => data);
 
-      console.log(tempArr);
       if (tempArr.length === 0) setHour(0);
       else {
         let sum = 0;
@@ -62,11 +69,19 @@ function ReportByDate(props) {
         setHour(sum);
       }
     }
-  }, [logData]);
+  }, [logData, employeeID, date]);
 
   function deleteTimeStamp(id) {
     remove(child(shopRef(shopId), `${employeeID}/log_events/${id}`));
   }
+
+  // Report date back to CSV
+  useEffect(() => {
+    console.log("csv", csvData)
+    
+    if (csvData.length !== 0)  addCsvLog(csvData, employeeID, date.toLocaleDateString("sv-SE"))
+    else addCsvLog([[employeeID, date.toLocaleDateString("sv-SE")]],employeeID, date.toLocaleDateString("sv-SE"))
+  }, [addCsvLog, csvData, employeeID, date])
 
   useEffect(() => {
     addHour(hour, position);

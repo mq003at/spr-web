@@ -2,18 +2,28 @@ import { get, onValue } from "firebase/database";
 import { Fragment, useEffect, useState } from "react";
 import { ButtonGroup, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Calendar from "react-calendar";
+import { CSVLink } from "react-csv";
 import { empRef } from "../js/firebase_init";
-import ScheduleByPerson from "./schedule-component/ScheduleByPerson";
+import { dateArr } from "../js/tool_function";
+import ScheduleByGroup from "./schedule-component/ScheduleByGroup";
 
 function Schedule() {
   const shopId = sessionStorage.getItem("shop_id");
+  const maxSchedule = new Date(Date.now() + 31 * 24 * 3600 * 1000);
 
   const [startDay, setStartDay] = useState(new Date());
-  const [endDay, setEndDay] = useState(new Date(Date.now() + 24 * 3600 * 1000));
+  const [endDay, setEndDay] = useState(maxSchedule);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
+
+  const data = [
+    ["2022-06-20 12:33", "2022-05-23 2022-06-19"],
+    ["393609", "1", "", "2022-05-23 13:59" ],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
+  ];
 
   // Date checker (in case glass breaks)
   useEffect(() => {
@@ -62,10 +72,10 @@ function Schedule() {
 
             <tr className="noBorder" id="datepick-row">
               <th>
-                <Calendar className={!showStartCalendar && "hide"} onChange={setStartDay} value={startDay} />
+                <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
               </th>
               <th>
-                <Calendar className={!showEndCalendar && "hide"} onChange={setEndDay} value={startDay} />
+                <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={startDay} maxDate={maxSchedule} />
               </th>
             </tr>
           </tbody>
@@ -78,7 +88,7 @@ function Schedule() {
             <tr>
               <td>
                 <div className="showcase-date-range">
-                  {startDay.toLocaleDateString("FI-fi")} - {endDay.toLocaleDateString("FI-fi")}
+                  <CSVLink data={data} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>{dateArr(startDay, endDay, "range")}</CSVLink>
                 </div>
               </td>
             </tr>
@@ -88,14 +98,17 @@ function Schedule() {
               <td>
                 <div className="group-list">
                   <ToggleButtonGroup className="rounded-0 mb-2 flex-wrap" variant="danger" type="checkbox" name="group-checkbox" value={chosenGroup} onChange={(group) => setChosenGroup(group)}>
-                    {groupList.length > 0 &&
+                    {groupList.length > 0 ? (
                       groupList.map((group, index) => {
                         return (
                           <ToggleButton key={`schedule-gbtn-${group.id}`} id={`schedule-${group.id}`} value={group}>
                             {group.name}
                           </ToggleButton>
                         );
-                      })}
+                      })
+                    ) : (
+                      <div>Loading database...</div>
+                    )}
                   </ToggleButtonGroup>
                 </div>
               </td>
@@ -112,7 +125,7 @@ function Schedule() {
                   </tr>
                   <tr>
                     {/* Table placement for each group*/}
-                    <ScheduleByPerson />
+                    <ScheduleByGroup groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
                   </tr>
                 </Fragment>
               );

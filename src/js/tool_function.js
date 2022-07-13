@@ -14,15 +14,42 @@ function dateHandler(date) {
   let timeStamp = year + month + day + hour + minute + second;
   let dateStamp = parseInt(year + month + day);
   let dateString = year + "-" + month + "-" + day;
+  let dateCSV = `${dateString} ${hour}:${minute}`;
 
   let obj = {
     documentStamp: documentStamp,
     timeStamp: timeStamp,
     dateStamp: dateStamp,
     dateString: dateString,
+    dateCSV: dateCSV
   };
 
   return obj;
 }
 
-export { dateHandler };
+// Function generating array from startDay to endDay
+const dateArr = (startDay, endDay, mode) => {
+  if (mode === "arr") {
+    let tempArr = [];
+    const start = new Date(startDay.getTime());
+    const end = new Date(endDay.getTime());
+    let loop = new Date(start);
+    tempArr.push(start);
+
+    while (loop < end) {
+      tempArr.push(loop);
+      const newDate = loop.setDate(loop.getDate() + 1);
+      loop = new Date(newDate);
+    }
+    return tempArr;
+  }
+  else if (mode === "range") {
+    return `${startDay.toLocaleDateString("fi-FI")} - ${endDay.toLocaleDateString("fi-FI")}`
+  } 
+  else if (mode === "csv") {
+    return `${startDay.toLocaleDateString("sv-SE")} ${endDay.toLocaleDateString("sv-SE")}`
+  }
+  else {return ""}
+}
+
+export { dateHandler, dateArr };
