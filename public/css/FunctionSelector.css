@@ -1,0 +1,25 @@
+:root {
+    --black-shadow: rgb(0 0 0 / 20%);
+    --red-initial: rgb(249 36 36 / 80%);
+    --red-light: #F92424;
+    --red-wine: #BD1D1D;
+}
+
+.function-selector {
+    padding: 2em 2em;
+    display:block;
+    text-align: center;
+}
+
+.function-selector button {
+    margin: 1em 5em;
+    background-color: var(--red-light);
+    border-color: var(--red-wine);
+    width: 10em;
+    height: 5em;
+}
+
+.function-selector button:hover {
+    background-color: var(--red-wine);
+}
+

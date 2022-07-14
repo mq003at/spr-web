@@ -8,7 +8,7 @@ import "../css/Report.css";
 import ReportByPerson from "./report-components/ReportByPerson";
 import { dateArr, dateHandler } from "../js/tool_function";
 import { CSVLink } from "react-csv";
-import sftp_config from "../js/sftp_config";
+import { data } from "jquery";
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -23,7 +23,6 @@ function Report() {
   const dateRef = useRef([""]);
   const [dataCsv, setDataCsv] = useState([]);
   const csvArr = useRef([]);
-  var SftpUpload = require('sftp-upload'), fs = require('fs');
 
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
@@ -42,8 +41,8 @@ function Report() {
       });
       temp.push([id, date, log]);
       csvArr.current = temp;
-      tempArr = csvArr.current.map((item) => item[2]);
-      tempArr.forEach((elem) => elem.forEach((x) => finalData.push(x)));
+      tempArr = csvArr.current.map(item => item[2])
+      tempArr.forEach(elem => elem.forEach(x => finalData.push(x)))
       setDataCsv([dateRef.current[0], ...finalData]);
     }
   }, []);
@@ -62,16 +61,23 @@ function Report() {
   useEffect(() => {
     const range = dateArr(startDate, endDate, "csv");
     const today = dateHandler(new Date()).dateCSV;
+    // dataRef.current = [
+    //   [today, range],
+    //   ["393609", "1", "", "2022-05-23 13:59"],
+    //   ["393609", "1", "", "2022-05-23 13:59"],
+    // ];
     dateRef.current[0] = [today, range];
   }, [startDate, endDate]);
-  useEffect(() => {
-    console.log("state", dataCsv);
-  }, [dataCsv]);
-  const handleCsvDeliver = () => {
-    sftp_config();
-  };
 
-  // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)
+  // useEffect(() => {
+  //   setDataCsv([dateRef.current[0], ...csvArr.current])
+  // }, [csvArr])
+
+  useEffect(() => {
+    console.log("state", dataCsv)
+  }, [dataCsv])
+
+  // Handling CSV
   function csvHandler() {
     TableToExcel.convert(tableRef.current, {
       name: `SPR-Report-${dateArr(startDate, endDate, "range")}.xlsx`,
@@ -181,17 +187,9 @@ function Report() {
                   <tr>
                     <th colSpan={"3"} data-exclude="true">
                       {dataCsv.length > 0 && (
-                        <div className="report-option">
-                          <Button title="Click download a preview of this report as CSV file">
-                            <CSVLink data={dataCsv} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>
-                              Export as CSV {"(+" + (dataCsv.length - 1) + " updates)"}
-                            </CSVLink>
-                          </Button>
-                          <div>{"    "}</div>
-                          <Button title="Click to deliver this report directly to Velho" onClick={handleCsvDeliver}>
-                            Send Report As CSV To Velho
-                          </Button>
-                        </div>
+                        <CSVLink data={dataCsv} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>
+                          Export as CSV {"(+" + (dataCsv.length-1) + " updates)"}.
+                        </CSVLink>
                       )}
                     </th>
                   </tr>

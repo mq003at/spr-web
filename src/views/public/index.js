@@ -1,26 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/index.css';
-import './js/firebase_init.js';
-import App from './App.js';
-import reportWebVitals from './reportWebVitals.js';
+import './js/firebase_init';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
-module.exports = function(app) {
-  app.use(
-    '/api',
-    createProxyMiddleware({
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-    })
-  );
-};
-
+// $.getScript("./js/firebase.js");
+// $.getScript("./js/firebase_init.js");
 root.render(
     <App />
 );

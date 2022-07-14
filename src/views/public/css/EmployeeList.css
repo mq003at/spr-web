@@ -1,0 +1,74 @@
+:root {
+    --black-shadow: rgb(0 0 0 / 20%);
+    --red-initial: rgb(249 36 36 / 80%);
+    --red-wine: #BD1D1D;
+}
+
+.table-area {
+    display: block;
+    position: fixed;
+    top: 3.15rem;
+    left: 75%;
+    width: 25%;
+    height: 96%;
+    box-shadow: 0 4px 8px 0 var(--black-shadow), 0 6px 20px 0 var(--red-initial);
+    text-align: center;
+    overflow-y: scroll;
+    color: var(--red-wine);
+}
+
+/* .table-area table {
+    border-collapse: collapse;
+    width: 80%;
+    color: var(--red-wine);
+    margin-left: 2.5em;
+} */
+
+.table-area .group-header {
+    border-bottom: 1px solid #ddd;
+}
+
+.table-area tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+.table-area th, td{
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: All 0.4s ease;
+    margin-top: 10px;
+}
+
+.table-area th button {
+    color: var(--red-wine);
+    font-weight: bolder;
+}
+
+.table-area.false {
+    display: none;
+}
+
+.employee-list-shop-title {
+    font-size: 1.4em;
+}
+
+.employee-list-shop-functionality {
+    font-size: 1.2em;
+}
+
+.group-head {
+    font-weight: bold;
+}
+
+.employee-list-status.in {
+    color: green;
+}
+
+#log_user td{
+    border-bottom: none;
+    text-align: left;
+}
+

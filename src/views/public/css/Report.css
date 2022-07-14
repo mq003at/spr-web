@@ -213,17 +213,6 @@
   font-weight: bold;
 }
 
-.report .report-option {
-  display: inline-flex;
-}
-.report .report-option div {
-  white-space: break-spaces;
-}
-.report .report-option a {
-  color: white;
-  text-decoration: none;
-}
-
 .modal-header {
   justify-content: center;
 }

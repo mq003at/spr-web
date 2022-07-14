@@ -1,0 +1,41 @@
+:root {
+    --grey-hair: rgb(178, 178, 178);
+}
+
+.store-database {
+    overflow-y: scroll;
+    height: 85vh
+}
+
+.store-database.false{
+    display: inline-block;
+    justify-items: center;
+    text-align: center;
+}
+
+.store-database.true{
+    display: inline-block;
+    justify-items: center;
+    text-align: center;
+    width: 75%;
+}
+
+.message-section {
+    padding: 2em 4em;
+    font-size: 1em;
+}
+
+.message-table {
+    border-spacing: 0px;
+    margin-bottom: 0px;
+}
+
+.message-data {
+    text-align: left;
+}
+
+.message{
+    width: 100%;
+    display: inline-table;
+}
+

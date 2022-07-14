@@ -1,0 +1,13 @@
+.management {
+    text-align: left;
+    display: block;
+    top: 3.15rem;
+    height: 80%;
+}
+
+.button-nav {
+    position: absolute;
+    top: 1.9%;
+    color: white;
+    left: 97.5%;
+}
