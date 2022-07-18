@@ -13,7 +13,7 @@ function FunctionSelector() {
         <Button>CSV Management</Button>
         <Button onClick={() => navigate("./schedule")}>Schedule</Button>
         <Button>Employee Management</Button>
-        <Button>Placeholder Function</Button>
+        <Button onClick={() => navigate("./extra")}>Extra Functionality</Button>
       </div>
     </div>
   );

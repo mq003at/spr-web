@@ -8,7 +8,6 @@ import "../css/Report.css";
 import ReportByPerson from "./report-components/ReportByPerson";
 import { dateArr, dateHandler } from "../js/tool_function";
 import { CSVLink } from "react-csv";
-import sftp_config from "../js/sftp_config";
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -23,7 +22,6 @@ function Report() {
   const dateRef = useRef([""]);
   const [dataCsv, setDataCsv] = useState([]);
   const csvArr = useRef([]);
-  var SftpUpload = require('sftp-upload'), fs = require('fs');
 
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
@@ -68,7 +66,6 @@ function Report() {
     console.log("state", dataCsv);
   }, [dataCsv]);
   const handleCsvDeliver = () => {
-    sftp_config();
   };
 
   // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)

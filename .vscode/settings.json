@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/40c069df-e8db-47e7-bdf8-5aadf9494288/microsoft.web/sites/subscriptions/40c069df-e8db-47e7-bdf8-5aadf9494288/resourceGroups/spr-resources/providers/Microsoft.Web/sites/spr-kirppis-demo",
+    "appService.deploySubpath": "."
+}

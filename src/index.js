@@ -9,17 +9,7 @@ import reportWebVitals from './reportWebVitals.js';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
-  app.use(
-    '/api',
-    createProxyMiddleware({
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-    })
-  );
-};
 
 root.render(
     <App />

@@ -8,6 +8,7 @@ import FunctionSelector from "./FunctionSelector";
 import Message from "./Message";
 import Report from "./Report";
 import Schedule from "./Schedule";
+import Extra from "./extra/Extra";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
@@ -27,6 +28,8 @@ function StoreDatabase(props) {
         return <Report />;
       case "schedule":
         return <Schedule />;
+      case "extra":
+        return <Extra />
       default:
         return <FunctionSelector />;
     }
