@@ -21,7 +21,7 @@ function dateHandler(date) {
     timeStamp: timeStamp,
     dateStamp: dateStamp,
     dateString: dateString,
-    dateCSV: dateCSV
+    dateCSV: dateCSV,
   };
 
   return obj;
@@ -42,14 +42,34 @@ const dateArr = (startDay, endDay, mode) => {
       loop = new Date(newDate);
     }
     return tempArr;
+  } else if (mode === "range") {
+    return `${startDay.toLocaleDateString("fi-FI")} - ${endDay.toLocaleDateString("fi-FI")}`;
+  } else if (mode === "csv") {
+    return `${startDay.toLocaleDateString("sv-SE")} ${endDay.toLocaleDateString("sv-SE")}`;
+  } else {
+    return "";
   }
-  else if (mode === "range") {
-    return `${startDay.toLocaleDateString("fi-FI")} - ${endDay.toLocaleDateString("fi-FI")}`
-  } 
-  else if (mode === "csv") {
-    return `${startDay.toLocaleDateString("sv-SE")} ${endDay.toLocaleDateString("sv-SE")}`
-  }
-  else {return ""}
-}
+};
 
-export { dateHandler, dateArr };
+/**
+ * Change name string into diffent format
+ *
+ * @function logSchRef
+ * @param {string} name - Name variable as string.
+ * @param {string} option - Convert into diffrent format: "fullname" -> LastN, FirstN becomes FirstN LastN, default -> FirstN LastN becomes LastN, FirstN
+ * @return {string} - Name with different string format.
+ */
+const nameHandler = (name, option) => {
+  switch (option) {
+    case "fullname": {
+      const data = name.replace(" ", "").split(",");
+      return `${(data[1].split(" "))[0]} ${(data[0].split(" "))[0]}`;
+    }
+    default: {
+      const data = name.split(" ");
+      return `${data[1]}, ${data[0]}`;
+    }
+  }
+};
+
+export { dateHandler, dateArr, nameHandler };

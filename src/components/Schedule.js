@@ -1,11 +1,12 @@
 import { get, onValue } from "firebase/database";
 import { Fragment, useEffect, useState } from "react";
-import { ButtonGroup, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Calendar from "react-calendar";
 import { CSVLink } from "react-csv";
 import { empRef } from "../js/firebase_init";
 import { dateArr } from "../js/tool_function";
 import ScheduleByGroup from "./schedule-component/ScheduleByGroup";
+import ScheduleUpload from "./schedule-component/ScheduleUpload";
 
 function Schedule() {
   const shopId = sessionStorage.getItem("shop_id");
@@ -17,6 +18,9 @@ function Schedule() {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
+
+  const [showScheduleUploadModal, setShowScheduleUploadModal] = useState(false);
+
 
   const data = [
     ["2022-06-20 12:33", "2022-05-23 2022-06-19"],
@@ -49,11 +53,12 @@ function Schedule() {
     });
   }, [shopId]);
 
+  
+
   // Console.log
   useEffect(() => {
-    console.log("gr", groupList);
-    console.log("chg", chosenGroup);
-  }, [chosenGroup, groupList]);
+    console.log(showScheduleUploadModal)
+  }, [showScheduleUploadModal]);
 
   return (
     <div className="schedule-function">
@@ -91,6 +96,10 @@ function Schedule() {
                   <CSVLink data={data} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>{dateArr(startDay, endDay, "range")}</CSVLink>
                 </div>
               </td>
+            </tr>
+            <tr>
+              <td><Button onClick={() => setShowScheduleUploadModal(true)}>Upload Schedule CSV file</Button></td>
+              <td><Button>Export as Excel File</Button></td>
             </tr>
           </thead>
           <tbody>
@@ -133,6 +142,7 @@ function Schedule() {
           </tbody>
         </table>
       </div>
+      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)}/>}
     </div>
   );
 }

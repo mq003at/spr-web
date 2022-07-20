@@ -65,8 +65,7 @@ function Report() {
   useEffect(() => {
     console.log("state", dataCsv);
   }, [dataCsv]);
-  const handleCsvDeliver = () => {
-  };
+
 
   // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)
   function csvHandler() {
@@ -180,13 +179,13 @@ function Report() {
                       {dataCsv.length > 0 && (
                         <div className="report-option">
                           <Button title="Click download a preview of this report as CSV file">
-                            <CSVLink data={dataCsv} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>
+                            <CSVLink data={dataCsv} separator=";" filename={`SPR-Report-${dateArr(startDate, endDate, "range")}.csv`} enclosingCharacter={``}>
                               Export as CSV {"(+" + (dataCsv.length - 1) + " updates)"}
                             </CSVLink>
                           </Button>
                           <div>{"    "}</div>
-                          <Button title="Click to deliver this report directly to Velho" onClick={handleCsvDeliver}>
-                            Send Report As CSV To Velho
+                          <Button title="Click to get the Excel version"onClick={() => csvHandler()}>
+                            Export as Excel File
                           </Button>
                         </div>
                       )}
