@@ -1,15 +1,14 @@
 import { child, get, onChildChanged, onValue } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { dbRef, employeePath, shopPath, shopRef } from "../js/firebase_init";
 import "../css/Management.css";
 import EmployeeList from "./EmployeeList";
 import StoreDatabase from "./StoreDatabase";
 import * as FaIcons from "react-icons/fa";
 
-
 function Management(props) {
-  const location = useLocation();
+  const navigate = useNavigate();
   const user = sessionStorage.getItem("user");
   const shopChosen = sessionStorage.getItem("shop_chosen");
   const shopId = sessionStorage.getItem("shop_id");
@@ -26,7 +25,7 @@ function Management(props) {
               <FaIcons.FaBars />
             </label>
           </div>
-          <StoreDatabase shopChosen={shopChosen} shopId={shopId} user={user} sidebar={sidebar}/>
+          <StoreDatabase shopChosen={shopChosen} shopId={shopId} user={user} sidebar={sidebar} />
           <EmployeeList shopChosen={shopChosen} shopId={shopId} user={user} sidebar={sidebar} />
         </div>
       );
@@ -38,6 +37,15 @@ function Management(props) {
     );
   };
 
-  return <div id="management">{checkUser()}</div>;
+  useEffect(() => {
+    if (user && shopId) {
+    } else navigate("/");
+  }, [navigate, shopId, user]);
+
+  return (
+    <div id="management">
+      {checkUser()}
+    </div>
+  );
 }
 export default Management;

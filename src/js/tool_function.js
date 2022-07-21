@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+
 // Functions handles the date
 function dateHandler(date) {
   /**
@@ -62,8 +64,12 @@ const dateArr = (startDay, endDay, mode) => {
 const nameHandler = (name, option) => {
   switch (option) {
     case "fullname": {
-      const data = name.replace(" ", "").split(",");
-      return `${(data[1].split(" "))[0]} ${(data[0].split(" "))[0]}`;
+      const data = name.split(",");
+      let firstN = data[1].split(" ");
+      let lastN = data[0].split(" ");
+      console.log(firstN, lastN)
+
+      return `${firstN[1]} ${lastN[0]}`;
     }
     default: {
       const data = name.split(" ");
@@ -72,4 +78,39 @@ const nameHandler = (name, option) => {
   }
 };
 
-export { dateHandler, dateArr, nameHandler };
+const dateHandler2 = (date, option, separator) => {
+  switch (option) {
+    case "DMY-int": {
+      if (!separator) return null;
+      else {
+        let arr = date.split(separator);
+        if (arr[0].length !== 2) arr[0] = "0" + arr[0];
+        if (arr[1].length !== 2) arr[1] = "0" + arr[1];
+        if (arr[2].length !== 4) arr[2] = "20" + arr[2];
+        return parseInt(arr[2] + arr[1] + arr[0]);
+      }
+    }
+    default: 
+      return null;
+  }
+}
+
+const getDateData = () => {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = ("0" + (date.getMonth() + 1)).slice(-2);
+  let day = ("0" + date.getDate()).slice(-2);
+  let hour = ("0" + date.getHours()).slice(-2);
+  let minute = ("0" + date.getMinutes()).slice(-2);
+  let second = ("0" + date.getSeconds()).slice(-2);
+  let documentStamp = year + month + day + hour + minute + second;
+  let dateNow = `${day}-${month}-${year}`;
+
+  let obj = {
+    documentStamp: documentStamp + "Mess",
+    date: dateNow,
+  };
+  return obj;
+};
+
+export { dateHandler, dateArr, nameHandler, dateHandler2, getDateData };

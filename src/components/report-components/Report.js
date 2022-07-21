@@ -1,12 +1,12 @@
 import { child, onValue, orderByChild, query, startAt } from "firebase/database";
 import { createRef, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
-import { empRef, shopRef } from "../js/firebase_init";
+import { empRef, shopRef } from "../../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
-import "../css/Report.css";
-import ReportByPerson from "./report-components/ReportByPerson";
-import { dateArr, dateHandler } from "../js/tool_function";
+import "../../css/Report.css";
+import ReportByPerson from "./ReportByPerson";
+import { dateArr, dateHandler } from "../../js/tool_function";
 import { CSVLink } from "react-csv";
 
 function Report() {

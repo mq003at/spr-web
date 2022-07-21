@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { convertCSVToArray } from "convert-csv-to-array";
-import { dateHandler, nameHandler } from "../../js/tool_function";
+import { dateHandler2, nameHandler } from "../../js/tool_function";
+import { addSchedule, findId } from "../../js/firebase_functions";
 
 function ScheduleUpload(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [statusText, setStatusText] = useState("Placeholder");
+
+  const uploadErr = useRef(null);
 
   function onFileUpload() {
     if (!selectedFile) setStatusText("Please put the file in the box");
@@ -16,31 +18,41 @@ function ScheduleUpload(props) {
       const reader = new FileReader();
       reader.readAsText(selectedFile, "ISO-8859-1");
       reader.onload = (e) => {
-        console.log(e.target.result);
         fileString = e.target.result.split("\n");
         fileString.shift();
         if (fileString[0].split(";").length !== 4) setStatusText("Error! Only receive 4 column: Date, Name, Login, Logout.");
         else {
           fileString.forEach((arr, index) => {
-            let data = arr.split(";");
-            let dateStamp = dateHandler(new Date(data[0])).dateStamp;
-            let employeeName = nameHandler(data[1], "fullname");
-            let inStamp = data[2].replace(":", "");
-            let outStamp = data[3].replace("\r", "").replace(":", "");
-            if (inStamp.length === 3) inStamp = "0" + inStamp
-            if (outStamp.length === 3) outStamp = "0" + inStamp
-            addScheduleStamp(dateStamp, employeeName, inStamp, outStamp)
+            if (arr) {
+              let data = arr.split(";");
+              let dateStamp = dateHandler2(data[0], "DMY-int", ".");
+              let employeeName = nameHandler(data[1], "fullname");
+              let inStamp = data[2].replace(":", "");
+              let outStamp = data[3].replace("\r", "").replace(":", "");
+              if (inStamp.length === 3) inStamp = "0" + inStamp;
+              if (outStamp.length === 3) outStamp = "0" + inStamp;
+              inStamp = dateStamp + inStamp;
+              outStamp = dateStamp + outStamp;
+              addScheduleStamp(dateStamp, employeeName, inStamp, outStamp);
+            }
           });
-          setStatusText("File uploaded.");
-        //   setTimeout(props.onHide, 5000);
+          if (uploadErr.current) setStatusText(uploadErr.current);
+          else {
+            setStatusText("File uploaded. You may close this upload pop-up now.");
+            setTimeout(props.onHide, 5000);
+          }
         }
       };
     }
   }
 
   function addScheduleStamp(dateStamp, employeeName, inStamp, outStamp) {
-    console.log(dateStamp, employeeName, inStamp, outStamp);
+    let id = findId(employeeName);
+    let result = addSchedule(id, dateStamp, inStamp + "00", outStamp + "00");
+    if (result) uploadErr.current = result;
   }
+
+  useEffect(() => {}, []);
 
   return (
     <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>

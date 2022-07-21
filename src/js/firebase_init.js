@@ -34,5 +34,5 @@ const messRef = (shopId) => child(dbRef, "shop_data/" + shopId + "/message_data/
 * @param {string} empId - Id of the employee.
 * @return {string} - Path to use on firebase read/write functions.
 */
-const logSchRef = (shopId, empId) => child(dbRef, `shop_data/${shopId}/authorized_id/${empId}/log_schedule`)
+const logSchRef = (shopId, empId) => child(dbRef, `shop_schedule/${shopId}/authorized_id/${empId}/log_schedules`)
 export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef };

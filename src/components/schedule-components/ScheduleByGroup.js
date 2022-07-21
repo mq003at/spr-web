@@ -1,7 +1,7 @@
 import { child, get, onValue, orderByChild, query } from "firebase/database";
 import { useEffect, useState } from "react";
 import { employeePath, empRef, logSchRef } from "../../js/firebase_init";
-import { dateArr } from "../../js/tool_function";
+import { dateArr, dateHandler } from "../../js/tool_function";
 import ScheduleByPerson from "./ScheduleByPerson";
 
 function ScheduleByGroup(props) {
@@ -51,7 +51,7 @@ function ScheduleByGroup(props) {
   }, [dayArr]);
 
   return (
-    <td>
+    <td colSpan={"2"}>
       {empList.length === 0 ? (
         <div>There is no employee in this group to get the schedule from.</div>
       ) : (
@@ -71,7 +71,7 @@ function ScheduleByGroup(props) {
                 dayArr.map((day, index) => (
                     <tr key={`schedule-day-${day.toLocaleDateString("sv-SE")}`}>
                         <td>{day.toLocaleDateString("FI-fi")}</td>
-                        {empList.map(emp => <td key={`schedule-cell-${emp.id}`}><ScheduleByPerson /></td>)}
+                        {empList.map(emp => <td key={`schedule-cell-${emp.id}`}><ScheduleByPerson id={emp.id} name={emp.name} date={dateHandler(day).dateStamp}/></td>)}
                     </tr>
                 ))
              )

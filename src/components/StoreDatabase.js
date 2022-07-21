@@ -5,9 +5,8 @@ import { useLocation } from "react-router-dom";
 import "../css/StoreDatabase.css";
 import { dbRef, messRef } from "../js/firebase_init";
 import FunctionSelector from "./FunctionSelector";
-import Message from "./Message";
-import Report from "./Report";
-import Schedule from "./Schedule";
+import Report from "./report-components/Report";
+import Schedule from "./schedule-components/Schedule";
 import Extra from "./extra/Extra";
 
 function StoreDatabase(props) {
@@ -22,8 +21,6 @@ function StoreDatabase(props) {
   // Extra functions
   const goToFunction = (chosenFunction) => {
     switch (chosenFunction) {
-      case "message":
-        return <Message />;
       case "report":
         return <Report />;
       case "schedule":

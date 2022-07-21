@@ -1,12 +1,13 @@
-import { get, onValue } from "firebase/database";
+import { onValue } from "firebase/database";
 import { Fragment, useEffect, useState } from "react";
 import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Calendar from "react-calendar";
 import { CSVLink } from "react-csv";
-import { empRef } from "../js/firebase_init";
-import { dateArr } from "../js/tool_function";
-import ScheduleByGroup from "./schedule-component/ScheduleByGroup";
-import ScheduleUpload from "./schedule-component/ScheduleUpload";
+import { empRef } from "../../js/firebase_init";
+import { dateArr } from "../../js/tool_function";
+import ScheduleByGroup from "./ScheduleByGroup";
+import ScheduleUpload from "./ScheduleUpload";
+
 
 function Schedule() {
   const shopId = sessionStorage.getItem("shop_id");
@@ -57,8 +58,7 @@ function Schedule() {
 
   // Console.log
   useEffect(() => {
-    console.log(showScheduleUploadModal)
-  }, [showScheduleUploadModal]);
+  }, []);
 
   return (
     <div className="schedule-function">
@@ -91,7 +91,7 @@ function Schedule() {
         <table className="schedule-table">
           <thead>
             <tr>
-              <td>
+              <td colSpan={"2"}>
                 <div className="showcase-date-range">
                   <CSVLink data={data} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>{dateArr(startDay, endDay, "range")}</CSVLink>
                 </div>
@@ -104,7 +104,7 @@ function Schedule() {
           </thead>
           <tbody>
             <tr>
-              <td>
+              <td colSpan={"2"}>
                 <div className="group-list">
                   <ToggleButtonGroup className="rounded-0 mb-2 flex-wrap" variant="danger" type="checkbox" name="group-checkbox" value={chosenGroup} onChange={(group) => setChosenGroup(group)}>
                     {groupList.length > 0 ? (
@@ -128,7 +128,7 @@ function Schedule() {
               return (
                 <Fragment key={`schedule-gnm-${group.id}`}>
                   <tr>
-                    <th>
+                    <th colSpan={"2"}>
                       <div className="group-name">{group.name}</div>
                     </th>
                   </tr>
