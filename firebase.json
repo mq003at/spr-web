@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "build",
+    "site": "spr-kirpis",
     "ignore": [
       "firebase.json",
       "**/.*",

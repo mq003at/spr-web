@@ -26,7 +26,7 @@ function ScheduleUpload(props) {
             if (arr) {
               let data = arr.split(";");
               let dateStamp = dateHandler2(data[0], "DMY-int", ".");
-              let employeeName = nameHandler(data[1], "fullname");
+              let employeeName = nameHandler(data[1]);
               let inStamp = data[2].replace(":", "");
               let outStamp = data[3].replace("\r", "").replace(":", "");
               if (inStamp.length === 3) inStamp = "0" + inStamp;
@@ -47,6 +47,7 @@ function ScheduleUpload(props) {
   }
 
   function addScheduleStamp(dateStamp, employeeName, inStamp, outStamp) {
+    console.log("schedule", dateStamp, employeeName, inStamp, outStamp)
     let id = findId(employeeName);
     let result = addSchedule(id, dateStamp, inStamp + "00", outStamp + "00");
     if (result) uploadErr.current = result;

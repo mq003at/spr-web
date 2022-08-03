@@ -5,30 +5,34 @@ import ErrorPage from "./components/ErrorPage";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { Helmet } from "react-helmet";
+import { createContext, useState } from "react";
+import {User} from "./components/User";
 
 
 function App() {
-
   return (
-    <div className="App">
-      <Helmet>
-        <title>SPR-Kirppis</title>
-        <meta name="description" content="Employee Management" />
-      </Helmet>
-      <Router>
-        <Header navigation=""></Header>
-        <Routes>
-          <Route path="/" element={<StoreSelectable />}></Route>
-          <Route path="/management" element={<Management />}></Route>
-          <Route path="/management/message" element={<Management />}></Route>
-          <Route path="/management/report" element={<Management />}></Route>
-          <Route path="/management/schedule" element={<Management />}></Route>
-          <Route path="/management/extra" element={<Management />}></Route>
-          <Route path="*" element={<ErrorPage />}></Route>
-        </Routes>
-        <Footer></Footer>
-      </Router>
-    </div>
+    <User>
+      <div className="App">
+        <Helmet>
+          <title>SPR-Kirppis</title>
+          <meta name="description" content="Employee Management" />
+        </Helmet>
+        <Router>
+          <Header navigation=""></Header>
+          <Routes>
+            <Route path="/" element={<StoreSelectable />}></Route>
+            <Route path="/management" element={<Management />}></Route>
+            <Route path="/management/message" element={<Management />}></Route>
+            <Route path="/management/report" element={<Management />}></Route>
+            <Route path="/management/schedule" element={<Management />}></Route>
+            <Route path="/management/extra" element={<Management />}></Route>
+            <Route path="/management/employees" element={<Management />}></Route>
+            <Route path="*" element={<ErrorPage />}></Route>
+          </Routes>
+          <Footer></Footer>
+        </Router>
+      </div>
+    </User>
   );
 }
 

@@ -1,0 +1,51 @@
+.employees.showcase-section {
+    display: inline-flex;
+    text-align: center;
+}
+
+#employees-table {
+    text-align: center;
+    margin: 4em 3em 0em 3em;
+    background: var(--grey);
+    border: 1px solid var(--yellow-grey);
+}
+
+.employees .btn.btn-primary{
+    border-top-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+}
+
+button.employees.group-option {
+    background: none;
+	color: blue;
+	border: none;
+	padding: 0;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-right: 5em;
+    margin-left: 5em;
+}
+
+small.status{
+    color: red;
+}
+
+.employees.option{
+    display: inline-flex;
+}
+
+.employees.group-name:hover{
+    color: red;
+    text-decoration: underline line-through;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.form-select {
+    text-align: center;
+}
+
+input.employees.form-control {
+    text-align: center;
+}

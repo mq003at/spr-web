@@ -1,11 +1,11 @@
 import { Button, Modal } from "react-bootstrap";
 import { useFormik } from "formik";
-import { get, child, set } from "firebase/database";
+import { child, set } from "firebase/database";
 import { messRef } from "../../js/firebase_init";
 import { getDateData } from "../../js/tool_function";
 
 function MessageModalForEmployee(props) {
-  const shopId = sessionStorage.getItem("shop_id");
+  const shopId = props.shopId;
 
   const formik = useFormik({
     initialValues: {
@@ -26,7 +26,7 @@ function MessageModalForEmployee(props) {
     });
   }
   return (
-    <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal className="inv" {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">Send messages</Modal.Title>
       </Modal.Header>

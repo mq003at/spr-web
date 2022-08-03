@@ -1,12 +1,12 @@
-import { child, get, onValue, orderByChild, query } from "firebase/database";
-import { useEffect, useState } from "react";
-import { employeePath, empRef, logSchRef } from "../../js/firebase_init";
+import { child, onValue } from "firebase/database";
+import { Fragment, useEffect, useState } from "react";
+import { empRef } from "../../js/firebase_init";
 import { dateArr, dateHandler } from "../../js/tool_function";
 import ScheduleByPerson from "./ScheduleByPerson";
 
 function ScheduleByGroup(props) {
   const groupId = props.groupId;
-  const shopId = sessionStorage.getItem("shop_id");
+  const shopId = props.shopId;
   const startDay = props.startDay;
   const endDay = props.endDay;
 
@@ -15,8 +15,8 @@ function ScheduleByGroup(props) {
 
   // Get days
   useEffect(() => {
-     setDayArr(dateArr(startDay, endDay, "arr"))
-  }, [startDay, endDay])
+    setDayArr(dateArr(startDay, endDay, "arr"));
+  }, [startDay, endDay]);
 
   // Get list of employees
   useEffect(() => {
@@ -51,35 +51,46 @@ function ScheduleByGroup(props) {
   }, [dayArr]);
 
   return (
-    <td colSpan={"2"}>
-      {empList.length === 0 ? (
-        <div>There is no employee in this group to get the schedule from.</div>
-      ) : (
-        <table>
-          {/* For each  */}
-          <thead>
-            <tr>
-              <td>
-              </td>
-              {empList.map(emp => <td key={`schedule-head-${emp.id}`}>{emp.name}</td>)}
-            </tr>
-          </thead>
-          <tbody>
-            {dayArr.length === 0
-             ? <div>Loading database......</div>
-             : (
-                dayArr.map((day, index) => (
-                    <tr key={`schedule-day-${day.toLocaleDateString("sv-SE")}`}>
-                        <td>{day.toLocaleDateString("FI-fi")}</td>
-                        {empList.map(emp => <td key={`schedule-cell-${emp.id}`}><ScheduleByPerson id={emp.id} name={emp.name} date={dateHandler(day).dateStamp}/></td>)}
+    <tr>
+      <td colSpan={"2"} className="schedule cell-table">
+        <div className="schedule wrapper cell-table">
+          <div className="schedule grid-wrapper cell-table">
+            <div className="table-responsive cell-table pl-3 pr-3">
+              {empList.length === 0 ? (
+                <div>There is no employee in this group to get the schedule from.</div>
+              ) : (
+                <table className="schedule in-cell-table">
+                  <thead>
+                    <tr>
+                      <th>{""}</th>
+                      {empList.map((emp) => (
+                        <th key={`schedule-head-${emp.id}`}>{emp.name}</th>
+                      ))}
                     </tr>
-                ))
-             )
-            }
-          </tbody>
-        </table>
-      )}
-    </td>
+                  </thead>
+                  <tbody>
+                    {dayArr.length === 0 ? (
+                      <td>Loading database......</td>
+                    ) : (
+                      dayArr.map((day, index) => (
+                        <tr key={`schedule-day-${day.toLocaleDateString("sv-SE")}`}>
+                          <td>{day.toLocaleDateString("FI-fi")}</td>
+                          {empList.map((emp) => (
+                            <td key={`schedule-cell-${emp.id}`}>
+                              <ScheduleByPerson shopId={shopId} id={emp.id} name={emp.name} date={dateHandler(day).dateStamp} />
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
   );
 }
 

@@ -1,12 +1,13 @@
 import { onValue } from "firebase/database";
 import { Fragment, useEffect, useState } from "react";
-import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Calendar from "react-calendar";
 import { CSVLink } from "react-csv";
 import { empRef } from "../../js/firebase_init";
 import { dateArr } from "../../js/tool_function";
 import ScheduleByGroup from "./ScheduleByGroup";
 import ScheduleUpload from "./ScheduleUpload";
+import "../../css/Schedule.css"
 
 
 function Schedule() {
@@ -58,11 +59,12 @@ function Schedule() {
 
   // Console.log
   useEffect(() => {
-  }, []);
+    console.log(shopId)
+  }, [shopId]);
 
   return (
     <div className="schedule-function">
-      <div className="schedule-title">Schedule</div>
+      <div className="schedule title">Schedule</div>
       <div className="calendar">
         <table border={"0"} align={"center"} className="calendar">
           <tbody>
@@ -87,13 +89,13 @@ function Schedule() {
         </table>
       </div>
       <hr></hr>
-      <div className="schedule-showcase">
-        <table className="schedule-table">
+      <div className="schedule showcase-section">
+        <table className="schedule showcase" id="schedule-table">
           <thead>
             <tr>
               <td colSpan={"2"}>
-                <div className="showcase-date-range">
-                  <CSVLink data={data} separator=";" filename={"my-file.csv"} enclosingCharacter={``}>{dateArr(startDay, endDay, "range")}</CSVLink>
+                <div className="schedule date-range">
+                  {dateArr(startDay, endDay, "range")}
                 </div>
               </td>
             </tr>
@@ -132,17 +134,15 @@ function Schedule() {
                       <div className="group-name">{group.name}</div>
                     </th>
                   </tr>
-                  <tr>
                     {/* Table placement for each group*/}
-                    <ScheduleByGroup groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
-                  </tr>
+                    <ScheduleByGroup shopId={shopId} groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
                 </Fragment>
               );
             })}
           </tbody>
         </table>
       </div>
-      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)}/>}
+      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)} shopId={shopId}/>}
     </div>
   );
 }

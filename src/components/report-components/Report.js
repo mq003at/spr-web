@@ -1,7 +1,7 @@
-import { child, onValue, orderByChild, query, startAt } from "firebase/database";
-import { createRef, Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { child, onValue} from "firebase/database";
+import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
-import { empRef, shopRef } from "../../js/firebase_init";
+import { empRef } from "../../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
@@ -22,10 +22,9 @@ function Report() {
   const dateRef = useRef([""]);
   const [dataCsv, setDataCsv] = useState([]);
   const csvArr = useRef([]);
-
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
-
+  
   // Function handling CSV
   const addCsvLog = useCallback((log, id, date) => {
     let tempArr = [];
@@ -116,7 +115,7 @@ function Report() {
   return (
     <div className="report">
       <div className="date-picker-section">
-        <div className="report-title">REPORT</div>
+        <div className="report title">REPORT</div>
         <table border={"0"} align={"center"}>
           <tbody>
             <tr className="noBorder">
@@ -168,14 +167,14 @@ function Report() {
               <table className="report report-showcase export-report" id="export-report" ref={tableRef} data-cols-width="20,35">
                 <thead>
                   <tr>
-                    <th colSpan={"3"} data-a-h="center" data-f-bold="true">
+                    <th colSpan={"4"} data-a-h="center" data-f-bold="true">
                       <button className="date-range" title="Click me to export the report to Excel file" onClick={() => csvHandler()}>
                         {dateArr(startDate, endDate, "range")}
                       </button>
                     </th>
                   </tr>
                   <tr>
-                    <th colSpan={"3"} data-exclude="true">
+                    <th colSpan={"4"} data-exclude="true">
                       {dataCsv.length > 0 && (
                         <div className="report-option">
                           <Button title="Click download a preview of this report as CSV file">
@@ -192,7 +191,7 @@ function Report() {
                     </th>
                   </tr>
                   <tr data-exclude="true">
-                    <th colSpan={"3"}>
+                    <th colSpan={"4"}>
                       <ButtonGroup className="mb-2 flex-wrap">
                         {groupList.map((group) => {
                           return (
@@ -206,7 +205,7 @@ function Report() {
                   </tr>
                   {chosenGroup.length !== 0 && (
                     <tr>
-                      <th colSpan={"3"} data-a-h="center" data-f-bold="true">
+                      <th colSpan={"4"} data-a-h="center" data-f-bold="true">
                         {chosenGroup[1]}
                       </th>
                     </tr>
@@ -216,11 +215,11 @@ function Report() {
                   empDataArr.map((data, index) => (
                     <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                       <tr className="report table-section table-row">
-                        <td className="report table-section emp-name" colSpan={"3"} data-f-bold={true}>
+                        <td className="report table-section emp-name" colSpan={"4"} data-f-bold={true}>
                           <span>-- {data.name} --</span>
                         </td>
                       </tr>
-                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} />
+                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} />
                       <tr></tr>
                     </tbody>
                   ))}

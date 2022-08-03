@@ -8,6 +8,7 @@ import FunctionSelector from "./FunctionSelector";
 import Report from "./report-components/Report";
 import Schedule from "./schedule-components/Schedule";
 import Extra from "./extra/Extra";
+import EmployeeManagement from "./employee-management/EmployeeManagement";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
@@ -16,7 +17,8 @@ function StoreDatabase(props) {
   const location = useLocation();
 
   const sidebar = props.sidebar;
-  const shopId = props.shopId;
+  const user = sessionStorage.getItem("shop_user");
+  const shopId = sessionStorage.getItem("shop_id");
 
   // Extra functions
   const goToFunction = (chosenFunction) => {
@@ -26,9 +28,11 @@ function StoreDatabase(props) {
       case "schedule":
         return <Schedule />;
       case "extra":
-        return <Extra />
+        return <Extra />;
+      case "employees":
+        return <EmployeeManagement />
       default:
-        return <FunctionSelector />;
+        return <FunctionSelector user={user} shopId={shopId} />;
     }
   };
 
@@ -56,7 +60,7 @@ function StoreDatabase(props) {
   }, [location]);
 
   return (
-    <div className={"store-database " + sidebar}>
+    <div className={"store-database " + sidebar + " inv"}>
       <div className="message-section">
         {showMessage && (
           <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>

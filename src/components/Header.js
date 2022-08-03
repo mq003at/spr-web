@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import * as FaIcons from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Header.css";
 
 function Header({ sidebar, setSidebar }) {

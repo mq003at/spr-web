@@ -1,9 +1,10 @@
 import { child, onValue } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { logSchRef } from "../../js/firebase_init";
+import { UserContext } from "../User";
 
 function ScheduleByPerson(props) {
-  const shopId = sessionStorage.getItem("shop_id");
+  const shopId = props.shopId;  
   const id = props.id;
   const dateStamp = props.date;
 

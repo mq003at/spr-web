@@ -1,8 +1,7 @@
 import { child, equalTo, onValue, orderByChild, query, set } from "firebase/database";
 import * as fb from "./firebase_init";
 
-// ID generation
-const shopId = sessionStorage.getItem("shop_id");
+const shopId = sessionStorage.getItem("shop_id")
 
 /**
  * Cache employeeList into sessionStorage as JSON String. Use JSON.paarse(sessionStorage.getItem("cache_emp_list")) to retrieve employeeList. The cache will be removed after 5 seconds.
@@ -40,6 +39,7 @@ const findId = (name) => {
 
   if (!sEmpList) empList = cacheEmployeeList();
   else empList = JSON.parse(sEmpList);
+  console.log(empList, "emp")
 
   Object.keys(empList).forEach((groupID) => {
     const qName = query(child(fb.empRef(shopId), `${groupID}/employees`), orderByChild("name"), equalTo(name));
@@ -91,6 +91,7 @@ const addSchedule = (id, dateStamp, inStamp, outStamp, isOvertime) => {
 
   return null;
 };
+
 
 
 export { addSchedule, findId };

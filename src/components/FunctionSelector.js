@@ -6,15 +6,16 @@ import MessageModalForEmployee from "./message-components/MessageModalForEmploye
 import MessageModalForEmployer from "./message-components/MessageModalForEmployer";
 
 
-function FunctionSelector() {
+function FunctionSelector(props) {
   const navigate = useNavigate();
 
-  const user = sessionStorage.getItem("user");
+  const user = props.user;
+  const shopId = props.shopId;
   const [addMessShow, setAddMessShow] = useState(false);
 
   return (
     <div className="function-selector">
-      {user === "employer" ? (
+      {user === "manager" ? (
         <div className="button-wrap">
           <Button onClick={() => setAddMessShow(true)}>Message</Button>
           <Button title="See employee's login and logout time." onClick={() => navigate("./report")}>
@@ -24,9 +25,9 @@ function FunctionSelector() {
           <Button title="Employee's work schedule" onClick={() => navigate("./schedule")}>
             Schedule
           </Button>
-          <Button title="Add more people to the shop, or change their group, etc.">Employee Management</Button>
+          <Button title="Add more people to the shop, or change their group, etc." onClick={() => navigate("./employees")}>Employee Management</Button>
           <Button onClick={() => navigate("./extra")}>Extra Functionality</Button>
-          {addMessShow && <MessageModalForEmployer show={addMessShow} onHide={() => setAddMessShow(false)} /> }
+          {addMessShow && <MessageModalForEmployer show={addMessShow} onHide={() => setAddMessShow(false)} shopId={shopId}/> }
         </div>
       ) : (
         <div className="button-wrap">
@@ -35,7 +36,7 @@ function FunctionSelector() {
             Schedule
           </Button>
           <Button onClick={() => navigate("./extra")}>Extra Functionality</Button>
-          { addMessShow && <MessageModalForEmployee show={addMessShow} onHide={() => setAddMessShow(false)} />}
+          { addMessShow && <MessageModalForEmployee show={addMessShow} onHide={() => setAddMessShow(false)} shopId={shopId}/>}
         </div>
       )}
     </div>

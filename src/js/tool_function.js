@@ -72,8 +72,8 @@ const nameHandler = (name, option) => {
       return `${firstN[1]} ${lastN[0]}`;
     }
     default: {
-      const data = name.split(" ");
-      return `${data[1]}, ${data[0]}`;
+      const data = name.split(",");
+      return `${data[1]} ${data[0]}`;
     }
   }
 };
@@ -88,6 +88,32 @@ const dateHandler2 = (date, option, separator) => {
         if (arr[1].length !== 2) arr[1] = "0" + arr[1];
         if (arr[2].length !== 4) arr[2] = "20" + arr[2];
         return parseInt(arr[2] + arr[1] + arr[0]);
+      }
+    }
+    case "str-HM": {
+      if (!date && !separator) return null;
+      else {
+        let time = date.substring(8,10) + separator + date.substring(10,12);
+        return time;
+      }
+    }
+    case "time-int": {
+      if (!date) return null;
+      else {
+        let hour = parseInt(date.substring(8,10)) 
+        let minute = parseInt(date.substring(10,12));
+        let second = parseInt(date.substring(12,14));
+
+        return second + minute*60 + hour*3600;
+      }
+    }
+    case "HM-int": {
+      if (separator) {
+        date = date.replace(separator, "");
+        let hour = parseInt(date.substring(0,2));
+        let minute = parseInt(date.substring(2,4)) 
+
+        return hour * 60 + minute;
       }
     }
     default: 

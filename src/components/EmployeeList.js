@@ -123,7 +123,6 @@ function EmployeeList(props) {
 
   const handleInOut = (id, direction) => {
     let today = getDateData();
-    // console.log("DateStamp: " + time)
     logInOrOut(shopId, id, direction, today);
   };
 
@@ -148,8 +147,8 @@ function EmployeeList(props) {
   }, []);
 
   return (
-    <div className="sidebar" overflow-y="scroll">
-      <div className={"table-area " + sidebar}>
+    <div className="sidebar inv" overflow-y="scroll">
+      <div className={"table-area " + sidebar + " inv"}>
         <table id="intro-table" align="center">
           <tbody id="list-opener">
             <tr>
@@ -214,4 +213,5 @@ function EmployeeList(props) {
     </div>
   );
 }
+
 export default EmployeeList;

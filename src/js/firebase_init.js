@@ -35,4 +35,14 @@ const messRef = (shopId) => child(dbRef, "shop_data/" + shopId + "/message_data/
 * @return {string} - Path to use on firebase read/write functions.
 */
 const logSchRef = (shopId, empId) => child(dbRef, `shop_schedule/${shopId}/authorized_id/${empId}/log_schedules`)
-export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef };
+
+/**
+* Generate firebase path to get the working status requirement from one employee
+*
+* @function statusRef
+* @param {string} shopId - Id of current SPR store.
+* @param {string} empId - Id of the employee.
+* @return {string} - Path to show current overtime status.
+*/
+const statusRef = (shopId, empId) => child(dbRef, `shop_schedule/${shopId}/authorized_id/${empId}/current_status`)
+export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef, statusRef };

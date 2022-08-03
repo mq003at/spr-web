@@ -1,0 +1,94 @@
+.schedule.showcase-section {
+  display: inline-flex;
+  text-align: center;
+}
+
+#schedule-table {
+  text-align: center;
+  margin: 4em 3em 0em 3em;
+  background: var(--grey);
+  border: 1px solid var(--yellow-grey);
+}
+
+.schedule.cell-table::-webkit-scrollbar{
+  background: none;
+  width: 90% !important;
+}
+.schedule.cell-table{
+  width: 90vw !important;
+  overflow-x: auto;
+  background: none
+}
+
+table.schedule.in-cell-table::-webkit-scrollbar {
+    width: 90% !important;
+}
+
+
+
+
+/* .scrollable-nav .navbar-item {
+  display: inline-block;
+} */
+
+/* .scrollable-nav::-webkit-scrollbar:horizontal {
+  height: 11px;
+}
+
+.scrollable-nav::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid green;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.scrollable-nav::-webkit-scrollbar {
+  -webkit-appearance: none;
+} */
+
+.schedule.in-cell-table tbody {
+  display: table-row-group;
+  width: 100%;
+}
+
+.schedule.in-cell-table th {
+  min-width: 8em;
+}
+
+.schedule .btn.btn-primary {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+
+button.schedule.group-option {
+  background: none;
+  color: blue;
+  border: none;
+  padding: 0;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-right: 5em;
+  margin-left: 5em;
+}
+
+small.status {
+  color: red;
+}
+
+.schedule.option {
+  display: inline-flex;
+}
+
+.schedule.group-name:hover {
+  color: red;
+  text-decoration: underline line-through;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.form-select {
+  text-align: center;
+}
+
+input.schedule.form-control {
+  text-align: center;
+}
