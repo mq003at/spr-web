@@ -28,10 +28,10 @@ function ScheduleForReport(props) {
 
         setData(inTime + " - " + outTime)
 
-        addSchedule(1, inTime, outTime, totalHour, position);
+        addSchedule(1, inTime, outTime, totalHour, isOvertime, position);
       } else return (0, 0, 0, 0, 0)
     });
-  }, [date, id, shopId, addSchedule, position]);
+  }, [date, id, shopId, addSchedule, isOvertime, position]);
 
   return (<div title={isOvertime ? "Work overtime" : "Not overtime"}>{data}</div>)
 }

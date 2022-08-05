@@ -1,17 +1,16 @@
 import "../css/StoreSelectable.css";
 import { dbRef } from "../js/firebase_init";
 import { child, get, set } from "firebase/database";
-import { createRef, useContext, useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import User, { UserContext } from "./User";
 import { Button } from "react-bootstrap";
 
 function StoreSelectable() {
   let navigate = useNavigate();
   const [count, setCount] = useState([]);
   const inputPinRef = createRef();
-  const context = useContext(UserContext);
+  const shopId = sessionStorage.getItem("shopId");
 
   const formik = useFormik({
     initialValues: {
@@ -58,19 +57,16 @@ function StoreSelectable() {
   };
 
   useEffect(() => {
-    if (context.shopId === "") {
+    if (!shopId) {
       getStore();
       inputPinRef.current.focus();
     } else {
       navigate("/management");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
+  }, []);
 
 
-
-  useEffect(() => {
-  }, [context]);
 
   return (
     

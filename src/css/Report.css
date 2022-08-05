@@ -181,9 +181,14 @@
   font-weight: bold;
 }
 
+.report.check-status.false{
+  color: black;
+  font-weight: initial;
+}
 .report.check-status.true{
   color: red;
   font-weight: bold;
+
 }
 
 .report.table-section.time-stamp-cell label {
@@ -199,6 +204,10 @@
 .report.table-section.total-cell {
   text-align: center;
   color: #d10000;
+}
+.report.group-total {
+  color: #d10000;
+  font-weight: bold;
 }
 
 .report.table-section.date-cell {

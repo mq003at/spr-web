@@ -26,7 +26,7 @@ function ScheduleUpload(props) {
             if (arr) {
               let data = arr.split(";");
               let dateStamp = dateHandler2(data[0], "DMY-int", ".");
-              let employeeName = nameHandler(data[1]);
+              let employeeName = nameHandler(data[1]).substring(1);
               let inStamp = data[2].replace(":", "");
               let outStamp = data[3].replace("\r", "").replace(":", "");
               if (inStamp.length === 3) inStamp = "0" + inStamp;

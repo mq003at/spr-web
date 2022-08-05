@@ -115,10 +115,26 @@ const dateHandler2 = (date, option, separator) => {
 
         return hour * 60 + minute;
       }
+      else return null;
     }
+    case "H:M-num": {
+      if (separator) {
+        date = date.split(separator);
+        const hour = parseInt(date[0]);
+        const minute = parseInt(date[1])
+        return [hour, minute , hour*60+minute]
+      } else return null;
+    } 
     default: 
       return null;
   }
+}
+
+const numToString = (num) => {
+  if (!isNaN(num)) {
+    if (num < 10) return "0"+num;
+    else return ""+num;
+  } else return "NaN";
 }
 
 const getDateData = () => {
@@ -139,4 +155,4 @@ const getDateData = () => {
   return obj;
 };
 
-export { dateHandler, dateArr, nameHandler, dateHandler2, getDateData };
+export { dateHandler, dateArr, nameHandler, dateHandler2, getDateData, numToString };

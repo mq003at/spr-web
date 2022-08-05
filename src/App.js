@@ -5,13 +5,9 @@ import ErrorPage from "./components/ErrorPage";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { Helmet } from "react-helmet";
-import { createContext, useState } from "react";
-import {User} from "./components/User";
-
 
 function App() {
   return (
-    <User>
       <div className="App">
         <Helmet>
           <title>SPR-Kirppis</title>
@@ -27,12 +23,12 @@ function App() {
             <Route path="/management/schedule" element={<Management />}></Route>
             <Route path="/management/extra" element={<Management />}></Route>
             <Route path="/management/employees" element={<Management />}></Route>
+            <Route path="/management/workday" element={<Management />}></Route>
             <Route path="*" element={<ErrorPage />}></Route>
           </Routes>
           <Footer></Footer>
         </Router>
       </div>
-    </User>
   );
 }
 

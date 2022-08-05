@@ -10,43 +10,31 @@
   border: 1px solid var(--yellow-grey);
 }
 
-.schedule.cell-table::-webkit-scrollbar{
+.schedule.cell-table::-webkit-scrollbar {
   background: none;
-  width: 90% !important;
+  width: 90%;
 }
-.schedule.cell-table{
-  width: 90vw !important;
+.schedule.cell-table {
+  width: 90vw;
   overflow-x: auto;
-  background: none
+  background: none;
 }
 
 table.schedule.in-cell-table::-webkit-scrollbar {
-    width: 90% !important;
+  width: 90%;
 }
-
-
-
-
-/* .scrollable-nav .navbar-item {
-  display: inline-block;
-} */
-
-/* .scrollable-nav::-webkit-scrollbar:horizontal {
-  height: 11px;
-}
-
-.scrollable-nav::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  border: 2px solid green;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.scrollable-nav::-webkit-scrollbar {
-  -webkit-appearance: none;
-} */
 
 .schedule.in-cell-table tbody {
   display: table-row-group;
   width: 100%;
+}
+
+.schedule.wrapper {
+  transform: rotateX(180deg);
+  overflow-x: auto;
+}
+.schedule.in-cell-table{
+  transform: rotateX(180deg);
 }
 
 .schedule.in-cell-table th {
@@ -54,9 +42,7 @@ table.schedule.in-cell-table::-webkit-scrollbar {
 }
 
 .schedule .btn.btn-primary {
-  border-top-right-radius: 0px !important;
-  border-top-left-radius: 0px !important;
-  border-bottom-left-radius: 0px !important;
+  border-radius: 0px;
 }
 
 button.schedule.group-option {

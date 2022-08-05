@@ -1,5 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { dateHandler, dateArr, dateHandler2 } from "../../js/tool_function";
 import ReportByDate from "./ReportByDate";
 import { child, equalTo, orderByChild, query, remove, get, set } from "firebase/database";
@@ -18,14 +18,10 @@ function ReportByPerson(props) {
   const [dateRange, setDateRange] = useState([]);
   const [hourArr, setHourArr] = useState([]);
   const [totalHour, setTotalHour] = useState();
+  const [xHourArr, setXHourArr] = useState([]);
+  const [totalXHour, setTotalXHour] = useState(0);
   const [scheArr, setScheArr] = useState([]);
   const [totalSchedule, setTotalSchedule] = useState(0);
-
-  const [showDayModal, setShowDayModal] = useState(false);
-  const [showAddRecordToDayModal, setAddRecordToDayModal] = useState(false);
-  const [dataForModal, setDataForModal] = useState([]);
-  const [addRecordStatus, setAddRecordStatus] = useState("");
-  const [personCache, setPersonCache] = useState();
 
   // Listening to total working hours done.
   const addHour = useCallback((hour, index) => {
@@ -34,14 +30,26 @@ function ReportByPerson(props) {
       if (hourArr.length > 0) {
         temp[index] = hour;
       }
+      console.log("temp2", temp)
       return temp;
     });
   }, []);
 
   const addSchedule = useCallback((hour, index) => {
+    console.log("receive sched", hour)
     setScheArr((scheArr) => {
       let temp = [...scheArr];
       if (scheArr.length > 0) {
+        temp[index] = hour;
+      }
+      return temp;
+    });
+  }, []);
+
+  const addXHour = useCallback((hour, index) => {
+    setXHourArr((xHourArr) => {
+      let temp = [...xHourArr];
+      if (xHourArr.length > 0) {
         temp[index] = hour;
       } 
       return temp;
@@ -50,14 +58,20 @@ function ReportByPerson(props) {
 
   // From the list of working hours, calculate the total hours.
   useEffect(() => {
-    console.log("hr arr", hourArr);
     if (hourArr.length > 0) {
       let total = 0;
-      hourArr.forEach((x) => total = total + x);
+      hourArr.forEach((x) => (total = total + x));
       setTotalHour(total);
     }
   }, [hourArr]);
 
+  useEffect(() => {
+    if (xHourArr.length > 0) {
+      let total = 0;
+      xHourArr.forEach((x) => (total = total + x));
+      setTotalXHour(total);
+    }
+  }, [xHourArr]);
   useEffect(() => {
     if (scheArr.length > 0) {
       let total = 0;
@@ -81,6 +95,9 @@ function ReportByPerson(props) {
     }
 
     setDateRange(tempArr.map((x) => x));
+    setHourArr(new Array(tempArr.length).fill(0))
+    setXHourArr(new Array(tempArr.length).fill(0))
+    setScheArr(new Array(tempArr.length).fill(0))
   }, [startDate, endDate]);
 
   // Generate Array
@@ -97,13 +114,14 @@ function ReportByPerson(props) {
 
   return (
     <Fragment>
-      {dateRange.length > 0 && dateRange.map((date, index) => <ReportByDate addH={addHour} addS={addSchedule} shopId={shopId} employeeID={employeeID} employeeName={employeeName} addCsvLog={addCsvLog} date={date} index={index} key={"RBP-" + index} />)}
+      {dateRange.length > 0 && dateRange.map((date, index) => <ReportByDate addH={addHour} addS={addSchedule} addX={addXHour} shopId={shopId} employeeID={employeeID} employeeName={employeeName} addCsvLog={addCsvLog} date={date} index={index} key={"RBP-" + index} />)}
       <tr className="report table-section table-row">
         <td display={"none"} data-exclude={"true"}></td>
         <td className="report table-section total-cell">
           <span title="Calculate total working hours of this employee">Total</span>
         </td>
         <td className="report table-section time-stamp-cell">{totalHour ? <span>{Math.round(totalHour * 100) / 100} hours.</span> : <span>0 hour.</span>}</td>
+        <td>{totalXHour ? <span>{Math.round(totalXHour * 100) / 100} hours.</span> : <span>0 hour</span>}</td>
         <td>{totalSchedule ? <span>{Math.round(totalSchedule * 100) / 100} hours.</span> : <span>0 hour</span>}</td>
       </tr>
     </Fragment>

@@ -21,7 +21,7 @@ function FunctionSelector(props) {
           <Button title="See employee's login and logout time." onClick={() => navigate("./report")}>
             Report
           </Button>
-          <Button>CSV Management</Button>
+          <Button title="Calculate employees' number of workdays." onClick={() => navigate("./workday")}>Workday Report</Button>
           <Button title="Employee's work schedule" onClick={() => navigate("./schedule")}>
             Schedule
           </Button>

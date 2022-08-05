@@ -1,4 +1,4 @@
-import { child, equalTo, onValue, orderByChild, query, set } from "firebase/database";
+import { child, equalTo, onValue, orderByChild, query, set, update } from "firebase/database";
 import * as fb from "./firebase_init";
 
 const shopId = sessionStorage.getItem("shop_id")
@@ -39,7 +39,6 @@ const findId = (name) => {
 
   if (!sEmpList) empList = cacheEmployeeList();
   else empList = JSON.parse(sEmpList);
-  console.log(empList, "emp")
 
   Object.keys(empList).forEach((groupID) => {
     const qName = query(child(fb.empRef(shopId), `${groupID}/employees`), orderByChild("name"), equalTo(name));
@@ -82,11 +81,12 @@ const addSchedule = (id, dateStamp, inStamp, outStamp, isOvertime) => {
   if (!inStamp) return "Cannot get the login Stamp. Please check your input.";
   if (!outStamp) return "Cannot get the logout Stamp. Please check your input.";
 
-  set(child(fb.logSchRef(shopId, id), "/" + dateStamp + id + "Sch"), {
+  console.log("sched-upload", id, dateStamp, inStamp, outStamp);
+
+  update(child(fb.logSchRef(shopId, id), "/" + dateStamp + id + "Sch"), {
     dateStamp: dateStamp,
     inStamp: inStamp,
     outStamp: outStamp,
-    isOvertime: isOvertime,
   });
 
   return null;
