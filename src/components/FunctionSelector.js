@@ -10,7 +10,6 @@ function FunctionSelector(props) {
   const navigate = useNavigate();
 
   const user = props.user;
-  const shopId = props.shopId;
   const [addMessShow, setAddMessShow] = useState(false);
 
   return (
@@ -25,9 +24,11 @@ function FunctionSelector(props) {
           <Button title="Employee's work schedule" onClick={() => navigate("./schedule")}>
             Schedule
           </Button>
+          <Button title="Todo List" onClick={() => navigate("./todo")}>
+            Todo List
+          </Button>
           <Button title="Add more people to the shop, or change their group, etc." onClick={() => navigate("./employees")}>Employee Management</Button>
-          <Button onClick={() => navigate("./extra")}>Extra Functionality</Button>
-          {addMessShow && <MessageModalForEmployer show={addMessShow} onHide={() => setAddMessShow(false)} shopId={shopId}/> }
+          {addMessShow && <MessageModalForEmployer show={addMessShow} onHide={() => setAddMessShow(false)}/> }
         </div>
       ) : (
         <div className="button-wrap">
@@ -35,8 +36,7 @@ function FunctionSelector(props) {
           <Button title="Employee's work schedule" onClick={() => navigate("./schedule")}>
             Schedule
           </Button>
-          <Button onClick={() => navigate("./extra")}>Extra Functionality</Button>
-          { addMessShow && <MessageModalForEmployee show={addMessShow} onHide={() => setAddMessShow(false)} shopId={shopId}/>}
+          { addMessShow && <MessageModalForEmployee show={addMessShow} onHide={() => setAddMessShow(false)}/>}
         </div>
       )}
     </div>

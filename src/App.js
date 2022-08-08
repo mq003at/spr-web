@@ -24,6 +24,7 @@ function App() {
             <Route path="/management/extra" element={<Management />}></Route>
             <Route path="/management/employees" element={<Management />}></Route>
             <Route path="/management/workday" element={<Management />}></Route>
+            <Route path="/management/todo" element={<Management />}></Route>
             <Route path="*" element={<ErrorPage />}></Route>
           </Routes>
           <Footer></Footer>

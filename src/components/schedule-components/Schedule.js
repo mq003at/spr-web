@@ -2,7 +2,6 @@ import { onValue } from "firebase/database";
 import { Fragment, useEffect, useState } from "react";
 import { Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Calendar from "react-calendar";
-import { CSVLink } from "react-csv";
 import { empRef } from "../../js/firebase_init";
 import { dateArr } from "../../js/tool_function";
 import ScheduleByGroup from "./ScheduleByGroup";
@@ -22,14 +21,6 @@ function Schedule() {
   const [chosenGroup, setChosenGroup] = useState([]);
 
   const [showScheduleUploadModal, setShowScheduleUploadModal] = useState(false);
-
-
-  const data = [
-    ["2022-06-20 12:33", "2022-05-23 2022-06-19"],
-    ["393609", "1", "", "2022-05-23 13:59" ],
-    ["Raed", "Labes", "rl@smthing.co.com"],
-    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
-  ];
 
   // Date checker (in case glass breaks)
   useEffect(() => {

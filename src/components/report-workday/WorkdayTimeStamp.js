@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState, useRef } from "react";
 import { child, equalTo, onValue, orderByChild, query, remove } from "firebase/database";
 import { dateHandler } from "../../js/tool_function";
-import { logSchRef, shopRef } from "../../js/firebase_init";
+import { shopRef } from "../../js/firebase_init";
 
 function WorkdayTimeStamp(props) {
   const shopId = props.shopId;
@@ -55,7 +55,7 @@ function WorkdayTimeStamp(props) {
             if (data.direction === "in" && next.direction === "out") {
               return (next.timeInt - data.timeInt) / 60;
             }
-          }
+          } 
         })
         .filter((data) => data);
 

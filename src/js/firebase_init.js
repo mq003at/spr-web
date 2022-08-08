@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child } from "firebase/database";
 
 const config = {
   apiKey: process.env.REACT_APP_DATABASE_APIKEY,
@@ -45,4 +45,14 @@ const logSchRef = (shopId, empId) => child(dbRef, `shop_schedule/${shopId}/autho
 * @return {string} - Path to show current overtime status.
 */
 const statusRef = (shopId, empId) => child(dbRef, `shop_schedule/${shopId}/authorized_id/${empId}/current_status`)
-export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef, statusRef };
+
+/**
+* Generate firebase path to get the working status requirement from one employee
+*
+* @function todoRef
+* @param {string} shopId - Id of current SPR store.
+* @return {string} - Path to show current overtime status.
+*/
+const todoRef = (shopId) => child(dbRef, `shop_events/${shopId}/todo_data`)
+
+export { dbRef, employeePath, shopPath, empRef, shopRef, messRef, logSchRef, statusRef, todoRef };

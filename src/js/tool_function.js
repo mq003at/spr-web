@@ -1,5 +1,3 @@
-import { Navigate } from "react-router-dom";
-
 // Functions handles the date
 function dateHandler(date) {
   /**
@@ -67,9 +65,22 @@ const nameHandler = (name, option) => {
       const data = name.split(",");
       let firstN = data[1].split(" ");
       let lastN = data[0].split(" ");
-      console.log(firstN, lastN)
+      console.log(firstN, lastN);
 
       return `${firstN[1]} ${lastN[0]}`;
+    }
+    case "reverse": {
+      const data = name.split(" ");
+      let edittedName = "";
+      if (data.length > 1) {
+        let firstN = "";
+        data.forEach((name, index) => {
+          if (index !== data.length - 1) firstN += name + " ";
+        });
+        let lastN = data[data.length - 1];
+        edittedName = lastN + ", " + firstN;
+      } else edittedName = data[0];
+      return edittedName.trim();
     }
     default: {
       const data = name.split(",");
@@ -93,49 +104,48 @@ const dateHandler2 = (date, option, separator) => {
     case "str-HM": {
       if (!date && !separator) return null;
       else {
-        let time = date.substring(8,10) + separator + date.substring(10,12);
+        let time = date.substring(8, 10) + separator + date.substring(10, 12);
         return time;
       }
     }
     case "time-int": {
       if (!date) return null;
       else {
-        let hour = parseInt(date.substring(8,10)) 
-        let minute = parseInt(date.substring(10,12));
-        let second = parseInt(date.substring(12,14));
+        let hour = parseInt(date.substring(8, 10));
+        let minute = parseInt(date.substring(10, 12));
+        let second = parseInt(date.substring(12, 14));
 
-        return second + minute*60 + hour*3600;
+        return second + minute * 60 + hour * 3600;
       }
     }
     case "HM-int": {
       if (separator) {
         date = date.replace(separator, "");
-        let hour = parseInt(date.substring(0,2));
-        let minute = parseInt(date.substring(2,4)) 
+        let hour = parseInt(date.substring(0, 2));
+        let minute = parseInt(date.substring(2, 4));
 
         return hour * 60 + minute;
-      }
-      else return null;
+      } else return null;
     }
     case "H:M-num": {
       if (separator) {
         date = date.split(separator);
         const hour = parseInt(date[0]);
-        const minute = parseInt(date[1])
-        return [hour, minute , hour*60+minute]
+        const minute = parseInt(date[1]);
+        return [hour, minute, hour * 60 + minute];
       } else return null;
-    } 
-    default: 
+    }
+    default:
       return null;
   }
-}
+};
 
 const numToString = (num) => {
   if (!isNaN(num)) {
-    if (num < 10) return "0"+num;
-    else return ""+num;
+    if (num < 10) return "0" + num;
+    else return "" + num;
   } else return "NaN";
-}
+};
 
 const getDateData = () => {
   let date = new Date();
@@ -149,8 +159,9 @@ const getDateData = () => {
   let dateNow = `${day}-${month}-${year}`;
 
   let obj = {
-    documentStamp: documentStamp + "Mess",
+    documentStamp: documentStamp,
     date: dateNow,
+    dateStamp: `${year}${month}${day}`
   };
   return obj;
 };

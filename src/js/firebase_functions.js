@@ -1,4 +1,4 @@
-import { child, equalTo, onValue, orderByChild, query, set, update } from "firebase/database";
+import { child, equalTo, onValue, orderByChild, query, update } from "firebase/database";
 import * as fb from "./firebase_init";
 
 const shopId = sessionStorage.getItem("shop_id")

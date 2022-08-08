@@ -1,5 +1,5 @@
 import { dateHandler } from "../../js/tool_function";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { onValue, child } from "firebase/database";
 import { logSchRef } from "../../js/firebase_init";
 import { dateHandler2 } from "../../js/tool_function";

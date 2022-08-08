@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useState, useRef, useCallback } from "react";
-import { child, equalTo, onValue, orderByChild, query, remove } from "firebase/database";
-import { dateHandler, dateHandler2, numToString } from "../../js/tool_function";
-import { logSchRef, shopRef } from "../../js/firebase_init";
+import { useEffect, useState, useCallback } from "react";
+import { child, onValue} from "firebase/database";
+import { dateHandler } from "../../js/tool_function";
+import { logSchRef } from "../../js/firebase_init";
 import * as FaIcons from "react-icons/fa";
 import WorkdayTimeStamp from "./WorkdayTimeStamp";
 import ModalForAddRecord from "../report-components/ModalForAddRecord";

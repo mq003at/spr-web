@@ -1,0 +1,11 @@
+.todo.showcase-section {
+  display: inline-flex;
+  text-align: center;
+}
+
+#todo-table {
+  text-align: center;
+  margin: 4em 3em 0em 3em;
+  background: var(--grey);
+  border: 1px solid var(--yellow-grey);
+}

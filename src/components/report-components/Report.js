@@ -45,15 +45,7 @@ function Report() {
     }
   }, []);
 
-  const toCsvData = () => {
-    if (csvArr.current.length === 0) return "";
-    else {
-      let data = csvArr.current.map((day) => day[2]);
-      // data.unshift(dateArr.current);
-      console.log([csvArr.current]);
-      return [data];
-    }
-  };
+
 
   // Handling CSV !important
   useEffect(() => {

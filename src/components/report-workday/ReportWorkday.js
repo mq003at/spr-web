@@ -2,12 +2,11 @@ import { child, onValue } from "firebase/database";
 import { createRef, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
 import { empRef } from "../../js/firebase_init";
-import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
 import WorkdayByPerson from "./WorkdayByPerson";
-import { dateArr, dateHandler } from "../../js/tool_function";
-import { CSVLink } from "react-csv";
+import { dateArr, nameHandler } from "../../js/tool_function";
 
 function ReportWorkday() {
   const [showStartCalendar, setShowStartCalendar] = useState(true);
@@ -44,9 +43,10 @@ function ReportWorkday() {
         groupArr.push({
           id: key,
           name: val[key].name,
+          spe_name: val[key].last_name + ", " + val[key].first_name,
         });
       });
-      groupArr.sort((a, b) => a.name.localeCompare(b.name))
+      groupArr.sort((a, b) => a.name.localeCompare(b.eName));
       setGroupList(groupArr.map((x) => x));
     });
   }, [shopId]);
@@ -79,7 +79,7 @@ function ReportWorkday() {
   useEffect(() => {
     csvArr.current = [];
     if (chosenGroup.length > 1) {
-      const watchEmpList = onValue(child(empRef(shopId), chosenGroup[0] + "/employees"), (snap) => {
+      return onValue(child(empRef(shopId), chosenGroup[0] + "/employees"), (snap) => {
         let val = snap.val();
         let tempData = [];
         if (val === null) setEmpDataArr([]);
@@ -88,9 +88,10 @@ function ReportWorkday() {
             tempData.push({
               name: val[key].name,
               id: val[key].tag_id,
+              eName: nameHandler(val[key].name, "reverse"),
             });
           });
-          tempData.sort((a, b) => a.name.localeCompare(b.name))
+          tempData.sort((a, b) => a.name.localeCompare(b.name));
           setEmpDataArr(tempData.map((x) => x));
         }
       });
@@ -186,7 +187,7 @@ function ReportWorkday() {
                       <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                         <tr className="report table-section table-row">
                           <td className="report table-section emp-name" colSpan={"4"} data-f-bold={true}>
-                            <span>-- {data.name} --</span>
+                            <span>-- {data.eName} --</span>
                           </td>
                         </tr>
                         <WorkdayByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
@@ -195,14 +196,18 @@ function ReportWorkday() {
                     ))}
                     <tbody>
                       <tr className="report group-total">
-                        <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>Group's total workdays: {totalGroupWorkday}.</td>
+                        <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>
+                          Group's total workdays: {totalGroupWorkday}.
+                        </td>
                       </tr>
                     </tbody>
                   </Fragment>
                 ) : (
-                  <div>
-                    {chosenGroup.length === 0 ? "Please choose a group." : "No employee in this group."} 
-                  </div>
+                  <tbody>
+                    <tr>
+                      <td> {chosenGroup.length === 0 ? "Please choose a group." : "No employee in this group."}</td>
+                    </tr>
+                  </tbody>
                 )}
               </table>
             ) : (

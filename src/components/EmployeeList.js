@@ -1,6 +1,6 @@
 import { get, child, orderByChild, query, onChildChanged, set, update, onValue } from "firebase/database";
 import { dbRef, employeePath, shopPath, shopRef } from "../js/firebase_init";
-import { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment, useCallback } from "react";
 import "../css/EmployeeList.css";
 import * as FaIcons from "react-icons/fa";
 import { Button } from "react-bootstrap";
@@ -17,36 +17,40 @@ function EmployeeList(props) {
 
   // Get an instance of all employees
   const getAllEmployee = () => {
-    return onValue(child(dbRef, employeePath(shopId)), (snap) => {
-      let dataArr = [];
-      let tag_id = "";
-      let empName = "";
-      let groupName = "";
-      let val = snap.val();
-      Object.keys(val).forEach((key, index) => {
-        groupName = val[key].name;
-        dataArr.push({
-          group: groupName,
-          employee: [],
-        });
-        let empVal = snap.val()[key]["employees"];
-        if (empVal !== undefined) {
-          Object.keys(empVal).forEach((key) => {
-            get(child(dbRef, `${shopPath(shopId)}/${empVal[key].tag_id}/actual_state`)).then((snap) => {
-              empName = empVal[key].name;
-              tag_id = empVal[key].tag_id;
-              dataArr[index].employee.push({
-                id: tag_id,
-                name: empName,
-                state: snap.val(),
-              });
-              setEmployeeList(dataArr.map((x) => x));
-            });
+    return onValue(
+      child(dbRef, employeePath(shopId)),
+      (snap) => {
+        let dataArr = [];
+        let tag_id = "";
+        let empName = "";
+        let groupName = "";
+        let val = snap.val();
+        Object.keys(val).forEach((key, index) => {
+          groupName = val[key].name;
+          dataArr.push({
+            group: groupName,
+            employee: [],
           });
-        }
-      });
-    }, {onlyOnce: true}
-  )};
+          let empVal = snap.val()[key]["employees"];
+          if (empVal !== undefined) {
+            Object.keys(empVal).forEach((key) => {
+              get(child(dbRef, `${shopPath(shopId)}/${empVal[key].tag_id}/actual_state`)).then((snap) => {
+                empName = empVal[key].name;
+                tag_id = empVal[key].tag_id;
+                dataArr[index].employee.push({
+                  id: tag_id,
+                  name: empName,
+                  state: snap.val(),
+                });
+                setEmployeeList(dataArr.map((x) => x));
+              });
+            });
+          }
+        });
+      },
+      { onlyOnce: true }
+    );
+  };
 
   const watchEmployeeState = () => {
     // eslint-disable-next-line no-unused-vars

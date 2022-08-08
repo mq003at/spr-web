@@ -10,6 +10,7 @@ import Schedule from "./schedule-components/Schedule";
 import Extra from "./extra/Extra";
 import EmployeeManagement from "./employee-management/EmployeeManagement";
 import ReportWorkday from "./report-workday/ReportWorkday";
+import Todo from "./todo-components/Todo";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
@@ -34,6 +35,8 @@ function StoreDatabase(props) {
         return <EmployeeManagement />;
       case "workday":
         return <ReportWorkday />;
+      case "todo":
+        return <Todo />
       default:
         return <FunctionSelector user={user} shopId={shopId} />;
     }

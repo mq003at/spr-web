@@ -1,8 +1,7 @@
 import { Button, Modal } from "react-bootstrap";
-import { child, equalTo, orderByChild, query, remove, get, set, update } from "firebase/database";
+import { child, update } from "firebase/database";
 import { useFormik } from "formik";
-import { logSchRef, shopRef } from "../../js/firebase_init";
-import { dateHandler } from "../../js/tool_function";
+import { logSchRef } from "../../js/firebase_init";
 import { useState } from "react";
 
 function ModalForDayStatus(props) {

@@ -1,6 +1,6 @@
 import "../css/StoreSelectable.css";
 import { dbRef } from "../js/firebase_init";
-import { child, get, set } from "firebase/database";
+import { child, get, update } from "firebase/database";
 import { createRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -11,6 +11,21 @@ function StoreSelectable() {
   const [count, setCount] = useState([]);
   const inputPinRef = createRef();
   const shopId = sessionStorage.getItem("shopId");
+
+  const portUserPin = () => {
+    update(child(dbRef, "shop_data/b4b8bb4ceeaa2aee"), {
+      pin_user: "spr6789"
+    })
+    update(child(dbRef, "shop_data/a1a1a1a1a1a1a1a1"), {
+      pin_user: "spr9999"
+    })
+    update(child(dbRef, "shop_data/D0ED5D57F47580F2"), {
+      pin_user: "spr1234"
+    })
+    update(child(dbRef, "shop_data/6899bc73da4ace09"), {
+      pin_user: "spr0001"
+    })
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -23,6 +38,7 @@ function StoreSelectable() {
       else {
         let pinInput = values.pinInput;
         let shopChosen = values.place;
+        console.log("shop", count)
         switch (pinInput) {
           case count[shopChosen][2]:
             //Manager Pin
@@ -34,7 +50,7 @@ function StoreSelectable() {
           case count[shopChosen][3]:
             //Employee Pin
             sessionStorage.setItem("shop_id", count[shopChosen][0]);
-            sessionStorage.setItem("shop_user", "manager");
+            sessionStorage.setItem("shop_user", "employee");
             sessionStorage.setItem("shop_chosen", count[shopChosen][1]);
             navigate("/management");
             break;
@@ -51,7 +67,7 @@ function StoreSelectable() {
     get(child(dbRef, "shop_data")).then((snap) => {
       let val = snap.val();
       Object.keys(val).forEach((key) => {
-        setCount((count) => [...count, [key, val[key].name, val[key].pin, val[key].pinUser]]);
+        setCount((count) => [...count, [key, val[key].name, val[key].pin, val[key].pin_user]]);
       });
     });
   };
@@ -98,6 +114,10 @@ function StoreSelectable() {
             </button>
           </div>
         </form>
+
+        <div className="mt-2" align="center">
+          <Button onClick={portUserPin()}>User PIN</Button>
+        </div>
 
       </div>
   );

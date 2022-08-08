@@ -1,11 +1,6 @@
-import { Modal, Button } from "react-bootstrap";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { dateHandler, dateArr, dateHandler2 } from "../../js/tool_function";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import ReportByDate from "./ReportByDate";
-import { child, equalTo, orderByChild, query, remove, get, set } from "firebase/database";
-import { shopRef } from "../../js/firebase_init";
-import { useFormik } from "formik";
-import ScheduleForReport from "./ScheduleForReport";
+
 
 function ReportByPerson(props) {
   const shopId = props.shopId;

@@ -1,7 +1,6 @@
 import { child, onValue } from "firebase/database";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { logSchRef } from "../../js/firebase_init";
-import { UserContext } from "../User";
 
 function ScheduleByPerson(props) {
   const shopId = props.shopId;  
