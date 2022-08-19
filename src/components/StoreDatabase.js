@@ -52,11 +52,13 @@ function StoreDatabase(props) {
     return onValue(child(dbRef, `shop_data/${shopId}/message_data`), (snap) => {
       let message = [];
       let val = snap.val();
-      Object.keys(val).forEach((key) => {
-        message.push([key, val[key].name, val[key].message, val[key].date])
-      });
-      if (message.length < 5) setModMessage([...message]);
-      else setModMessage(message.slice(message.length - 4, message.length))
+      if (val) {
+        Object.keys(val).forEach((key) => {
+          message.push([key, val[key].name, val[key].message, val[key].date])
+        });
+        if (message.length < 5) setModMessage([...message]);
+        else setModMessage(message.slice(message.length - 4, message.length))
+      }
     });
   }, [shopId]);
   const deleteMess = (key) => {

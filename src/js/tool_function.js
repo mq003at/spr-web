@@ -29,6 +29,7 @@ function dateHandler(date) {
 
 // Function generating array from startDay to endDay
 const dateArr = (startDay, endDay, mode) => {
+  console.log(startDay, endDay, mode)
   if (mode === "arr") {
     let tempArr = [];
     const start = new Date(startDay.getTime());

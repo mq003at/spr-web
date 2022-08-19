@@ -18,7 +18,7 @@ function Report() {
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
-  const { t } = useTranslation("translation", {keyPrefix: "report"})
+  const { t } = useTranslation("translation", { keyPrefix: "report" });
 
   // For CSV
   const dateRef = useRef([""]);
@@ -78,7 +78,7 @@ function Report() {
           name: val[key].name,
         });
       });
-      groupArr.sort((a,b) => a.name.localeCompare(b.name))
+      groupArr.sort((a, b) => a.name.localeCompare(b.name));
       setGroupList(groupArr.map((x) => x));
     });
   }, [shopId]);
@@ -92,12 +92,14 @@ function Report() {
         let tempData = [];
         if (val === null) setEmpDataArr([{ name: "There is no employee in this group.", id: "000000" }]);
         else {
+          console.log(val);
           Object.keys(val).forEach((key) => {
+            console.log("data", val[key].last_name);
             tempData.push({
               name: val[key].name,
               id: val[key].tag_id,
               first_name: val[key].first_name,
-              last_name: val[key].last_name
+              last_name: val[key].last_name,
             });
           });
           tempData.sort((a, b) => a.last_name.localeCompare(b.last_name));
@@ -147,7 +149,6 @@ function Report() {
                 <Calendar
                   className={showStartCalendar ? "" : "hide"}
                   onChange={(e) => {
-                    onEndDateChange();
                     onStartDateChange(e);
                   }}
                   value={startDate}
@@ -222,7 +223,7 @@ function Report() {
                           <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                         </td>
                       </tr>
-                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} />
+                      {data.id !== "000000" && (<ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} />)}
                       <tr></tr>
                     </tbody>
                   ))}

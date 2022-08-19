@@ -31,9 +31,9 @@ function Todo(props) {
 
   useEffect(() => {
     return onValue(todoRef(shopId), (snap) => {
-      if (snap) {
-        let val = snap.val();
-        let temp = [];
+      let val = snap.val();
+      let temp = [];
+      if (val) {
         Object.keys(val).forEach((key) => {
           temp.push({
             name: val[key].name,
@@ -44,10 +44,9 @@ function Todo(props) {
             key: key,
           });
         });
-        console.log(temp);
         setTodoList(temp.map((x) => x));
         setBaseTodoList(temp.map((x) => x));
-      }
+      } else setTodoList([])
     });
   }, [shopId]);
 
