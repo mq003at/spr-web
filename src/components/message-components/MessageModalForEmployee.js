@@ -1,13 +1,15 @@
 import { Button, Modal } from "react-bootstrap";
 import { useFormik } from "formik";
 import { child, set } from "firebase/database";
-import { messRef, todoRef } from "../../js/firebase_init";
+import { todoRef } from "../../js/firebase_init";
 import { getDateData } from "../../js/tool_function";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function MessageModalForEmployee(props) {
   const shopId = props.shopId;
   const [status, setStatus] = useState("");
+  const {t} = useTranslation();
 
   const formik = useFormik({
     initialValues: {
@@ -33,29 +35,29 @@ function MessageModalForEmployee(props) {
       })
       props.onHide();
     } else {
-      setStatus("Do not leave any empty fields.");
+      setStatus(`${t("management.Do not leave any empty fields.")}`);
     }
   }
 
   return (
     <Modal className="inv" show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Send messages</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">{t("management.Send messages")}</Modal.Title>
       </Modal.Header>
       <form onSubmit={formik.handleSubmit} className="form-inline">
         <Modal.Body>
-          <p>Send the message so that every employees can see when they check their schedule. Also, you can check the box below to send the message to all the managers instead.</p>
+          <p>{t("management.Send the message so that every employees can see when they check their schedule. Also, you can check the box below to send the message to all the managers instead.")}</p>
 
           <div className="form-outline mb-4">
-            <input type="text" id="name" name="name" className="form-control" onChange={formik.handleChange} value={formik.values.name} placeholder="Name (i.e. Tiina)" />
+            <input type="text" id="name" name="name" className="form-control" onChange={formik.handleChange} value={formik.values.name} placeholder={t("management.Name (i.e. Tiina)")} />
           </div>
 
           <div className={"form-outline mb-4"}>
-            <input type="text" id="recipient" name="recipient" className="form-control" onChange={formik.handleChange} value={formik.values.recipient} placeholder="Send to... (i.e. Tiina)" />
+            <input type="text" id="recipient" name="recipient" className="form-control" onChange={formik.handleChange} value={formik.values.recipient} placeholder={t("management.Send to... (i.e. Tiina)")} />
           </div>
 
           <div className="form-outline mb-4">
-            <textarea className="form-control" id="message" name="message" rows="4" onChange={formik.handleChange} value={formik.values.message} placeholder="Message (i.e. Please clean the store tomorrow)"></textarea>
+            <textarea className="form-control" id="message" name="message" rows="4" onChange={formik.handleChange} value={formik.values.message} placeholder={t("management.Message (i.e. Please clean the store tomorrow)")}></textarea>
           </div>
 
           <div className="text-danger d-inline mb-4">
@@ -63,8 +65,8 @@ function MessageModalForEmployee(props) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={props.onHide}>Close</Button>
-          <Button type="submit">Send</Button>
+          <Button variant="secondary" onClick={props.onHide}>{t("Close")}</Button>
+          <Button type="submit">{t("Send")}</Button>
         </Modal.Footer>
       </form>
     </Modal>

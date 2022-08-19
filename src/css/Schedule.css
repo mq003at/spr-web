@@ -35,6 +35,7 @@ table.schedule.in-cell-table::-webkit-scrollbar {
 }
 .schedule.in-cell-table{
   transform: rotateX(180deg);
+  margin: 0 auto
 }
 
 .schedule.in-cell-table th {

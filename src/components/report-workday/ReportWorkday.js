@@ -7,6 +7,7 @@ import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
 import WorkdayByPerson from "./WorkdayByPerson";
 import { dateArr, nameHandler } from "../../js/tool_function";
+import { useTranslation } from "react-i18next";
 
 function ReportWorkday() {
   const [showStartCalendar, setShowStartCalendar] = useState(true);
@@ -18,6 +19,8 @@ function ReportWorkday() {
   const [empDataArr, setEmpDataArr] = useState([]);
   const [groupWorkday, setGroupWorkday] = useState([]);
   const [totalGroupWorkday, setTotalGroupWorkday] = useState(0);
+  const { t } = useTranslation('translation', { keyPrefix: 'report-workday' });
+
 
   // For Excel
   const csvArr = useRef([]);
@@ -43,10 +46,9 @@ function ReportWorkday() {
         groupArr.push({
           id: key,
           name: val[key].name,
-          spe_name: val[key].last_name + ", " + val[key].first_name,
         });
       });
-      groupArr.sort((a, b) => a.name.localeCompare(b.eName));
+      groupArr.sort((a, b) => a.name.localeCompare(b.name));
       setGroupList(groupArr.map((x) => x));
     });
   }, [shopId]);
@@ -88,10 +90,11 @@ function ReportWorkday() {
             tempData.push({
               name: val[key].name,
               id: val[key].tag_id,
-              eName: nameHandler(val[key].name, "reverse"),
+              first_name: val[key].first_name,
+              last_name: val[key].last_name
             });
           });
-          tempData.sort((a, b) => a.name.localeCompare(b.name));
+          tempData.sort((a, b) => a.last_name.localeCompare(b.last_name));
           setEmpDataArr(tempData.map((x) => x));
         }
       });
@@ -101,12 +104,12 @@ function ReportWorkday() {
   return (
     <div className="report">
       <div className="date-picker-section">
-        <div className="report title">WORKDAY REPORT</div>
+        <div className="report title">{t("WORKDAY REPORT")}</div>
         <table border={"0"} align={"center"}>
           <tbody>
             <tr className="noBorder">
-              <th>From</th>
-              <th>To</th>
+              <th>{t("From")}</th>
+              <th>{t("To")}</th>
             </tr>
             <tr className="noBorder" id="datepick-row">
               <th>
@@ -187,7 +190,7 @@ function ReportWorkday() {
                       <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                         <tr className="report table-section table-row">
                           <td className="report table-section emp-name" colSpan={"4"} data-f-bold={true}>
-                            <span>-- {data.eName} --</span>
+                            <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                           </td>
                         </tr>
                         <WorkdayByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
@@ -197,7 +200,7 @@ function ReportWorkday() {
                     <tbody>
                       <tr className="report group-total">
                         <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>
-                          Group's total workdays: {totalGroupWorkday}.
+                        {t("Group's total workday:")} {totalGroupWorkday}.
                         </td>
                       </tr>
                     </tbody>
@@ -205,13 +208,13 @@ function ReportWorkday() {
                 ) : (
                   <tbody>
                     <tr>
-                      <td> {chosenGroup.length === 0 ? "Please choose a group." : "No employee in this group."}</td>
+                      <td> {chosenGroup.length === 0 ? t("Please choose a group.") : t("No employee in this group.")}</td>
                     </tr>
                   </tbody>
                 )}
               </table>
             ) : (
-              <div>Loading Database...</div>
+              <div>{t("Loading Database")}...</div>
             )}
           </div>
           <div className="report-table"></div>

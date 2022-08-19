@@ -1,7 +1,8 @@
-import { child, equalTo, get, onValue, orderByChild, query, remove, set, update } from "firebase/database";
+import { child, get, remove, set, update } from "firebase/database";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { Trans, useTranslation } from "react-i18next";
 import { empRef, shopRef } from "../../js/firebase_init";
 import { dateHandler } from "../../js/tool_function";
 
@@ -17,6 +18,8 @@ function EditEmployees(props) {
 
   const [status, setStatus] = useState("");
   const [check, onCheck] = useState(false);
+  const {t} = useTranslation("translation", {keyPrefix: "employee"})
+
 
   const formik = useFormik({
     initialValues: {
@@ -53,7 +56,7 @@ function EditEmployees(props) {
               if (employees) {
                 Object.keys(employees).forEach((key2) => {
                   if (t_id === employees[key2].tag_id) {
-                    setStatus(`ID unvailable. Employee ${employees[key2].name} in group ${val[key].name} already had that ID.`);
+                    setStatus(<Trans i18nKey={"employee.Dupplicate name"}>ID unvailable. Employee {{name: employees[key2].name}} in group {{group: val[key].name}} already had that ID.</Trans>);
                     isIdAvailable = false;
                   }
                 });
@@ -82,7 +85,6 @@ function EditEmployees(props) {
                   if (snap) tempVal = snap.val();
                 })
                 .then(() => {
-                  console.log("Temp", tempVal);
                   set(child(shopRef(shopId), "/" + t_id), tempVal);
                   remove(child(shopRef(shopId), "/" + id));
                 });
@@ -91,7 +93,7 @@ function EditEmployees(props) {
           }
         });
     } else {
-      setStatus("Nothing to change.");
+      setStatus(t("Nothing to change."));
     }
   }
 
@@ -103,50 +105,50 @@ function EditEmployees(props) {
   return (
     <Modal show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Make changes to employee {name}</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter"><Trans i18nKey={"report.Edit Title"}>Make changes to {{name: name}}</Trans></Modal.Title>
       </Modal.Header>
       <form onSubmit={formik.handleSubmit}>
         <Modal.Body>
-          <p>Leave the field blank if you do not want to change. You can also press Delete to permanently delete this employee.</p>
+          <p>{t("Leave the field blank if you do not want to change. You can also press Delete to permanently delete this employee.")}</p>
           <table id="addPersonTable" className="center noBorder">
             <thead>
               <tr>
                 <th></th>
-                <th>Old</th>
-                <th>New</th>
+                <th>{t("Old")}</th>
+                <th>{t("New")}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>First name: </td>
+                <td>{t("First Name")} </td>
                 <td>{fname}</td>
                 <td>
                   <input className="employees form-control" id="empFirstName" name="empFirstName" type="text" onChange={formik.handleChange} value={formik.values.empFirstName}></input>
                 </td>
               </tr>
               <tr>
-                <td>Last name: </td>
-                <td>{lname ? lname : "{empty}"}</td>
+                <td>{t("Last Name")} </td>
+                <td>{lname ? lname : t("empty")}</td>
                 <td>
                   <input className="employees form-control" id="empLastName" name="empLastName" type="text" onChange={formik.handleChange} value={formik.values.empLastName}></input>
                 </td>
               </tr>
               <tr>
-                <td>Full name: </td>
-                <td>{name ? name : "{empty}"}</td>
+                <td>{t("Full name")} </td>
+                <td>{name ? name : t("empty")}</td>
                 <td>
                   <input className="employees form-control" id="empFullName" name="empFullName" type="text" onChange={formik.handleChange} value={formik.values.empFullName}></input>
                 </td>
               </tr>
               <tr>
-                <td>Tag id: </td>
+                <td>{t("Tag id")} </td>
                 <td>{id}</td>
                 <td>
                   <input className="employees form-control" id="empTagId" name="empTagId" type="text" onChange={formik.handleChange} value={formik.values.empTagId}></input>
                 </td>
               </tr>
               <tr>
-                <td>Group: </td>
+                <td>{t("Group")} </td>
                 <td colSpan={"2"}>
                   <select name="groupId" id="groupId" className="form-select" type="text" aria-multiselectable="false" aria-disabled="false" readOnly={true} text-align="center" defaultValue={groupId} onChange={(e) => formik.setFieldValue("groupId", e.target.value)}>
                     {props.groupList.length > 0 &&
@@ -163,19 +165,19 @@ function EditEmployees(props) {
           <small className="employees status">{status}</small>
           <div>
             <label>
-              <input type="checkbox" checked={check} onChange={() => onCheck(!check)} />
-              Split name into First and last name?
+              <input type="checkbox" checked={check} onChange={() => onCheck(!check)} title={"Only for upgrading database"}/>
+              {t("Split name into First and last name?")}
             </label>
           </div>
         </Modal.Body>
         <Modal.Footer>
+         <Button variant="secondary" onClick={props.onHide}>{t("Close")}</Button>
+          <Button variant="danger" id="emp-delete" onClick={() => deleteEmp()}>
+            {t("Delete")}
+          </Button>
           <Button type="submit" id="group-submit">
-            Submit
+            {t("Submit")}
           </Button>
-          <Button id="emp-delete" onClick={() => deleteEmp()}>
-            Delete
-          </Button>
-          <Button onClick={props.onHide}>Close</Button>
         </Modal.Footer>
       </form>
     </Modal>

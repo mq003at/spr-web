@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, Fragment, useCallback } from "react";
 import "../css/EmployeeList.css";
 import * as FaIcons from "react-icons/fa";
 import { Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 function EmployeeList(props) {
   const sidebar = props.sidebar;
@@ -11,6 +12,7 @@ function EmployeeList(props) {
   const shopChosen = props.shopChosen;
   const [employeeList, setEmployeeList] = useState([]);
   const empListRef = useRef([]);
+  const { t } = useTranslation("translation", {keyPrefix: "employee-list"})
 
   const qState = query(shopRef(shopId), orderByChild("actual_state"));
   empListRef.current = employeeList;
@@ -57,7 +59,7 @@ function EmployeeList(props) {
     const watchState = onChildChanged(qState, (snap) => {
       let key = snap.key;
       let changedState = snap.val()["actual_state"];
-      // console.log(snap.val());
+      console.log(snap.key, "childchange");
       if (empListRef) {
         const newArr = empListRef.current.map((nested) => {
           return {
@@ -157,18 +159,18 @@ function EmployeeList(props) {
           <tbody id="list-opener">
             <tr>
               <th colSpan={"5"}>
-                <label className="employee-list-shop-title">{shopChosen} Kirppis</label>
+                <label className="employee-list-shop-title">{shopChosen} {t("Store")}</label>
               </th>
             </tr>
             <tr id="employee-list-functionality">
               <th colSpan={"1"}>
                 <Button variant="transparent" onClick={() => refreshEmp()}>
-                  Refresh
+                  {t("Refresh")}
                 </Button>
               </th>
               <th colSpan={"2"}>
                 <Button variant="transparent" onClick={() => logOutEveryone()}>
-                  Logout
+                  {t("Logout")}
                 </Button>
               </th>
             </tr>
@@ -191,7 +193,7 @@ function EmployeeList(props) {
                                 {empData.name}
                               </td>
                               <td className={"employee-list-status " + empData.state} width={"20%"}>
-                                {empData.state === "in" ? <FaIcons.FaBriefcase title={"Working"} /> : <FaIcons.FaBed title={"Absent"} />}
+                                {empData.state === "in" ? <FaIcons.FaBriefcase title={t("Present")} /> : <FaIcons.FaBed title={t("Absent")} />}
                               </td>
                               <td className={"employee-list-inout"} width={"20%"}>
                                 {empData.state === "out" ? (

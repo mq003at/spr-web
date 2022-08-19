@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import WorkdayByDate from "./WorkdayByDate";
-
 
 function WorkdayByPerson(props) {
   const shopId = props.shopId;
@@ -15,6 +15,7 @@ function WorkdayByPerson(props) {
   const [hourArr, setHourArr] = useState([]);
   const [totalDay, setTotalDay] = useState(0);
   const [totalHour, setTotalHour] = useState(0);
+  const { t } = useTranslation("translation", { keyPrefix: "report-workday" });
 
   // Listening to total working hours done.
   const addHour = useCallback((hour, index) => {
@@ -30,15 +31,17 @@ function WorkdayByPerson(props) {
     if (hourArr.length > 0) {
       let totalD = 0;
       let totalH = 0;
-      hourArr.forEach(hour => {
-        if (hour > 0) {totalD++; totalH += hour}
+      hourArr.forEach((hour) => {
+        if (hour > 0) {
+          totalD++;
+          totalH += hour;
+        }
         if (hour < 0) totalD++;
       });
       setTotalDay(totalD);
       setTotalHour(totalH);
     }
-  }, [hourArr])
-
+  }, [hourArr]);
 
   // Generate array from startDate to endDate
   useEffect(() => {
@@ -66,8 +69,8 @@ function WorkdayByPerson(props) {
   }, [dateRange]);
 
   useEffect(() => {
-    toGroupArr(totalDay, index)
-  }, [totalDay, toGroupArr, index])
+    toGroupArr(totalDay, index);
+  }, [totalDay, toGroupArr, index]);
 
   return (
     <Fragment>
@@ -75,9 +78,15 @@ function WorkdayByPerson(props) {
       <tr className="report table-section table-row">
         <td display={"none"} data-exclude={"true"}></td>
         <td className="report table-section total-cell" data-f-color="FF0000">
-          <span title="Calculate total working hours of this employee">Total</span>
+          <span title="Calculate total working hours of this employee">{t("Total")}</span>
         </td>
-        <td className="report table-section time-stamp-cell"><span>{totalDay} {totalDay > 1 ? "workdays" : "workday"}, or {totalHour} {totalHour > 1 ? "work hours" : "work hour"}.</span></td>
+        <td className="report table-section time-stamp-cell">
+          <span>
+            <Trans i18nKey={"report-workday.Total Report"}>
+              {{totalDay: totalDay}} workday, or {{totalHour: totalHour}} workhour.
+            </Trans>
+          </span>
+        </td>
       </tr>
     </Fragment>
   );

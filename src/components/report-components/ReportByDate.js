@@ -7,6 +7,7 @@ import ReportTimeStamp from "./ReportTimeStamp";
 import ScheduleForReport from "./ScheduleForReport";
 import ModalForAddRecord from "./ModalForAddRecord";
 import ModalForDeletingRecord from "./ModalForDeletingRecord";
+import { Trans, useTranslation } from "react-i18next";
 
 function ReportByDate(props) {
   const addHour = props.addH;
@@ -27,6 +28,7 @@ function ReportByDate(props) {
   const [showDayModal, setShowDayModal] = useState(false);
   const [showAddRecordToDayModal, setAddRecordToDayModal] = useState(false);
   const [isOvertime, setOvertime] = useState(false);
+  const { t } = useTranslation("translation", { keyPrefix: "report" });
 
   // Send call back for data transfering
   const addStampData = useCallback(
@@ -113,11 +115,11 @@ function ReportByDate(props) {
     <tr className={"report check-status " + status}>
       <td className="report table-section add-record-cell" width={"0.5%"} data-exclude={"true"}>
         <span className="report table-section date-cell add-record-part" onClick={() => setAddRecordToDayModal(true)}>
-          <FaIcons.FaPlus title={"Click to add extra record for day " + date.toLocaleDateString("FI-fi")} />
+          <FaIcons.FaPlus title={<Trans i18nKey={"report.Datebox Title"}>Click to add extra record for day {{date: date.toLocaleDateString("FI-fi")}}</Trans>} />
         </span>
       </td>
       <td className="report table-section date-cell" width={"10.5%"}>
-        <span className="report table-section date-cell date-part" onClick={() => setShowDayModal(true)} title="Click to delete all records for this day">
+        <span className="report table-section date-cell date-part" onClick={() => setShowDayModal(true)} title={<Trans i18nKey={"report.Datedelete Title"}>Click to delete every record in day {{date: date.toLocaleDateString("FI-fi")}}</Trans>}>
           {date.toLocaleDateString("fi-FI")}
         </span>
       </td>

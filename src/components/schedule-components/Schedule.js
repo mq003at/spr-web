@@ -7,6 +7,7 @@ import { dateArr } from "../../js/tool_function";
 import ScheduleByGroup from "./ScheduleByGroup";
 import ScheduleUpload from "./ScheduleUpload";
 import "../../css/Schedule.css"
+import { useTranslation } from "react-i18next";
 
 
 function Schedule() {
@@ -19,6 +20,7 @@ function Schedule() {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
+  const { t } = useTranslation("translation", {keyPrefix: "schedule"})
 
   const [showScheduleUploadModal, setShowScheduleUploadModal] = useState(false);
 
@@ -55,7 +57,7 @@ function Schedule() {
 
   return (
     <div className="schedule-function">
-      <div className="schedule title">Schedule</div>
+      <div className="schedule title">{t("SCHEDULE")}</div>
       <div className="calendar">
         <table border={"0"} align={"center"} className="calendar">
           <tbody>
@@ -91,8 +93,8 @@ function Schedule() {
               </td>
             </tr>
             <tr>
-              <td><Button onClick={() => setShowScheduleUploadModal(true)}>Upload Schedule CSV file</Button></td>
-              <td><Button>Export as Excel File</Button></td>
+              <td><Button onClick={() => setShowScheduleUploadModal(true)}>{t("Upload Schedule CSV file")}</Button></td>
+              <td><Button>{t("Export as Excel File")}</Button></td>
             </tr>
           </thead>
           <tbody>
@@ -109,7 +111,7 @@ function Schedule() {
                         );
                       })
                     ) : (
-                      <div>Loading database...</div>
+                      <div>{t("Loading database...")}</div>
                     )}
                   </ToggleButtonGroup>
                 </div>

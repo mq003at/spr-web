@@ -34,3 +34,10 @@ div .header{
 #logout {
     margin-right: 2rem;
 }
+
+#lang-switcher {
+    margin-right: 2rem;
+    background-color: #F92424;
+    color: white;
+    border: none;
+}

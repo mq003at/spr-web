@@ -1,4 +1,4 @@
-import { child, onValue} from "firebase/database";
+import { child, onValue } from "firebase/database";
 import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
 import { empRef } from "../../js/firebase_init";
@@ -8,6 +8,7 @@ import "../../css/Report.css";
 import ReportByPerson from "./ReportByPerson";
 import { dateArr, dateHandler } from "../../js/tool_function";
 import { CSVLink } from "react-csv";
+import { useTranslation } from "react-i18next";
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -17,6 +18,7 @@ function Report() {
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
+  const { t } = useTranslation("translation", {keyPrefix: "report"})
 
   // For CSV
   const dateRef = useRef([""]);
@@ -24,7 +26,7 @@ function Report() {
   const csvArr = useRef([]);
   const tableRef = createRef();
   const shopId = sessionStorage.getItem("shop_id");
-  
+
   // Function handling CSV
   const addCsvLog = useCallback((log, id, date) => {
     let tempArr = [];
@@ -45,8 +47,6 @@ function Report() {
     }
   }, []);
 
-
-
   // Handling CSV !important
   useEffect(() => {
     const range = dateArr(startDate, endDate, "csv");
@@ -56,7 +56,6 @@ function Report() {
   useEffect(() => {
     console.log("state", dataCsv);
   }, [dataCsv]);
-
 
   // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)
   function csvHandler() {
@@ -79,6 +78,7 @@ function Report() {
           name: val[key].name,
         });
       });
+      groupArr.sort((a,b) => a.name.localeCompare(b.name))
       setGroupList(groupArr.map((x) => x));
     });
   }, [shopId]);
@@ -86,7 +86,7 @@ function Report() {
   // Getting employee's info
   useEffect(() => {
     csvArr.current = [];
-    if (chosenGroup.length > 1) {
+    if (chosenGroup.length > 1 && startDate && endDate) {
       const watchEmpList = onValue(child(empRef(shopId), chosenGroup[0] + "/employees"), (snap) => {
         let val = snap.val();
         let tempData = [];
@@ -96,8 +96,11 @@ function Report() {
             tempData.push({
               name: val[key].name,
               id: val[key].tag_id,
+              first_name: val[key].first_name,
+              last_name: val[key].last_name
             });
           });
+          tempData.sort((a, b) => a.last_name.localeCompare(b.last_name));
           setEmpDataArr(tempData.map((x) => x));
         }
       });
@@ -107,12 +110,12 @@ function Report() {
   return (
     <div className="report">
       <div className="date-picker-section">
-        <div className="report title">REPORT</div>
+        <div className="report title">{t("REPORT")}</div>
         <table border={"0"} align={"center"}>
           <tbody>
             <tr className="noBorder">
-              <th>From</th>
-              <th>To</th>
+              <th>{t("From")}</th>
+              <th>{t("To")}</th>
             </tr>
             <tr className="noBorder" id="datepick-row">
               <th>
@@ -134,14 +137,22 @@ function Report() {
                   onClick={() => {
                     setShowEndCalendar(!showEndCalendar);
                   }}
-                  value={endDate.toLocaleDateString("fi-FI")}
+                  value={endDate ? endDate.toLocaleDateString("fi-FI") : ""}
                 ></input>
               </th>
             </tr>
             <tr className="noBorder">
               <th>
                 {" "}
-                <Calendar className={showStartCalendar ? "" : "hide"} onChange={onStartDateChange} value={startDate} maxDate={endDate}></Calendar>
+                <Calendar
+                  className={showStartCalendar ? "" : "hide"}
+                  onChange={(e) => {
+                    onEndDateChange();
+                    onStartDateChange(e);
+                  }}
+                  value={startDate}
+                  maxDate={endDate}
+                ></Calendar>
               </th>
               <th>
                 {" "}
@@ -160,7 +171,7 @@ function Report() {
                 <thead>
                   <tr>
                     <th colSpan={"5"} data-a-h="center" data-f-bold="true">
-                      <button className="date-range" title="Click me to export the report to Excel file" onClick={() => csvHandler()}>
+                      <button className="date-range" title={t("Export the report to Excel file")} onClick={() => csvHandler()}>
                         {dateArr(startDate, endDate, "range")}
                       </button>
                     </th>
@@ -169,14 +180,14 @@ function Report() {
                     <th colSpan={"5"} data-exclude="true">
                       {dataCsv.length > 0 && (
                         <div className="report-option">
-                          <Button title="Click download a preview of this report as CSV file">
+                          <Button title={t("Download a preview of this report as CSV file")}>
                             <CSVLink data={dataCsv} separator=";" filename={`SPR-Report-${dateArr(startDate, endDate, "range")}.csv`} enclosingCharacter={``}>
-                              Export as CSV {"(+" + (dataCsv.length - 1) + " updates)"}
+                              {t("Export as CSV")}
                             </CSVLink>
                           </Button>
                           <div>{"    "}</div>
-                          <Button title="Click to get the Excel version"onClick={() => csvHandler()}>
-                            Export as Excel File
+                          <Button title="Click to get the Excel version" onClick={() => csvHandler()}>
+                            {t("Export as Excel File")}
                           </Button>
                         </div>
                       )}
@@ -208,7 +219,7 @@ function Report() {
                     <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                       <tr className="report table-section table-row">
                         <td className="report table-section emp-name" colSpan={"5"} data-f-bold={true}>
-                          <span>-- {data.name} --</span>
+                          <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                         </td>
                       </tr>
                       <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} />
@@ -217,7 +228,7 @@ function Report() {
                   ))}
               </table>
             ) : (
-              <div>Loading Database...</div>
+              <div>{t("Loading Database...")}</div>
             )}
           </div>
           <div className="report-table"></div>

@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ReportByDate from "./ReportByDate";
 
 
@@ -17,6 +18,7 @@ function ReportByPerson(props) {
   const [totalXHour, setTotalXHour] = useState(0);
   const [scheArr, setScheArr] = useState([]);
   const [totalSchedule, setTotalSchedule] = useState(0);
+  const { t } = useTranslation("translation", {keyPrefix: "report"})
 
   // Listening to total working hours done.
   const addHour = useCallback((hour, index) => {
@@ -31,7 +33,6 @@ function ReportByPerson(props) {
   }, []);
 
   const addSchedule = useCallback((hour, index) => {
-    console.log("receive sched", hour)
     setScheArr((scheArr) => {
       let temp = [...scheArr];
       if (scheArr.length > 0) {
@@ -103,21 +104,17 @@ function ReportByPerson(props) {
     }
   }, [dateRange]);
 
-  useEffect(() => {
-    console.log(scheArr);
-  }, [scheArr]);
-
   return (
     <Fragment>
       {dateRange.length > 0 && dateRange.map((date, index) => <ReportByDate addH={addHour} addS={addSchedule} addX={addXHour} shopId={shopId} employeeID={employeeID} employeeName={employeeName} addCsvLog={addCsvLog} date={date} index={index} key={"RBP-" + index} />)}
       <tr className="report table-section table-row">
         <td display={"none"} data-exclude={"true"}></td>
         <td className="report table-section total-cell">
-          <span title="Calculate total working hours of this employee">Total</span>
+          <span title={t("Calculate total working hours of this employee")}>{t("Total")}</span>
         </td>
-        <td className="report table-section time-stamp-cell">{totalHour ? <span>{Math.round(totalHour * 100) / 100} hours.</span> : <span>0 hour.</span>}</td>
-        <td>{totalXHour ? <span>{Math.round(totalXHour * 100) / 100} hours.</span> : <span>0 hour</span>}</td>
-        <td>{totalSchedule ? <span>{Math.round(totalSchedule * 100) / 100} hours.</span> : <span>0 hour</span>}</td>
+        <td className="report table-section time-stamp-cell">{totalHour ? <span>{Math.round(totalHour * 100) / 100} {t("hours.")}</span> : <span>{t("0 hour.")}</span>}</td>
+        <td>{totalXHour ? <span>{Math.round(totalXHour * 100) / 100} {t("hours.")}.</span> : <span>{t("0 hour.")}</span>}</td>
+        <td>{totalSchedule ? <span>{Math.round(totalSchedule * 100) / 100} {t("hours.")}</span> : <span>{t("0 hour.")}</span>}</td>
       </tr>
     </Fragment>
   );

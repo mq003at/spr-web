@@ -1,8 +1,10 @@
 import { Button, Modal } from "react-bootstrap";
-import { child, equalTo, orderByChild, query, remove, get, set } from "firebase/database";
+import { child, equalTo, orderByChild, query, remove, get } from "firebase/database";
 import { shopRef } from "../../js/firebase_init";
+import { Trans, useTranslation } from "react-i18next";
 
 function ModalForDeletingRecord(props) {
+  const { t } = useTranslation("translation", { keyPrefix: "report" });
   const handleDeleteDayFromModal = () => {
     // onSubmit: If the user really want to delete the record
     let id = props.employeeID;
@@ -25,17 +27,23 @@ function ModalForDeletingRecord(props) {
       <Modal show={props.show} onHide={props.onHide}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <h5>Delete all records from day {props.date}</h5>{" "}
+            <h5>
+              <Trans i18nKey={"report.Delete Title"}>Delete all records from day {{ date: props.date }}</Trans>
+            </h5>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h6>
-            WARNING: Employee {props.employeeName} will have their records for day {props.date} deleted. Do you really want to proceed?
+            <Trans i18nKey={"report.Delete Warning"}>
+              WARNING: Employee {{name: props.employeeName}} will have their records for day {{date: props.date}} deleted. Do you really want to proceed?
+            </Trans>
           </h6>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={props.onHide}>Cancel</Button>
-          <Button variant="danger" onClick={() => handleDeleteDayFromModal()}>Delete</Button>
+          <Button variant="secondary" onClick={props.onHide}>{t("Cancel")}</Button>
+          <Button variant="danger" onClick={() => handleDeleteDayFromModal()}>
+            {t("Delete")}
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

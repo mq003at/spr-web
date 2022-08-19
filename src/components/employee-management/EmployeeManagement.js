@@ -7,6 +7,7 @@ import "../../css/EmployeeManagement.css";
 import ModalAddingGroup from "./ModalAddingGroups";
 import ModalDeletingGroup from "./ModalDeletingGroup";
 import ModalAddingEmp from "./ModalAddingEmp";
+import { useTranslation } from "react-i18next";
 
 function EmployeeManagement(props) {
   const [chosenGroup, setChosenGroup] = useState([]);
@@ -15,6 +16,7 @@ function EmployeeManagement(props) {
   const [showDeleteGroup, setShowDeleteGroup] = useState(false);
   const [showAddEmp, setShowAddEmp] = useState(false);
   const groupRef = useRef([]);
+  const {t} = useTranslation("translation", {keyPrefix: "employee"})
 
   const shopId = sessionStorage.getItem("shop_id");
 
@@ -29,6 +31,7 @@ function EmployeeManagement(props) {
           index: index
         });
       });
+      groupArr.sort((a, b) => a.name.localeCompare(b.name));
       setGroupList(groupArr.map((x) => x));
     });
   }, [shopId]);
@@ -41,11 +44,9 @@ function EmployeeManagement(props) {
     }
   }, [groupList]);
 
-  useEffect(() => {console.log(chosenGroup)}, [chosenGroup])
-
   return (
     <div className="employees">
-      <div className="employees title">EMPLOYEE MANAGEMENT</div>
+      <div className="employees title">{t("EMPLOYEE MANAGEMENT")}</div>
       <hr></hr>
 
       <div className="employees showcase-section">
@@ -55,11 +56,11 @@ function EmployeeManagement(props) {
               <th colSpan={"10"}>
                 <div className="employees option">
                   <Button className="employees group-option" onClick={() => setShowAddGroup(true)}>
-                    Add Group
+                    {t("Add Group")}
                   </Button>
                   <div>{"   "}</div>
                   <Button className="employees group-option" onClick={() => setShowAddEmp(true)}>
-                    Add Employees
+                    {t("Add Employees")}
                   </Button>
                 </div>
               </th>
@@ -77,7 +78,7 @@ function EmployeeManagement(props) {
                         );
                       })
                     ) : (
-                      <div>Loading database...</div>
+                      <div>{t("Loading database...")}</div>
                     )}
                   </ToggleButtonGroup>
                 </div>

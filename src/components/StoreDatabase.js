@@ -11,12 +11,15 @@ import Extra from "./extra/Extra";
 import EmployeeManagement from "./employee-management/EmployeeManagement";
 import ReportWorkday from "./report-workday/ReportWorkday";
 import Todo from "./todo-components/Todo";
+import { useTranslation } from "react-i18next";
+import Help from "./extra/Help";
 
 function StoreDatabase(props) {
   const [modMessage, setModMessage] = useState([]);
   const [showMessage, setShowMessage] = useState(true);
   const [chosenFunction, setChosenFunction] = useState("");
   const location = useLocation();
+  const {t} = useTranslation();
 
   const sidebar = props.sidebar;
   const user = sessionStorage.getItem("shop_user");
@@ -37,6 +40,8 @@ function StoreDatabase(props) {
         return <ReportWorkday />;
       case "todo":
         return <Todo />
+      case "help":
+        return <Help />
       default:
         return <FunctionSelector user={user} shopId={shopId} />;
     }
@@ -48,10 +53,10 @@ function StoreDatabase(props) {
       let message = [];
       let val = snap.val();
       Object.keys(val).forEach((key) => {
-        // setModMessage((modMessage) => [...modMessage, [val[key].name, val[key].message, val[key].date]]);
         message.push([key, val[key].name, val[key].message, val[key].date])
       });
-      setModMessage(() => message);
+      if (message.length < 5) setModMessage([...message]);
+      else setModMessage(message.slice(message.length - 4, message.length))
     });
   }, [shopId]);
   const deleteMess = (key) => {
@@ -62,7 +67,9 @@ function StoreDatabase(props) {
   useEffect(() => {
     let getPath = location.pathname.split("/");
     getPath[2] ? (getPath = getPath[2]) : (getPath = "");
-    setChosenFunction(() => getPath.toString());
+    const fnChoose = getPath.toString();
+    if (fnChoose === "help") setShowMessage(false)
+    setChosenFunction(fnChoose);
   }, [location]);
 
   return (
@@ -70,7 +77,7 @@ function StoreDatabase(props) {
       <div className="message-section">
         {showMessage && (
           <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>
-            <Alert.Heading>Message Board</Alert.Heading>
+            <Alert.Heading>{t("management.Message Board")}</Alert.Heading>
             <table className="message-table table table-striped">
               <tbody>
                 {modMessage.map((message, index) => (

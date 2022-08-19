@@ -2,11 +2,13 @@ import { child, equalTo, onValue, orderByChild, query, set } from "firebase/data
 import { useFormik } from "formik";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import { empRef } from "../../js/firebase_init";
 import { dateHandler } from "../../js/tool_function";
 
 function ModalAddingGroup(props) {
   const [status, setStatus] = useState("");
+  const { t } = useTranslation("translation", { keyPrefix: "employee" });
 
   const formik = useFormik({
     initialValues: {
@@ -42,22 +44,21 @@ function ModalAddingGroup(props) {
   return (
     <Modal className="inv" show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Add group to the list</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">{t("Add group to the list")}</Modal.Title>
       </Modal.Header>
       <form onSubmit={formik.handleSubmit}>
         <Modal.Body>
-          <p>Group name:</p>
+          <p>{t("Group name")}</p>
           <input id="addedGroup" name="addedGroup" type="text" onChange={formik.handleChange} value={formik.values.addedGroup}></input>
           <div>
-            {" "}
             <small className="employees status">{status}</small>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button type="submit" id="group-submit">
-            Submit
+            {t("Submit")}
           </Button>
-          <Button onClick={props.onHide}>Close</Button>
+          <Button onClick={props.onHide}>{t("Close")}</Button>
         </Modal.Footer>
       </form>
     </Modal>

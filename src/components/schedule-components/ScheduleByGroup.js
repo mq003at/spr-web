@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { empRef } from "../../js/firebase_init";
 import { dateArr, dateHandler } from "../../js/tool_function";
 import ScheduleByPerson from "./ScheduleByPerson";
+import { useTranslation } from "react-i18next";
 
 function ScheduleByGroup(props) {
   const groupId = props.groupId;
@@ -12,6 +13,7 @@ function ScheduleByGroup(props) {
 
   const [empList, setEmpList] = useState([]);
   const [dayArr, setDayArr] = useState([]);
+  const { t } = useTranslation("translation", {keyPrefix: "schedule"})
 
   // Get days
   useEffect(() => {
@@ -34,22 +36,6 @@ function ScheduleByGroup(props) {
     );
   }, [groupId, shopId]);
 
-  // Get employees' schedule
-  useEffect(() => {
-    // if (empList.length > 0) {
-    //     empList.forEach(employee => {
-    //         onValue(logSchRef(shopId, employee.id), snap => {
-    //             let val = snap.val();
-    //         })
-    //         let qSchedule = query(logSchRef(shopId, employee.id), orderByChild(dateStamp))
-    //     })
-    // }
-  }, [empList, dayArr]);
-
-  useEffect(() => {
-    console.log(dayArr);
-  }, [dayArr]);
-
   return (
     <tr>
       <td colSpan={"2"} className="schedule cell-table">
@@ -57,7 +43,7 @@ function ScheduleByGroup(props) {
           <div className="schedule grid-wrapper cell-table">
             <div className="table-responsive cell-table pl-3 pr-3">
               {empList.length === 0 ? (
-                <div>There is no employee in this group to get the schedule from.</div>
+                <div>{t("There is no employee in this group to get the schedule from.")}</div>
               ) : (
                 <table className="schedule in-cell-table">
                   <thead>
@@ -70,7 +56,7 @@ function ScheduleByGroup(props) {
                   </thead>
                   <tbody>
                     {dayArr.length === 0 ? (
-                      <td>Loading database......</td>
+                      <td>{t("Loading database...")}</td>
                     ) : (
                       dayArr.map((day, index) => (
                         <tr key={`schedule-day-${day.toLocaleDateString("sv-SE")}`}>
