@@ -7,7 +7,7 @@ function ModalForDeletingRecord(props) {
   const { t } = useTranslation("translation", { keyPrefix: "report" });
   const handleDeleteDayFromModal = () => {
     // onSubmit: If the user really want to delete the record
-    let id = props.employeeID;
+    let id = props.empId;
     let dateStamp = props.dateStamp;
     const qDay = query(child(shopRef(props.shopId), `${id}/log_events/`), orderByChild("dateStamp"), equalTo(dateStamp));
     get(qDay).then((snap) => {
@@ -28,14 +28,14 @@ function ModalForDeletingRecord(props) {
         <Modal.Header closeButton>
           <Modal.Title>
             <h5>
-              <Trans i18nKey={"report.Delete Title"}>Delete all records from day {{ date: props.date }}</Trans>
+              <Trans i18nKey={"report.Delete Title"}>Delete all records from day {{ date: props.dateStr }}</Trans>
             </h5>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h6>
             <Trans i18nKey={"report.Delete Warning"}>
-              WARNING: Employee {{name: props.employeeName}} will have their records for day {{date: props.date}} deleted. Do you really want to proceed?
+              WARNING: Employee {{name: props.empName}} will have their records for day {{date: props.dateStr}} deleted. Do you really want to proceed?
             </Trans>
           </h6>
         </Modal.Body>

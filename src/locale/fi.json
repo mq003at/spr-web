@@ -113,7 +113,9 @@
         "Total": "Summa",
         "Calculate total working hours of this employee": "Laske tämän työntekijän kokonaistyötunnit",
         "hours.": "tuntia.",
-        "0 hour.": "0 tuntia."
+        "0 hour.": "0 tuntia.",
+        "minutes": "minuuttia",
+        "Change format": "Vaihda muotoa"
     },
     "employee": {
         "EMPLOYEE MANAGEMENT": "HENKILÖSTÖJOHTO",

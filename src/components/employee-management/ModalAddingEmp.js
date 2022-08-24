@@ -79,13 +79,13 @@ function ModalAddingEmp(props) {
           <table id="addPersonTable" className="center noBorder">
             <tbody>
               <tr>
-                <td>{t("First name")} </td>
+                <td width={"30%"}>{t("First Name")} </td>
                 <td>
                   <input className="employees form-control" id="empFirstName" name="empFirstName" type="text" onChange={formik.handleChange} value={formik.values.empFirstName}></input>
                 </td>
               </tr>
               <tr>
-                <td>{t("Last name")} </td>
+                <td>{t("Last Name")} </td>
                 <td>
                   <input className="employees form-control" id="empLastName" name="empLastName" type="text" onChange={formik.handleChange} value={formik.values.empLastName}></input>
                 </td>
@@ -93,13 +93,13 @@ function ModalAddingEmp(props) {
               <tr>
                 <td>{t("Full name")} </td>
                 <td>
-                  <input className="employees form-control" id="empFullName" name="empFullName" type="text" onChange={formik.handleChange} value={formik.values.empFullName} placeholder="You can leave this blank"></input>
+                  <input className="employees form-control" id="empFullName" name="empFullName" type="text" onChange={formik.handleChange} value={formik.values.empFullName} placeholder={t("Velho's full name must be the same")}></input>
                 </td>
               </tr>
               <tr>
                 <td>{t("Tag id")} </td>
                 <td>
-                  <input className="employees form-control" id="empTagId" name="empTagId" type="text" onChange={formik.handleChange} value={formik.values.empTagId}></input>
+                  <input className="employees form-control" id="empTagId" name="empTagId" type="text" onChange={formik.handleChange} value={formik.values.empTagId} placeholder={t("Ideal Format GGYYXXXX")}></input>
                 </td>
               </tr>
               <tr>

@@ -49,3 +49,7 @@ small.status{
 input.employees.form-control {
     text-align: center;
 }
+
+#modal-70w {
+    min-width: 70%;
+}

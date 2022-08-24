@@ -7,9 +7,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function MessageModalForEmployee(props) {
-  const shopId = props.shopId;
+  const shopId = sessionStorage.getItem("shop_id");
   const [status, setStatus] = useState("");
-  const {t} = useTranslation();
+  const {t} = useTranslation("translation", {keyPrefix: "management"});
 
   const formik = useFormik({
     initialValues: {
@@ -23,41 +23,43 @@ function MessageModalForEmployee(props) {
   });
 
   function addTodo(name, message, rec) {
-    if (name !== "" && message !== "" && rec) {
+    if (name !== "" && message !== "" && rec !== "") {
       let today = getDateData();
+      console.log(name, message, today.documentStamp, today.dateStamp, rec, shopId)
       set(child(todoRef(shopId), today.documentStamp + "Todo") , {
         name: name,
         message: message,
         recipient: rec,
         date: today.date,
         dateStamp: today.dateStamp,
-        check: false
+        check: false,
+        from_employee: true
       })
       props.onHide();
     } else {
-      setStatus(`${t("management.Do not leave any empty fields.")}`);
+      setStatus(`${t("Do not leave any empty fields.")}`);
     }
   }
 
   return (
     <Modal className="inv" show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">{t("management.Send messages")}</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">{t("Send messages")}</Modal.Title>
       </Modal.Header>
       <form onSubmit={formik.handleSubmit} className="form-inline">
         <Modal.Body>
-          <p>{t("management.Send the message so that every employees can see when they check their schedule. Also, you can check the box below to send the message to all the managers instead.")}</p>
+          <p>{t("Send the message so that every employees can see when they check their schedule. Also, you can check the box below to send the message to all the managers instead.")}</p>
 
           <div className="form-outline mb-4">
-            <input type="text" id="name" name="name" className="form-control" onChange={formik.handleChange} value={formik.values.name} placeholder={t("management.Name (i.e. Tiina)")} />
+            <input type="text" id="name" name="name" className="form-control" onChange={formik.handleChange} value={formik.values.name} placeholder={t("Name (i.e. Tiina)")} />
           </div>
 
           <div className={"form-outline mb-4"}>
-            <input type="text" id="recipient" name="recipient" className="form-control" onChange={formik.handleChange} value={formik.values.recipient} placeholder={t("management.Send to... (i.e. Tiina)")} />
+            <input type="text" id="recipient" name="recipient" className="form-control" onChange={formik.handleChange} value={formik.values.recipient} placeholder={t("Send to... (i.e. Tiina)")} />
           </div>
 
           <div className="form-outline mb-4">
-            <textarea className="form-control" id="message" name="message" rows="4" onChange={formik.handleChange} value={formik.values.message} placeholder={t("management.Message (i.e. Please clean the store tomorrow)")}></textarea>
+            <textarea className="form-control" id="message" name="message" rows="4" onChange={formik.handleChange} value={formik.values.message} placeholder={t("Message (i.e. Please clean the store tomorrow)")}></textarea>
           </div>
 
           <div className="text-danger d-inline mb-4">

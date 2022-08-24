@@ -33,11 +33,13 @@ function ModalForAddRecord(props) {
   // handleTimeStamp
   function handleTimeStamp(direction, time) {
     if (time && time.trim() !== "") {
-      let dateStamp = dateHandler(props.date).dateStamp;
+      let dateStamp = props.dateStamp;
       let timeStamp = dateStamp + time;
       console.log(time, dateStamp, timeStamp);
 
-      set(child(shopRef(props.shopId), `${props.employeeID}/log_events/${timeStamp + props.employeeID}`), {
+      // console.log("path", child(shopRef(props.shopId), `${props.empId}/log_events/${timeStamp + props.empId}`).toString())
+
+      set(child(shopRef(props.shopId), `${props.empId}/log_events/${timeStamp + props.empId}`), {
         dateStamp: dateStamp,
         direction: direction,
         timeStamp: timeStamp,
@@ -54,7 +56,8 @@ function ModalForAddRecord(props) {
   }
 
   useEffect(() => {
-    console.log("reach modal")
+    console.log("reach modal", props.show)
+
   }, [props.show])
 
   return (
@@ -62,7 +65,7 @@ function ModalForAddRecord(props) {
       <Modal show={props.show} onHide={() => cancelAddRecord()}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <h5>{t("Add records for") + " " +  props.employeeName} </h5>{" "}
+            <h5>{t("Add records for") + " " +  props.dateStr} </h5>{" "}
           </Modal.Title>
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>

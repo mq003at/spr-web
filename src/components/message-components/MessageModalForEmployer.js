@@ -26,15 +26,17 @@ function MessageModalForEmployer(props) {
   });
 
   function addTodo(name, message, rec) {
-    if (name !== "" && message !== "" && rec) {
+    if (name !== "" && message !== "" && rec !== "") {
       let today = getDateData();
+      console.log(name, message, today.documentStamp, today.dateStamp, rec, shopId)
       set(child(todoRef(shopId), today.documentStamp + "Todo") , {
         name: name,
         message: message,
         recipient: rec,
         date: today.date,
         dateStamp: today.dateStamp,
-        check: false
+        check: false,
+        from_employee: false
       })
       props.onHide();
     } else {

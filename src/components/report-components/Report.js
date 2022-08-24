@@ -1,14 +1,15 @@
-import { child, onValue } from "firebase/database";
-import { createRef, useCallback, useEffect, useRef, useState } from "react";
+import { child, endAt, equalTo, onChildChanged, onValue, orderByChild, orderByValue, query, startAt } from "firebase/database";
+import { createRef, lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
-import { empRef } from "../../js/firebase_init";
+import { empRef, shopRef } from "../../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
-import ReportByPerson from "./ReportByPerson";
 import { dateArr, dateHandler } from "../../js/tool_function";
 import { CSVLink } from "react-csv";
 import { useTranslation } from "react-i18next";
+import ReportByPerson from "./ReportByPerson";
+
 
 function Report() {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -18,6 +19,8 @@ function Report() {
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
+  const [isTotal, changeTotal] = useState(localStorage.getItem("total"))
+
   const { t } = useTranslation("translation", { keyPrefix: "report" });
 
   // For CSV
@@ -31,7 +34,6 @@ function Report() {
   const addCsvLog = useCallback((log, id, date) => {
     let tempArr = [];
     let finalData = [];
-    console.log("Data receive", log, id, date);
     if (csvArr.current === 0) csvArr.current([tempArr]);
     else {
       let currentTemp = csvArr.current;
@@ -49,13 +51,13 @@ function Report() {
 
   // Handling CSV !important
   useEffect(() => {
-    const range = dateArr(startDate, endDate, "csv");
-    const today = dateHandler(new Date()).dateCSV;
-    dateRef.current[0] = [today, range];
+    if (endDate) {
+      const range = dateArr(startDate, endDate, "csv");
+      const today = dateHandler(new Date()).dateCSV;
+      dateRef.current[0] = [today, range];
+    }
   }, [startDate, endDate]);
-  useEffect(() => {
-    console.log("state", dataCsv);
-  }, [dataCsv]);
+
 
   // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)
   function csvHandler() {
@@ -90,16 +92,16 @@ function Report() {
       const watchEmpList = onValue(child(empRef(shopId), chosenGroup[0] + "/employees"), (snap) => {
         let val = snap.val();
         let tempData = [];
-        if (val === null) setEmpDataArr([{ name: "There is no employee in this group.", id: "000000" }]);
+        if (!val) setEmpDataArr([{ name: "There is no employee in this group.", id: "000000" }]);
         else {
           console.log(val);
-          Object.keys(val).forEach((key) => {
-            console.log("data", val[key].last_name);
+          Object.keys(val).forEach((key, index) => {
             tempData.push({
               name: val[key].name,
               id: val[key].tag_id,
               first_name: val[key].first_name,
               last_name: val[key].last_name,
+              index: index,
             });
           });
           tempData.sort((a, b) => a.last_name.localeCompare(b.last_name));
@@ -124,7 +126,6 @@ function Report() {
                 <input
                   readOnly
                   title={"start-date"}
-                  placeholder={startDate.toLocaleDateString("fi-FI")}
                   onClick={() => {
                     setShowStartCalendar(!showStartCalendar);
                   }}
@@ -135,7 +136,6 @@ function Report() {
                 <input
                   readOnly
                   title="end-date"
-                  placeholder={startDate.toLocaleDateString("fi-FI")}
                   onClick={() => {
                     setShowEndCalendar(!showEndCalendar);
                   }}
@@ -150,6 +150,7 @@ function Report() {
                   className={showStartCalendar ? "" : "hide"}
                   onChange={(e) => {
                     onStartDateChange(e);
+                    onEndDateChange();
                   }}
                   value={startDate}
                   maxDate={endDate}
@@ -168,18 +169,20 @@ function Report() {
         <div className="report-showcase">
           <div className="group-list">
             {groupList.length !== 0 ? (
-              <table className="report report-showcase export-report" id="export-report" ref={tableRef} data-cols-width="20,35">
+              <table className="report report-showcase export-report" id="export-report" ref={tableRef} data-cols-width="20,30,30,30">
                 <thead>
                   <tr>
                     <th colSpan={"5"} data-a-h="center" data-f-bold="true">
-                      <button className="date-range" title={t("Export the report to Excel file")} onClick={() => csvHandler()}>
-                        {dateArr(startDate, endDate, "range")}
-                      </button>
+                      {endDate && (
+                        <button className="date-range" title={t("Export the report to Excel file")} onClick={() => csvHandler()}>
+                          {dateArr(startDate, endDate, "range")}
+                        </button>
+                      )}
                     </th>
                   </tr>
                   <tr>
                     <th colSpan={"5"} data-exclude="true">
-                      {dataCsv.length > 0 && (
+                      {dataCsv.length > 0 && endDate && (
                         <div className="report-option">
                           <Button title={t("Download a preview of this report as CSV file")}>
                             <CSVLink data={dataCsv} separator=";" filename={`SPR-Report-${dateArr(startDate, endDate, "range")}.csv`} enclosingCharacter={``}>
@@ -187,8 +190,8 @@ function Report() {
                             </CSVLink>
                           </Button>
                           <div>{"    "}</div>
-                          <Button title="Click to get the Excel version" onClick={() => csvHandler()}>
-                            {t("Export as Excel File")}
+                          <Button title="Change Total's format" onClick={() => {changeTotal(!isTotal); localStorage.setItem("total", isTotal)}}>
+                            {t("Change format")}
                           </Button>
                         </div>
                       )}
@@ -215,7 +218,7 @@ function Report() {
                     </tr>
                   )}
                 </thead>
-                {empDataArr.length !== 0 &&
+                {empDataArr.length !== 0 && endDate ? (
                   empDataArr.map((data, index) => (
                     <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
                       <tr className="report table-section table-row">
@@ -223,10 +226,19 @@ function Report() {
                           <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                         </td>
                       </tr>
-                      {data.id !== "000000" && (<ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} />)}
+                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} isTotal={isTotal} />
                       <tr></tr>
                     </tbody>
-                  ))}
+                  ))
+                ) : (
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div>Please choose the date your want to search</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                )}
               </table>
             ) : (
               <div>{t("Loading Database...")}</div>

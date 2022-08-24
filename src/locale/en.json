@@ -113,7 +113,9 @@
         "Total": "Total",
         "Calculate total working hours of this employee": "Calculate total working hours of this employee",
         "hours.": "hours.",
-        "0 hour.": "0 hour."
+        "0 hour.": "0 hour.",
+        "minutes": "minutes",
+        "Change format": "Change format"
     },
     "employee": {
         "EMPLOYEE MANAGEMENT": "EMPLOYEE MANAGEMENT",
@@ -149,7 +151,11 @@
         "Change Name": "Change Name",
         "Group name": "Group name",
         "Group Delete Warning": "If you want to delete this group, make sure that every employees in this group are deleted. Press Delete only when you have deleted everyone in group <1>{{group}}</1>.",
-        "Nothing to change.":  "Nothing to change."
+        "Nothing to change.":  "Nothing to change.",
+
+        "Add employee to group": "Add employee to group",
+        "Velho's full name must be the same": "Velho's full name must be the same",
+        "Ideal Format GGYYXXXX": "Ideal Format: GGYYXXXX"
     },
     "header": {
         "LOGOUT": "LOGOUT",

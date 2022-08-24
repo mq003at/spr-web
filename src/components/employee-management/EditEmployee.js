@@ -103,7 +103,7 @@ function EditEmployees(props) {
   };
 
   return (
-    <Modal show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal show={props.show} onHide={props.onHide} id="modal-70w" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter"><Trans i18nKey={"report.Edit Title"}>Make changes to {{name: name}}</Trans></Modal.Title>
       </Modal.Header>
@@ -113,7 +113,7 @@ function EditEmployees(props) {
           <table id="addPersonTable" className="center noBorder">
             <thead>
               <tr>
-                <th></th>
+                <th width={"25%"}></th>
                 <th>{t("Old")}</th>
                 <th>{t("New")}</th>
               </tr>
@@ -163,12 +163,6 @@ function EditEmployees(props) {
             </tbody>
           </table>
           <small className="employees status">{status}</small>
-          <div>
-            <label>
-              <input type="checkbox" checked={check} onChange={() => onCheck(!check)} title={"Only for upgrading database"}/>
-              {t("Split name into First and last name?")}
-            </label>
-          </div>
         </Modal.Body>
         <Modal.Footer>
          <Button variant="secondary" onClick={props.onHide}>{t("Close")}</Button>

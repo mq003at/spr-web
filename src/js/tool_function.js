@@ -136,6 +136,25 @@ const dateHandler2 = (date, option, separator) => {
         return [hour, minute, hour * 60 + minute];
       } else return null;
     }
+    case "int": {
+      if (!separator || !date) { return null }
+      else {
+        let d = date.toString();
+        console.log(date)
+        let hour =  (d.substring(8, 10)) 
+        let minute = (d.substring(10, 12)) 
+        let second = (d.substring(12, 14)) 
+
+        let obj = {
+          fullTime: hour + separator + minute + separator + second,
+          shortTime: hour + separator + minute,
+          toInt: parseInt(hour)*60 + parseInt(minute),
+          toIntFull: parseInt(hour)*3600 + parseInt(minute)*60 + parseInt(second)
+        }
+        return obj;
+      }
+
+    }
     default:
       return null;
   }
@@ -167,4 +186,15 @@ const getDateData = () => {
   return obj;
 };
 
-export { dateHandler, dateArr, nameHandler, dateHandler2, getDateData, numToString };
+const timeConverter = (time) => {
+  const hour = Math.floor(time / 60);
+  let obj = {
+    h: Math.round(time * 100) / 6000,
+    h2: hour,
+    m: time - hour * 60 
+  }
+  console.log("tCon", time, obj)
+  return obj
+}
+
+export { dateHandler, dateArr, nameHandler, dateHandler2, getDateData, numToString, timeConverter };

@@ -346,9 +346,26 @@ body {
 .cursor-pointer {
   cursor: pointer;
 }
+.cursor-pointer.true {
+  text-decoration: underline;
+  font-style: italic;
+} 
 
 .del {
   text-decoration: line-through;
+}
+
+.darkblue {
+  color: #0000CC
+}
+.orange {
+  color: #bb671c;
+}
+.purple {
+  color: #9400d3
+}
+.red {
+  color: red;
 }
 
 tr.strikeout td:before {

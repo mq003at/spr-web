@@ -1,83 +1,46 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import ReportByDate from "./ReportByDate";
+import { Fragment, useEffect, useState, useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
+import * as FaIcons from "react-icons/fa";
+import { dateHandler, dateHandler2, timeConverter } from "../../js/tool_function";
+import { child, endAt, onValue, orderByChild, query, startAt } from "firebase/database";
+import { logSchRef, shopRef } from "../../js/firebase_init";
+import ReportTimeStamp from "./ReportTimeStamp";
+import ModalForAddRecord from "./ModalForAddRecord";
+import ModalForDeletingRecord from "./ModalForDeletingRecord";
+import ScheduleForReport from "./ScheduleForReport";
+import CompareTimeStamp from "./CompareTimeStamp";
 
 function ReportByPerson(props) {
+
   const shopId = props.shopId;
   const startDate = props.startDate;
   const endDate = props.endDate;
   const employeeID = props.employeeID;
   const employeeName = props.employeeName;
   const addCsvLog = props.addCsvLog;
+  const isTotal = props.isTotal;
 
   const [dateRange, setDateRange] = useState([]);
+  const [status, setStatus] = useState([]);
   const [hourArr, setHourArr] = useState([]);
-  const [totalHour, setTotalHour] = useState();
+  const [totalHour, setTotalHour] = useState(0);
   const [xHourArr, setXHourArr] = useState([]);
   const [totalXHour, setTotalXHour] = useState(0);
   const [scheArr, setScheArr] = useState([]);
   const [totalSchedule, setTotalSchedule] = useState(0);
-  const { t } = useTranslation("translation", {keyPrefix: "report"})
+  const [showDayModal, setShowDayModal] = useState(false);
+  const [showAddRecordToDayModal, setAddRecordToDayModal] = useState(false);
+  const tempRef = useRef();
+
+  const { t } = useTranslation("translation", { keyPrefix: "report" });
 
   // Listening to total working hours done.
-  const addHour = useCallback((hour, index) => {
-    setHourArr((hourArr) => {
-      let temp = [...hourArr];
-      if (hourArr.length > 0) {
-        temp[index] = hour;
-      }
-      console.log("temp2", temp)
-      return temp;
-    });
-  }, []);
-
-  const addSchedule = useCallback((hour, index) => {
-    setScheArr((scheArr) => {
-      let temp = [...scheArr];
-      if (scheArr.length > 0) {
-        temp[index] = hour;
-      }
-      return temp;
-    });
-  }, []);
-
-  const addXHour = useCallback((hour, index) => {
-    setXHourArr((xHourArr) => {
-      let temp = [...xHourArr];
-      if (xHourArr.length > 0) {
-        temp[index] = hour;
-      } 
-      return temp;
-    });
-  }, []);
-
-  // From the list of working hours, calculate the total hours.
-  useEffect(() => {
-    if (hourArr.length > 0) {
-      let total = 0;
-      hourArr.forEach((x) => (total = total + x));
-      setTotalHour(total);
-    }
-  }, [hourArr]);
-
-  useEffect(() => {
-    if (xHourArr.length > 0) {
-      let total = 0;
-      xHourArr.forEach((x) => (total = total + x));
-      setTotalXHour(total);
-    }
-  }, [xHourArr]);
-  useEffect(() => {
-    if (scheArr.length > 0) {
-      let total = 0;
-      scheArr.forEach((x) => (total += x));
-      setTotalSchedule(total);
-    }
-  }, [scheArr]);
 
   // Generate array from startDate to endDate
   useEffect(() => {
+    const intStart = dateHandler(startDate).dateStamp;
+    const intEnd = dateHandler(endDate).dateStamp;
     let tempArr = [];
     const start = new Date(startDate.getTime());
     const end = new Date(endDate.getTime());
@@ -90,31 +53,284 @@ function ReportByPerson(props) {
       loop = new Date(newDate);
     }
 
-    setDateRange(tempArr.map((x) => x));
-    setHourArr(new Array(tempArr.length).fill(0))
-    setXHourArr(new Array(tempArr.length).fill(0))
-    setScheArr(new Array(tempArr.length).fill(0))
-  }, [startDate, endDate]);
+    setDateRange(tempArr.map((day) => [day, dateHandler(day).dateStamp, day.toLocaleDateString("FI-fi")]));
 
-  // Generate Array
+    const eventQuery = query(child(shopRef(shopId), employeeID + "/log_events"), orderByChild("dateStamp"), startAt(intStart), endAt(intEnd));
+    const scheduleQuery = query(logSchRef(shopId, employeeID), orderByChild("dateStamp"), startAt(intStart), endAt(intEnd));
+
+    const watchEvent = onValue(eventQuery, (snap) => {
+      const eVal = snap.val();
+      let tempEvent = tempArr.map((day) => ({ date: dateHandler(day).dateStamp, events: [] }));
+      if (eVal) {
+        console.log("eVal", eVal);
+        Object.keys(eVal).forEach((key, index) => {
+          tempEvent.forEach((day) => {
+            if (day.date === eVal[key].dateStamp)
+              day.events.push({
+                dateStamp: eVal[key].dateStamp,
+                timeStamp: eVal[key].timeStamp,
+                direction: eVal[key].direction,
+              });
+          });
+        });
+      }
+      console.log("tempEvent", tempEvent);
+      setHourArr([...tempEvent]);
+    });
+
+    const watchSchedule = onValue(scheduleQuery, (snap) => {
+      const sVal = snap.val();
+      let tempSche = tempArr.map((day) => ({ date: dateHandler(day).dateStamp, schedules: [] }));
+      if (sVal) {
+        Object.keys(sVal).forEach((key) => {
+          tempSche.forEach((day) => {
+            if (day.date === sVal[key].dateStamp)
+              day.schedules.push({
+                dateStamp: sVal[key].dateStamp,
+                inStamp: sVal[key].inStamp,
+                outStamp: sVal[key].outStamp,
+                isOvertime: sVal[key].isOvertime,
+                special_status: sVal[key].special_status,
+                isWorkday: sVal[key].isWorkday,
+              });
+          });
+        });
+      }
+      console.log("sche", tempSche);
+      setScheArr([...tempSche]);
+    });
+  }, [startDate, endDate, shopId, employeeID]);
+
   useEffect(() => {
-    if (dateRange.length > 0) {
-      setHourArr(new Array(dateRange.length).fill(0));
-      setScheArr(new Array(dateRange.length).fill(0));
+    if (scheArr.length > 0) {
+      // Calculate total working hour from timestamps
+      let tempTotalSche = 0;
+      scheArr.forEach((day) => {
+        if (day.schedules.length > 0) {
+          console.log(day);
+          const dailySched = dateHandler2(day.schedules[0].outStamp, "int", ":").toInt - dateHandler2(day.schedules[0].inStamp, "int", ":").toInt;
+          tempTotalSche += dailySched;
+        }
+      });
+      setTotalSchedule(tempTotalSche);
     }
-  }, [dateRange]);
+
+    if (hourArr.length > 0) {
+      // Calculate total working hours required
+      let tempTotalHour = 0;
+      hourArr.forEach((day) => {
+        console.log(day, "e");
+        if (day.events.length > 0 ) {
+          const dayForCsv = (day.date.toString()).substring(0,4) + "-" + (day.date.toString()).substring(4,6) + "-" + (day.date.toString()).substring(6,8);
+          let csvData = []
+          day.events.forEach(record => {
+            csvData.push([employeeID, record.direction, "" , `${dayForCsv} ${dateHandler2(record.timeStamp, "int", ":").shortTime}`])
+            console.log("before", csvData, employeeID, dayForCsv)
+          })
+          addCsvLog(csvData, employeeID, dayForCsv )
+        }
+        let inArr = day.events.filter((e) => e.direction === "in");
+        let outArr = day.events.filter((e) => e.direction === "out");
+        console.log("inout", inArr, outArr);
+        if (inArr[0] && outArr[0]) tempTotalHour += dateHandler2(outArr[outArr.length - 1].timeStamp, "int", ":").toInt - dateHandler2(inArr[0].timeStamp, "int", ":").toInt;
+      });
+      setTotalHour(tempTotalHour);
+    }
+
+    if (scheArr.length > 0 && hourArr.length > 0) {
+      // Generate compared working hours and return status array
+      let tempXArr = [];
+      let total = 0;
+      console.log("array", scheArr, hourArr);
+      hourArr.forEach((day, index) => {
+        let inArr,
+          outArr,
+          inSche,
+          outSche,
+          inTime,
+          outTime,
+          isOvertime = "";
+        if (day.events.length > 0) {
+          inArr = day.events.filter((e) => e.direction === "in")[0];
+          outArr = day.events.filter((e) => e.direction === "out")[0];
+          if (inArr) inTime = inArr.timeStamp;
+          if (outArr) outTime = outArr.timeStamp;
+        }
+        if (scheArr[index].schedules.length > 0) {
+          inSche = scheArr[index].schedules[0].inStamp;
+          outSche = scheArr[index].schedules[0].outStamp;
+          isOvertime = scheArr[index].schedules[0].isOvertime;
+        }
+
+        tempXArr.push([inTime, outTime, inSche, outSche, isOvertime]);
+      });
+      let statusArr = new Array(tempXArr.length);
+      let xArr = new Array(tempXArr.length);
+      tempXArr.forEach((day, index) => {
+        if (day[0] && !day[1]) {
+          statusArr[index] = ["Working", ""];
+        } else {
+          const x = compare(day[0], day[1], day[2], day[3], day[4]);
+          xArr[index] = [x.newIn, x.newOut, x.total];
+          total += x.total;
+          statusArr[index] = [x.status, statusGen(x.status), x.timeOver];
+        }
+      });
+
+      console.log("list", xArr, statusArr, total);
+      setXHourArr([...xArr]);
+      setStatus([...statusArr]);
+      setTotalXHour(total);
+    }
+  }, [scheArr, hourArr, addCsvLog, employeeID]);
+
+  const compare = (inTime, outTime, scheIn, scheOut, isOvertime) => {
+    // Old system check
+    if (outTime && !inTime) inTime = outTime;
+
+    let timeOver = "";
+    let status = true;
+    let nIn = dateHandler2(inTime, "int", ":");
+    let nOut = dateHandler2(outTime, "int", ":");
+    let nSIn = dateHandler2(scheIn, "int", ":");
+    let nSOut = dateHandler2(scheOut, "int", ":");
+
+    if (nIn && nOut && nSIn && nSOut && nSIn.toInt !== 0 && nSOut.toInt !== 0) {
+      if (isOvertime) {
+        let logDiff = nOut.toInt - nIn.toInt;
+        let scheduleDiff = nSOut.toInt - nSIn.toInt;
+        if (logDiff > scheduleDiff) {
+          status = "Overtime";
+          timeOver = logDiff - scheduleDiff;
+        } else if (logDiff === scheduleDiff) status = true;
+        else {
+          status = false;
+          timeOver = scheduleDiff - logDiff;
+        }
+      } else {
+        if (nIn.toInt < nSIn.toInt || nIn.toInt - nSIn.toInt < 8) {
+          nIn = nSIn;
+        } else status = false;
+        if (nSOut.toInt < nOut.toInt || nSOut.toInt - nSOut.toInt < 8) {
+          nOut = nSOut;
+        } else status = false;
+      }
+    } else if ((nIn || nOut) && (!nSIn || !nSIn.toInt)) {
+      status = "Conflict";
+    } else if (nSIn && nSOut) {
+      if (nSIn.toInt === 0 && nSOut.toInt === 0) status = true;
+      else status = false;
+    }else status = true;
+
+    let obj = {
+      newIn: nIn ? nIn.shortTime : undefined,
+      newOut: nOut ? nOut.shortTime : undefined,
+      status: status,
+      timeOver: timeOver,
+      total: nIn && nOut ? nOut.toInt - nIn.toInt : 0,
+    };
+    return obj;
+  };
+
+  function showModal(modal, date, dateStr, dateStamp, empId, empName) {
+    console.log("modal", modal, date, dateStr, dateStamp, empId, empName);
+    if (modal === "add") {
+      const obj = {
+        date: date,
+        dateStr: dateStr,
+        empId: empId,
+        empName: empName,
+        dateStamp: dateStamp,
+        shopId: shopId,
+      };
+      tempRef.current = obj;
+    }
+
+    if (modal === "del") {
+      const obj = {
+        date: date,
+        dateStr: dateStr,
+        empId: empId,
+        empName: empName,
+        dateStamp: dateStamp,
+        shopId: shopId,
+      };
+      tempRef.current = obj;
+    }
+  }
+
+  const statusGen = (status) => {
+    switch (status) {
+      case false:
+        return "red";
+      case "Overtime":
+        return "darkblue";
+      case "Working":
+        return "purple";
+      case "Conflict":
+        return "orange";
+      default:
+        return "black";
+    }
+  };
 
   return (
     <Fragment>
-      {dateRange.length > 0 && dateRange.map((date, index) => <ReportByDate addH={addHour} addS={addSchedule} addX={addXHour} shopId={shopId} employeeID={employeeID} employeeName={employeeName} addCsvLog={addCsvLog} date={date} index={index} key={"RBP-" + index} />)}
+      <Fragment>
+        {showAddRecordToDayModal && <ModalForAddRecord show={showAddRecordToDayModal} onHide={() => setAddRecordToDayModal(false)} {...tempRef.current} />}
+        {showDayModal && <ModalForDeletingRecord show={showDayModal} onHide={() => setShowDayModal(false)} {...tempRef.current} />}
+      </Fragment>
+      {dateRange.length > 0 &&
+        dateRange.map((date, index) => (
+          <tr className={status.length > 0 ? `report check-status ${status[index][1]}` : `report check-status`} key={"report check-status-" + date[0] + "-" + employeeID}>
+            <td className="report table-section add-record-cell" width={"0.5%"} data-exclude={"true"}>
+              <span
+                className="report table-section date-cell add-record-part"
+                onClick={() => {
+                  setAddRecordToDayModal(true);
+                  showModal("add", date[0], date[2], date[1], employeeID, employeeName);
+                }}
+              >
+                <FaIcons.FaPlus title={<Trans i18nKey={"report.Datebox Title"}>Click to add extra record for day {{ date: date[2] }}</Trans>} />
+              </span>
+            </td>
+            <td className="report table-section date-cell" width={"10.5%"}>
+              <span
+                className="report table-section date-cell date-part"
+                onClick={() => {
+                  showModal("del", date[0], date[2], date[1], employeeID, employeeName);
+                  setShowDayModal(true);
+                }}
+                title={<Trans i18nKey={"report.Datedelete Title"}>Click to delete every record in day {{ date: date[2] }}</Trans>}
+              >
+                {date[2]}
+              </span>
+            </td>
+            <td>{hourArr.length > 0 ? <ReportTimeStamp timeStamp={hourArr[index].events} shopId={shopId} empId={employeeID} /> : <div>"Now loading..."</div>}</td>
+            <td>{xHourArr.length > 0 ? <CompareTimeStamp arr={xHourArr[index]} /> : <div>Loading...</div>}</td>
+            <td>{scheArr.length > 0 ? <ScheduleForReport sched={scheArr[index].schedules[0]} /> : <div>Loading...</div>}</td>
+          </tr>
+        ))}
       <tr className="report table-section table-row">
         <td display={"none"} data-exclude={"true"}></td>
         <td className="report table-section total-cell">
           <span title={t("Calculate total working hours of this employee")}>{t("Total")}</span>
         </td>
-        <td className="report table-section time-stamp-cell">{totalHour ? <span>{Math.round(totalHour * 100) / 100} {t("hours.")}</span> : <span>{t("0 hour.")}</span>}</td>
-        <td>{totalXHour ? <span>{Math.round(totalXHour * 100) / 100} {t("hours.")}.</span> : <span>{t("0 hour.")}</span>}</td>
-        <td>{totalSchedule ? <span>{Math.round(totalSchedule * 100) / 100} {t("hours.")}</span> : <span>{t("0 hour.")}</span>}</td>
+        <td className="report table-section time-stamp-cell">
+          <span>
+            {isTotal ? `${timeConverter(totalHour).h} ${t("hours.")}` : `${timeConverter(totalHour).h2} ${t("hours.")} ${timeConverter(totalHour).m} ${t("minutes")}.`}
+          </span>
+        </td>
+        <td>
+          <span>
+          {isTotal ? `${timeConverter(totalXHour).h} ${t("hours.")}` : `${timeConverter(totalXHour).h2} ${t("hours.")} ${timeConverter(totalXHour).m} ${t("minutes")}.`}
+          </span>
+        </td>
+        <td>
+          <span>
+          {isTotal ? `${timeConverter(totalSchedule).h} ${t("hours.")}` : `${timeConverter(totalSchedule).h2} ${t("hours.")} ${timeConverter(totalSchedule).m} ${t("minutes")}.`}
+          </span>
+        </td>
       </tr>
     </Fragment>
   );

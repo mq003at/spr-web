@@ -42,11 +42,12 @@ function Todo(props) {
             message: val[key].message,
             check: val[key].check,
             key: key,
+            from_employee: val[key].from_employee
           });
         });
         setTodoList(temp.map((x) => x));
         setBaseTodoList(temp.map((x) => x));
-      } else setTodoList([])
+      } else setTodoList([]);
     });
   }, [shopId]);
 
@@ -54,26 +55,45 @@ function Todo(props) {
   useEffect(() => {
     if (baseTodoList.length > 0) {
       let temp = [...baseTodoList];
-      temp.sort((a, b) => {
-        if (isSortByComplete) {
-          return Number(a.check) - Number(b.check);
-        }
-        if (isSortByDate) {
+      if (isSortBySender) {
+        temp.sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        });
+      }
+
+      if (isSortByRecipient) {
+        temp.sort((a, b) => {
+          return a.recipient.localeCompare(b.recipient);
+        });
+      }
+
+      if (isSortByDate) {
+        temp.sort((a, b) => {
           let dateA = new Date(a.date).getTime();
           let dateB = new Date(b.date).getTime();
           if (dateA < dateB) return -1;
           else return 1;
-        }
-        if (isSortByRecipient) {
-          return a.recipient.localeCompare(b.recipient);
-        }
-        if (isSortBySender) {
-          return a.name.localeCompare(b.name);
-        }
-      });
+        });
+      }
+
+      if (isSortByComplete) {
+        temp.sort((a, b) => {
+          return Number(a.check) - Number(b.check);
+        });
+      }
       setTodoList(() => temp.map((x) => x));
     }
   }, [isSortByComplete, isSortByDate, isSortByRecipient, isSortBySender, baseTodoList]);
+
+  const todoClassName = (todo) => {
+    if (todo) {
+      let className = "";
+      if (todo.check) className += "del ";
+      if (todo.from_employee) className += "darkblue "
+      return className;
+    } else return ""
+  }
+
   return (
     <div className="todo">
       <div className="todo title">{t("todo.TODO LIST")}</div>
@@ -81,28 +101,28 @@ function Todo(props) {
         <Table className="todo showcase" id="todo-table">
           <thead>
             <tr>
-              <th className="cursor-pointer" onClick={() => setIsSortByDate(!isSortByDate)}>
+              <th className={"cursor-pointer " + isSortByDate} onClick={() => setIsSortByDate(!isSortByDate)}>
                 {t("todo.Date")}
               </th>
-              <th className="cursor-pointer" onClick={() => setIsSortBySender(!isSortBySender)}>
+              <th className={"cursor-pointer " + isSortBySender} onClick={() => setIsSortBySender(!isSortBySender)}>
                 {" "}
                 {t("todo.Sender")}
               </th>
-              <th className="cursor-pointer" onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
+              <th className={"cursor-pointer " + isSortByRecipient} onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
                 {t("todo.Recipient")}
               </th>
               <th> {t("todo.Message")}</th>
-              <th className="cursor-pointer" onClick={() => setIsSortByComplete(!isSortByComplete)}>
+              <th className={"cursor-pointer " + isSortByComplete} onClick={() => setIsSortByComplete(!isSortByComplete)}>
                 {" "}
                 {t("todo.Complete?")}
               </th>
-              <th className="cursor-pointer"> {t("todo.Delete")}</th>
+              <th className={"cursor-pointer"}> {t("todo.Delete")}</th>
             </tr>
           </thead>
           <tbody>
             {todoList.length > 0 ? (
               todoList.map((todo, index) => (
-                <tr key={"todo-" + index} className={todo.check ? "del" : ""}>
+                <tr key={"todo-" + index} className={todoClassName(todo)}>
                   <td>{todo.date}</td>
                   <td>{todo.name}</td>
                   <td>{todo.recipient}</td>
@@ -110,7 +130,7 @@ function Todo(props) {
                   <td>
                     <input type="checkbox" checked={todo.check} onChange={() => changeTodo(todo.key, !todo.check)}></input>
                   </td>
-                  <td className="cursor-pointer" onClick={() => deleteTodo(todo.key)}>
+                  <td className={"cursor-pointer"} onClick={() => deleteTodo(todo.key)}>
                     <div>
                       <FaTrashAlt />
                     </div>

@@ -86,13 +86,13 @@ function EmployeeManagement(props) {
             </tr>
           </thead>
           <tbody>
-            {(chosenGroup.length > 0 && groupList.length > 0) &&
+            {(chosenGroup.length > 0) &&
               chosenGroup.map((group) => {
                 return (
                   <Fragment key={`schedule-gnm-${group.id}`}>
                     <tr>
                       <th colSpan={"10"}>
-                        <div className="employees group-name" onClick={() => setShowDeleteGroup(true)}>{`--- ${groupList[group.index].name} ---`}</div>
+                        <div className="employees group-name" onClick={() => setShowDeleteGroup(true)}>{`--- ${group.name} ---`}</div>
                       </th>
                     </tr>
 
