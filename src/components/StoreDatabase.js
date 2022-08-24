@@ -80,20 +80,17 @@ function StoreDatabase(props) {
         {showMessage && (
           <Alert variant="success" onClose={() => setShowMessage(false)}>
             <table className="message-table table table-striped">
-              <Alert.Heading>
-                <thead>
-                  <tr>
-                    <td>
-                      <div className="alert-header">{t("management.Message Board")}</div>
-                    </td>
-                    <td>
-                      <div className="alert-close">
-                        <Button onClick={() => setShowMessage(false)}>X</Button>
+              <thead>
+                <tr>
+                  <td id="cell-header">
+                    <Alert.Heading>
+                      <div className="alert-header" onClick={() => setShowMessage(false)}>
+                        <u>{t("management.Message Board")}</u>
                       </div>
-                    </td>
-                  </tr>
-                </thead>
-              </Alert.Heading>
+                    </Alert.Heading>
+                  </td>
+                </tr>
+              </thead>
               <tbody>
                 {modMessage.map((message, index) => (
                   <tr className="message" key={"message" + index}>

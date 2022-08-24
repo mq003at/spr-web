@@ -13,3 +13,7 @@ span#footer {
     height: 7vh;
     bottom: auto;
 }
+
+@media only screen and (max-width: 450px) {
+  
+}

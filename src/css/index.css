@@ -340,6 +340,7 @@ body {
 
 .inv::-webkit-scrollbar {
   width: 0px;
+  position: relative
 }
 
 .cursor-pointer {

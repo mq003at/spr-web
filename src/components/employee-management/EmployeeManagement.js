@@ -16,7 +16,7 @@ function EmployeeManagement(props) {
   const [showDeleteGroup, setShowDeleteGroup] = useState(false);
   const [showAddEmp, setShowAddEmp] = useState(false);
   const groupRef = useRef([]);
-  const {t} = useTranslation("translation", {keyPrefix: "employee"})
+  const { t } = useTranslation("translation", { keyPrefix: "employee" });
 
   const shopId = sessionStorage.getItem("shop_id");
 
@@ -28,7 +28,7 @@ function EmployeeManagement(props) {
         groupArr.push({
           id: key,
           name: val[key].name,
-          index: index
+          index: index,
         });
       });
       groupArr.sort((a, b) => a.name.localeCompare(b.name));
@@ -40,7 +40,7 @@ function EmployeeManagement(props) {
     if (groupList.length > 0) {
       const tempGroup = [...groupList];
       if (tempGroup.length !== groupRef.current.length) setChosenGroup([]);
-      groupRef.current = groupList
+      groupRef.current = groupList;
     }
   }, [groupList]);
 
@@ -53,20 +53,29 @@ function EmployeeManagement(props) {
         <table className="employees showcase" id="employees-table">
           <thead>
             <tr>
-              <th colSpan={"10"}>
-                <div className="employees option">
-                  <Button className="employees group-option" onClick={() => setShowAddGroup(true)}>
-                    {t("Add Group")}
-                  </Button>
-                  <div>{"   "}</div>
-                  <Button className="employees group-option" onClick={() => setShowAddEmp(true)}>
-                    {t("Add Employees")}
-                  </Button>
-                </div>
+              <th className={"employees clickbutton"} colSpan={"6"}>
+                <table id="employees-nested">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <Button className="employees group-option" onClick={() => setShowAddGroup(true)}>
+                          <div>{t("Add Group")}</div>
+                        </Button>
+                      </td>
+                      <td>
+                        <Button className="employees group-option" onClick={() => setShowAddEmp(true)}>
+                          <div>{t("Add Employees")}</div>
+                        </Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </th>
             </tr>
+          </thead>
+          <tbody>
             <tr>
-              <td colSpan={"10"}>
+              <td colSpan={"6"}>
                 <div className="employees group-list">
                   <ToggleButtonGroup className="rounded-0 mb-2 flex-wrap" variant="danger" type="checkbox" name="group-checkbox" value={chosenGroup} onChange={(group) => setChosenGroup(group)}>
                     {groupList.length > 0 ? (
@@ -84,20 +93,20 @@ function EmployeeManagement(props) {
                 </div>
               </td>
             </tr>
-          </thead>
+          </tbody>
           <tbody>
-            {(chosenGroup.length > 0) &&
+            {chosenGroup.length > 0 &&
               chosenGroup.map((group) => {
                 return (
                   <Fragment key={`schedule-gnm-${group.id}`}>
                     <tr>
-                      <th colSpan={"10"}>
+                      <th colSpan={"6"}>
                         <div className="employees group-name" onClick={() => setShowDeleteGroup(true)}>{`--- ${group.name} ---`}</div>
                       </th>
                     </tr>
 
                     <EmployeeByGroup shopId={shopId} groupId={group.id} groupList={groupList} groupName={groupList[group.index].name} />
-                    {showDeleteGroup && <ModalDeletingGroup show={showDeleteGroup} onHide={() => setShowDeleteGroup(false)} shopId={shopId} groupId={group.id} groupName={groupList[group.index].name}/>}
+                    {showDeleteGroup && <ModalDeletingGroup show={showDeleteGroup} onHide={() => setShowDeleteGroup(false)} shopId={shopId} groupId={group.id} groupName={groupList[group.index].name} />}
                   </Fragment>
                 );
               })}

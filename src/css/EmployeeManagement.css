@@ -1,55 +1,87 @@
 .employees.showcase-section {
-    display: inline-flex;
-    text-align: center;
+  display: inline-flex;
+  text-align: center;
+}
+
+.employees.title {
+  margin-top: 10%;
+  margin-bottom: 10%;
 }
 
 #employees-table {
-    text-align: center;
-    margin: 4em 3em 0em 3em;
-    background: var(--grey);
-    border: 1px solid var(--yellow-grey);
+  text-align: center;
+  margin: 4em 3em 0em 3em;
+  background: var(--grey);
+  border: 1px solid var(--yellow-grey);
+  border-spacing: 0;
+}
+#cell-header {
+  text-align: -webkit-center;
 }
 
-.employees .btn.btn-primary{
-    border-top-right-radius: 0px !important;
-    border-top-left-radius: 0px !important;
-    border-bottom-left-radius: 0px !important;
+.employees .btn.btn-primary {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
 }
 
 button.employees.group-option {
-    background: none;
-	color: blue;
-	border: none;
-	padding: 0;
-    font-weight: bold;
-    text-decoration: underline;
-    margin-right: 5em;
-    margin-left: 5em;
+  background: none;
+  color: blue;
+  border: none;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
-small.status{
-    color: red;
+#employees-nested {
+  margin: 0;
+  width: 100%;
 }
 
-.employees.option{
-    display: inline-flex;
+small.status {
+  color: red;
 }
 
-.employees.group-name:hover{
-    color: red;
-    text-decoration: underline line-through;
-    font-style: italic;
-    cursor: pointer;
+.employees.option {
+  display: inline-flex;
+}
+
+.employees.group-name:hover {
+  color: red;
+  text-decoration: underline line-through;
+  font-style: italic;
+  cursor: pointer;
 }
 
 .form-select {
-    text-align: center;
+  text-align: center;
 }
 
 input.employees.form-control {
-    text-align: center;
+  text-align: center;
 }
 
+button {
+  display: none;
+}
 #modal-70w {
-    min-width: 70%;
+  min-width: 70%;
+}
+
+.employees.clickbutton {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+#modal-emp {
+  display: none;
+}
+
+@media only screen and (max-width: 450px) {
+  #employees-table {
+    margin: 0;
+  }
+  .employees.overtime {
+    display: none;
+  }
 }

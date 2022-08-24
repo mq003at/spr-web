@@ -135,12 +135,12 @@ function EmployeeByGroup(props) {
   return (
     <>
       <tr>
-        <th>{t("Tag")}</th>
-        <th>{t("First Name")}</th>
-        <th>{t("Last Name")}</th>
-        <th>{t("Status")}</th>
-        <th>{t("In / Out")}</th>
-        <th>{t("Overtime?")}</th>
+        <th className="employees tag">{t("Tag")}</th>
+        <th className="employees fn">{t("First Name")}</th>
+        <th className="employees ln">{t("Last Name")}</th>
+        <th className="employees status">{t("Status")}</th>
+        <th className="employees inout">{t("In / Out")}</th>
+        <th className="employees overtime">{t("Overtime?")}</th>
       </tr>
 
       {empList.length === 0 ? (
@@ -152,18 +152,18 @@ function EmployeeByGroup(props) {
       ) : (
         empList.map((emp, index) => (
           <tr key={"em-ma" + index}>
-            <td onClick={() => handleClickEmp(emp)}>{emp.id}</td>
-            <td onClick={() => handleClickEmp(emp)}>{emp.fname}</td>
-            <td onClick={() => handleClickEmp(emp)}>{emp.lname}</td>
-            <td>{statusList[index] ? statusList[index] : t("Loading Status")}</td>
-            <td>{statusList[index] ? inOutButton(statusList[index], emp.id) : t("Loading Status")}</td>
-            <td>
+            <td className="employees tag" onClick={() => handleClickEmp(emp)}>{emp.id}</td>
+            <td className="employees fn" onClick={() => handleClickEmp(emp)}>{emp.fname}</td>
+            <td className="employees ln" onClick={() => handleClickEmp(emp)}>{emp.lname}</td>
+            <td className="employees status">{statusList[index] ? statusList[index] : t("Loading Status")}</td>
+            <td className="employees inout">{statusList[index] ? inOutButton(statusList[index], emp.id) : t("Loading Status")}</td>
+            <td className="employees overtime">
               <input type="checkbox" checked={overtimeList[index] ? true : false} onChange={() => changeTodayOvertime(overtimeList[index], emp.id)}></input>
             </td>
           </tr>
         ))
       )}
-      <tr>
+      <tr id="modal-emp">
         <td>{showManageEmp && <EditEmployees show={showManageEmp} onHide={() => setShowManageEmp(false)} shopId={shopId} emp={edittedEmp.current} groupList={props.groupList} />}</td>
       </tr>
     </>
