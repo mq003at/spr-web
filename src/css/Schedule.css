@@ -79,3 +79,21 @@ small.status {
 input.schedule.form-control {
   text-align: center;
 }
+
+.schedule.calendar td input {
+  text-align: center !important;
+}
+
+@media only screen and (max-width: 450px) {
+  .csv-import-cell {
+    display: none
+  }
+  #schedule-table {
+    margin: 0;
+  }
+
+  .schedule.showcase tr {
+    align-items: center;
+  }
+
+}

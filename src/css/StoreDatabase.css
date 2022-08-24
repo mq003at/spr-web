@@ -1,40 +1,73 @@
 :root {
-    --grey-hair: rgb(178, 178, 178);
+  --grey-hair: rgb(178, 178, 178);
 }
 
 .store-database {
-    overflow-y: scroll;
-    height: 85vh
+  overflow-y: scroll;
+  height: 85vh;
 }
 
-.store-database.false{
-    display: inline-block;
-    justify-items: center;
-    text-align: center;
+.store-database.false {
+  display: inline-block;
+  justify-items: center;
+  text-align: center;
 }
 
-.store-database.true{
-    justify-items: center;
-    text-align: center;
-    width: 75%;
+.store-database.true {
+  justify-items: center;
+  text-align: center;
+  width: 75%;
 }
 
 .message-section {
-    padding: 2em 4em;
-    font-size: 1em;
+  padding: 2em 4em;
+  font-size: 1em;
 }
 
 .message-table {
-    border-spacing: 0px;
-    margin-bottom: 0px;
+  border-spacing: 0px;
+  margin-bottom: 0px;
+  display: table;
+  width: 100%
 }
 
 .message-data {
+  text-align: left;
+}
+
+.message {
+  width: 100%;
+  display: inline-table;
+}
+
+.alert-close {
+    text-align: right;
+}
+.alert-close button{
+    background: none;
+    border: none;
+    color: black;
+}
+.alert-heading {
+    display: table-header-group;
+    text-align: -webkit-center;
+}
+.alert-header {
     text-align: left;
+
 }
 
-.message{
-    width: 100%;
-    display: inline-table;
+@media only screen and (max-width: 450px){
+  .message-date {
+    display: none;
+  }
+  .message-name {
+    display: none;
+  }
+  .store-database.true {
+    display: none
+  }
+  .message-section {
+    padding: 0;
+  }
 }
-

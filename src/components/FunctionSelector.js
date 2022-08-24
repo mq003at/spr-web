@@ -25,10 +25,10 @@ function FunctionSelector(props) {
       {user === "manager" ? (
         <div className="button-wrap">
           <Button title={t("Send a message to employees or to Todo List")} onClick={() => setAddMessShow(true)}>{t("Message")}</Button>
-          <Button title={t("See employee's login and logout time.")} onClick={() => navigate("./report")}>
+          <Button className="report-button" title={t("See employee's login and logout time.")} onClick={() => navigate("./report")}>
             {t("Report")}
           </Button>
-          <Button title={t("Calculate employees' number of workdays.")} onClick={() => navigate("./workday")}>
+          <Button className="workday-button" title={t("Calculate employees' number of workdays.")} onClick={() => navigate("./workday")}>
             {t("Workday Report")}
           </Button>
           <Button title={t("Employee's work schedule")} onClick={() => navigate("./schedule")}>

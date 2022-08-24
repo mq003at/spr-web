@@ -1,13 +1,26 @@
 .management {
-    text-align: left;
-    display: block;
-    top: 3.15rem;
-    height: 80%;
+  text-align: left;
+  display: block;
+  top: 3.15rem;
+  height: 80%;
 }
 
 .button-nav {
-    position: absolute;
-    top: 1.9%;
+  position: absolute;
+  top: 1.9%;
+  color: white;
+  left: 97.5%;
+}
+
+@media only screen and (max-width: 450px) {
+  .button-nav {
+    top: 2.2vh;
     color: white;
-    left: 97.5%;
+    left: 90.5%;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    height: 100%;
+  }
 }

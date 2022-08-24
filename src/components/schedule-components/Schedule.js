@@ -6,13 +6,14 @@ import { empRef } from "../../js/firebase_init";
 import { dateArr } from "../../js/tool_function";
 import ScheduleByGroup from "./ScheduleByGroup";
 import ScheduleUpload from "./ScheduleUpload";
-import "../../css/Schedule.css"
+import "../../css/Schedule.css";
 import { useTranslation } from "react-i18next";
-
+import useWindowDimensions from "../extra/WindowDimension";
 
 function Schedule() {
   const shopId = sessionStorage.getItem("shop_id");
   const maxSchedule = new Date(Date.now() + 31 * 24 * 3600 * 1000);
+  const { width } = useWindowDimensions();
 
   const [startDay, setStartDay] = useState(new Date());
   const [endDay, setEndDay] = useState(maxSchedule);
@@ -20,7 +21,7 @@ function Schedule() {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
-  const { t } = useTranslation("translation", {keyPrefix: "schedule"})
+  const { t } = useTranslation("translation", { keyPrefix: "schedule" });
 
   const [showScheduleUploadModal, setShowScheduleUploadModal] = useState(false);
 
@@ -48,37 +49,64 @@ function Schedule() {
     });
   }, [shopId]);
 
-  
-
   // Console.log
   useEffect(() => {
-    console.log(shopId)
+    console.log(shopId);
   }, [shopId]);
+
+  const showTheCalendar = () => {
+    if (width > 455)
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar picker">
+            <td>
+              <input readOnly title="start-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDay.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay.toLocaleDateString("FI-fi")} />
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar board" id="datepick-row">
+            <th>
+              <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
+            </th>
+            <th>
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={startDay} maxDate={maxSchedule} />
+            </th>
+          </tr>
+        </tbody>
+      );
+    else
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar">
+            <td>
+              <input readOnly title="start-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDay.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar" id="datepick-row">
+            <td>
+              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={endDay} maxDate={maxSchedule} />
+            </td>
+          </tr>
+        </tbody>
+      );
+  };
 
   return (
     <div className="schedule-function">
       <div className="schedule title">{t("SCHEDULE")}</div>
       <div className="calendar">
         <table border={"0"} align={"center"} className="calendar">
-          <tbody>
-            <tr className="noBorder">
-              <td>
-                <input readOnly title="start-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDay.toLocaleDateString("FI-fi")} />
-              </td>
-              <td>
-                <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay.toLocaleDateString("FI-fi")} />
-              </td>
-            </tr>
-
-            <tr className="noBorder" id="datepick-row">
-              <th>
-                <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
-              </th>
-              <th>
-                <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={startDay} maxDate={maxSchedule} />
-              </th>
-            </tr>
-          </tbody>
+          {showTheCalendar()}
         </table>
       </div>
       <hr></hr>
@@ -87,14 +115,16 @@ function Schedule() {
           <thead>
             <tr>
               <td colSpan={"2"}>
-                <div className="schedule date-range">
-                  {dateArr(startDay, endDay, "range")}
-                </div>
+                <div className="schedule date-range">{dateArr(startDay, endDay, "range")}</div>
               </td>
             </tr>
             <tr>
-              <td><Button onClick={() => setShowScheduleUploadModal(true)}>{t("Upload Schedule CSV file")}</Button></td>
-              <td><Button>{t("Export as Excel File")}</Button></td>
+              <td className="csv-import-cell">
+                <Button id="schedule-csv-button" onClick={() => setShowScheduleUploadModal(true)}>{t("Upload Schedule CSV file")}</Button>
+              </td>
+              <td>
+                <Button>{t("Export as Excel File")}</Button>
+              </td>
             </tr>
           </thead>
           <tbody>
@@ -127,15 +157,15 @@ function Schedule() {
                       <div className="group-name">{group.name}</div>
                     </th>
                   </tr>
-                    {/* Table placement for each group*/}
-                    <ScheduleByGroup shopId={shopId} groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
+                  {/* Table placement for each group*/}
+                  <ScheduleByGroup shopId={shopId} groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
                 </Fragment>
               );
             })}
           </tbody>
         </table>
       </div>
-      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)} shopId={shopId}/>}
+      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)} shopId={shopId} />}
     </div>
   );
 }

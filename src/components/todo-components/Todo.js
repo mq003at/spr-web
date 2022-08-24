@@ -5,9 +5,11 @@ import { todoRef } from "../../js/firebase_init";
 import { FaTrashAlt } from "react-icons/fa";
 import "../../css/Todo.css";
 import { useTranslation } from "react-i18next";
+import useWindowDimensions from "../extra/WindowDimension";
 
-function Todo(props) {
+function Todo() {
   const shopId = sessionStorage.getItem("shop_id");
+  const { width } = useWindowDimensions();
   const { t } = useTranslation();
 
   const [todoList, setTodoList] = useState([]);
@@ -94,43 +96,51 @@ function Todo(props) {
     } else return ""
   }
 
+  function clickTodo (todo) {
+    if (width < 455) {
+      console.log(todo)
+      changeTodo(todo.key, !todo.check)
+    }
+  }
+
   return (
     <div className="todo">
       <div className="todo title">{t("todo.TODO LIST")}</div>
+      <hr></hr>
       <div className="todo showcase-section">
         <Table className="todo showcase" id="todo-table">
           <thead>
             <tr>
-              <th className={"cursor-pointer " + isSortByDate} onClick={() => setIsSortByDate(!isSortByDate)}>
+              <th className={"todo date cursor-pointer " + isSortByDate} onClick={() => setIsSortByDate(!isSortByDate)}>
                 {t("todo.Date")}
               </th>
-              <th className={"cursor-pointer " + isSortBySender} onClick={() => setIsSortBySender(!isSortBySender)}>
+              <th className={"todo sender cursor-pointer " + isSortBySender} onClick={() => setIsSortBySender(!isSortBySender)}>
                 {" "}
                 {t("todo.Sender")}
               </th>
-              <th className={"cursor-pointer " + isSortByRecipient} onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
+              <th className={"todo rec cursor-pointer " + isSortByRecipient} onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
                 {t("todo.Recipient")}
               </th>
-              <th> {t("todo.Message")}</th>
-              <th className={"cursor-pointer " + isSortByComplete} onClick={() => setIsSortByComplete(!isSortByComplete)}>
+              <th className={"todo mess"}> {t("todo.Message")}</th>
+              <th className={"todo complete cursor-pointer " + isSortByComplete} onClick={() => setIsSortByComplete(!isSortByComplete)}>
                 {" "}
                 {t("todo.Complete?")}
               </th>
-              <th className={"cursor-pointer"}> {t("todo.Delete")}</th>
+              <th className={"todo delete cursor-pointer"}> {t("todo.Delete")}</th>
             </tr>
           </thead>
           <tbody>
             {todoList.length > 0 ? (
               todoList.map((todo, index) => (
-                <tr key={"todo-" + index} className={todoClassName(todo)}>
-                  <td>{todo.date}</td>
-                  <td>{todo.name}</td>
-                  <td>{todo.recipient}</td>
-                  <td>{todo.message}</td>
-                  <td>
+                <tr key={"todo-" + index} className={todoClassName(todo)} onClick={() => clickTodo(todo)} >
+                  <td className="todo date">{todo.date}</td>
+                  <td className="todo sender">{todo.name}</td>
+                  <td className="todo rec">{todo.recipient}</td>
+                  <td className="todo mess">{todo.message}</td>
+                  <td className="todo complete">
                     <input type="checkbox" checked={todo.check} onChange={() => changeTodo(todo.key, !todo.check)}></input>
                   </td>
-                  <td className={"cursor-pointer"} onClick={() => deleteTodo(todo.key)}>
+                  <td className={"todo delete cursor-pointer"} onClick={() => deleteTodo(todo.key)}>
                     <div>
                       <FaTrashAlt />
                     </div>

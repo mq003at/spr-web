@@ -1,43 +1,49 @@
 header {
-    display: block;
-    padding: 0.8rem;
-    color: white;
-    background: #F92424;
-    font-weight: bold;
-    text-align: left;
-    font-size: 0.8rem;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
+  display: block;
+  padding: 0.8rem;
+  color: white;
+  background: #f92424;
+  font-weight: bold;
+  text-align: left;
+  font-size: 0.8rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
-header #show-path{
-    float: left;
-    text-align: left;
-    display: flex;
+header #show-path {
+  float: left;
+  text-align: left;
+  display: flex;
 }
 
 header #extra {
-    display: block;
-    float: right;
+  display: block;
+  float: right;
 }
 
 .header {
-    padding: 3px;
-    display: inline-flex;
+  padding: 3px;
+  display: inline-flex;
 }
 
-div .header{
-    font-weight: bold;
+div .header {
+  font-weight: bold;
 }
 
 #logout {
-    margin-right: 2rem;
+  margin-right: 2rem;
 }
 
 #lang-switcher {
-    margin-right: 2rem;
-    background-color: #F92424;
-    color: white;
-    border: none;
+  margin-right: 2rem;
+  background-color: #f92424;
+  color: white;
+  border: none;
+}
+
+@media only screen and (max-width: 450px) {
+    #show-path {
+        display: none !important;
+    }
 }

@@ -1,9 +1,15 @@
 span#footer {
-    position: fixed;    
+    position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    right: 0;
+    height: auto;
+    width: 100vw;
     display: block;
-    text-align: left;
-    padding: 15px;
+    padding-top: 40px;
+}
+
+#logo-img {
+    height: 7vh;
+    bottom: auto;
 }

@@ -24,7 +24,7 @@ function Management() {
             </label>
           </div>
           <StoreDatabase sidebar={sidebar}/>
-          {/* <EmployeeList  shopChosen={shopChosen} shopId={shopId} user={user} sidebar={sidebar} /> */}
+          <EmployeeList  shopChosen={shopChosen} shopId={shopId} user={user} sidebar={sidebar} />
         </Fragment>
       );
     }

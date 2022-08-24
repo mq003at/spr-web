@@ -1,4 +1,4 @@
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { child, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -19,7 +19,7 @@ function StoreDatabase(props) {
   const [showMessage, setShowMessage] = useState(true);
   const [chosenFunction, setChosenFunction] = useState("");
   const location = useLocation();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const sidebar = props.sidebar;
   const user = sessionStorage.getItem("shop_user");
@@ -39,9 +39,9 @@ function StoreDatabase(props) {
       case "workday":
         return <ReportWorkday />;
       case "todo":
-        return <Todo />
+        return <Todo />;
       case "help":
-        return <Help />
+        return <Help />;
       default:
         return <FunctionSelector user={user} shopId={shopId} />;
     }
@@ -54,23 +54,23 @@ function StoreDatabase(props) {
       let val = snap.val();
       if (val) {
         Object.keys(val).forEach((key) => {
-          message.push([key, val[key].name, val[key].message, val[key].date])
+          message.push([key, val[key].name, val[key].message, val[key].date]);
         });
         if (message.length < 5) setModMessage([...message]);
-        else setModMessage(message.slice(message.length - 4, message.length))
+        else setModMessage(message.slice(message.length - 4, message.length));
       }
     });
   }, [shopId]);
   const deleteMess = (key) => {
-    remove(child(messRef(shopId), key))
-  }
+    remove(child(messRef(shopId), key));
+  };
 
   // Location Handler
   useEffect(() => {
     let getPath = location.pathname.split("/");
     getPath[2] ? (getPath = getPath[2]) : (getPath = "");
     const fnChoose = getPath.toString();
-    if (fnChoose === "help") setShowMessage(false)
+    if (fnChoose === "help") setShowMessage(false);
     setChosenFunction(fnChoose);
   }, [location]);
 
@@ -78,9 +78,22 @@ function StoreDatabase(props) {
     <div className={"store-database " + sidebar + " inv"}>
       <div className="message-section">
         {showMessage && (
-          <Alert variant="success" onClose = {() => setShowMessage(false)} dismissible>
-            <Alert.Heading>{t("management.Message Board")}</Alert.Heading>
+          <Alert variant="success" onClose={() => setShowMessage(false)}>
             <table className="message-table table table-striped">
+              <Alert.Heading>
+                <thead>
+                  <tr>
+                    <td>
+                      <div className="alert-header">{t("management.Message Board")}</div>
+                    </td>
+                    <td>
+                      <div className="alert-close">
+                        <Button onClick={() => setShowMessage(false)}>X</Button>
+                      </div>
+                    </td>
+                  </tr>
+                </thead>
+              </Alert.Heading>
               <tbody>
                 {modMessage.map((message, index) => (
                   <tr className="message" key={"message" + index}>

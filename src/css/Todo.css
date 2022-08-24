@@ -9,3 +9,29 @@
   background: var(--grey);
   border: 1px solid var(--yellow-grey);
 }
+
+@media only screen and (max-width: 450px) {
+  .todo.title {
+    margin-top: 10%;
+  }
+  #todo-table {
+    margin: 0;
+  }
+  .todo.date {
+    display: none
+  }
+  .todo.complete {
+    display: none
+  }
+  .todo.delete {
+    display: none
+  }
+  .todo.complete {
+    display: none
+  }}
+  .todo.sender{
+    width: 20%;
+  }
+  .todo.rec{
+    width: 20%
+  }

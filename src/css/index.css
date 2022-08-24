@@ -189,7 +189,6 @@ table#person_list td {
 .radioButtons {
   margin-top: 5px;
   margin-bottom: 0px;
-  width: 12%;
   background-color: white;
   border: none;
 }
@@ -380,6 +379,13 @@ tr.strikeout td:before {
 tr.strikeout td:after {
   content: "\00B7";
   font-size: 1px;
+}
+
+@media only screen and (max-width: 450px) {
+  tr.calendar {
+    display: grid;
+  }
+
 }
 
 
