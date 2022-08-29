@@ -6,8 +6,9 @@ import { ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
 import WorkdayByPerson from "./WorkdayByPerson";
-import { dateArr, nameHandler } from "../../js/tool_function";
+import { dateArr } from "../../js/tool_function";
 import { useTranslation } from "react-i18next";
+import useWindowDimensions from "../extra/WindowDimension";
 
 function ReportWorkday() {
   const [showStartCalendar, setShowStartCalendar] = useState(true);
@@ -19,8 +20,71 @@ function ReportWorkday() {
   const [empDataArr, setEmpDataArr] = useState([]);
   const [groupWorkday, setGroupWorkday] = useState([]);
   const [totalGroupWorkday, setTotalGroupWorkday] = useState(0);
-  const { t } = useTranslation('translation', { keyPrefix: 'report-workday' });
+  const { t } = useTranslation("translation", { keyPrefix: "report-workday" });
+  const { width } = useWindowDimensions();
 
+  const showTheCalendar = () => {
+    if (width > 455)
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar picker">
+            <td>
+              <input readOnly title="start-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDate.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar board" id="datepick-row">
+            <th>
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  onStartDateChange(e);
+                  onEndDateChange();
+                }}
+                value={startDate}
+                maxDate={endDate}
+              />
+            </th>
+            <th>
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+            </th>
+          </tr>
+        </tbody>
+      );
+    else
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar">
+            <td>
+              <input readOnly title="start-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDate.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  onStartDateChange(e);
+                  onEndDateChange();
+                }}
+                value={startDate}
+                maxDate={endDate}
+              />
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar" id="datepick-row">
+            <td>
+              <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
+            </td>
+            <td>
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+            </td>
+          </tr>
+        </tbody>
+      );
+  };
 
   // For Excel
   const csvArr = useRef([]);
@@ -91,7 +155,7 @@ function ReportWorkday() {
               name: val[key].name,
               id: val[key].tag_id,
               first_name: val[key].first_name,
-              last_name: val[key].last_name
+              last_name: val[key].last_name,
             });
           });
           tempData.sort((a, b) => a.last_name.localeCompare(b.last_name));
@@ -105,47 +169,8 @@ function ReportWorkday() {
     <div className="report">
       <div className="date-picker-section">
         <div className="report title">{t("WORKDAY REPORT")}</div>
-        <table border={"0"} align={"center"}>
-          <tbody>
-            <tr className="noBorder">
-              <th>{t("From")}</th>
-              <th>{t("To")}</th>
-            </tr>
-            <tr className="noBorder" id="datepick-row">
-              <th>
-                <input
-                  readOnly
-                  title={"start-date"}
-                  placeholder={startDate.toLocaleDateString("fi-FI")}
-                  onClick={() => {
-                    setShowStartCalendar(!showStartCalendar);
-                  }}
-                  value={startDate.toLocaleDateString("fi-FI")}
-                ></input>
-              </th>
-              <th>
-                <input
-                  readOnly
-                  title="end-date"
-                  placeholder={startDate.toLocaleDateString("fi-FI")}
-                  onClick={() => {
-                    setShowEndCalendar(!showEndCalendar);
-                  }}
-                  value={endDate.toLocaleDateString("fi-FI")}
-                ></input>
-              </th>
-            </tr>
-            <tr className="noBorder">
-              <th>
-                {" "}
-                <Calendar className={showStartCalendar ? "" : "hide"} onChange={onStartDateChange} value={startDate} maxDate={endDate}></Calendar>
-              </th>
-              <th>
-                {" "}
-                <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate} minDate={startDate}></Calendar>
-              </th>
-            </tr>
-          </tbody>
+        <table border={"0"} align={"center"} className="calendar">
+          {showTheCalendar()}
         </table>
       </div>
 
@@ -158,9 +183,11 @@ function ReportWorkday() {
                 <thead>
                   <tr>
                     <th colSpan={"4"} data-a-h="center" data-f-bold="true">
-                      <button className="date-range" title="Click me to export the report to Excel file" onClick={() => csvHandler()}>
-                        {dateArr(startDate, endDate, "range")}
-                      </button>
+                      {endDate && (
+                        <button className="date-range" title="Click me to export the report to Excel file" onClick={() => csvHandler()}>
+                          {dateArr(startDate, endDate, "range")}
+                        </button>
+                      )}
                     </th>
                   </tr>
                   <tr data-exclude="true">
@@ -186,24 +213,36 @@ function ReportWorkday() {
                 </thead>
                 {empDataArr.length > 0 ? (
                   <Fragment>
-                    {empDataArr.map((data, index) => (
-                      <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
-                        <tr className="report table-section table-row">
-                          <td className="report table-section emp-name" colSpan={"4"} data-f-bold={true}>
-                            <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
+                    {endDate ? (
+                      <Fragment>
+                        {empDataArr.map((data, index) => (
+                          <tbody key={"report-emp-" + data.id} className="report-tbody" id={"emp-" + data.id}>
+                            <tr className="report table-section table-row">
+                              <td className="report table-section emp-name" colSpan={"4"} data-f-bold={true}>
+                                <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
+                              </td>
+                            </tr>
+                            <WorkdayByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
+                            <tr></tr>
+                          </tbody>
+                        ))}
+                        <tbody>
+                          <tr className="report group-total">
+                            <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>
+                              {t("Group's total workday:")} {totalGroupWorkday}.
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Fragment>
+                    ) : (
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div>Please choose the date your want to search</div>
                           </td>
                         </tr>
-                        <WorkdayByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
-                        <tr></tr>
                       </tbody>
-                    ))}
-                    <tbody>
-                      <tr className="report group-total">
-                        <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>
-                        {t("Group's total workday:")} {totalGroupWorkday}.
-                        </td>
-                      </tr>
-                    </tbody>
+                    )}
                   </Fragment>
                 ) : (
                   <tbody>

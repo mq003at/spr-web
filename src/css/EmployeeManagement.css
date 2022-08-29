@@ -3,11 +3,6 @@
   text-align: center;
 }
 
-.employees.title {
-  margin-top: 10%;
-  margin-bottom: 10%;
-}
-
 #employees-table {
   text-align: center;
   margin: 4em 3em 0em 3em;
@@ -61,9 +56,6 @@ input.employees.form-control {
   text-align: center;
 }
 
-button {
-  display: none;
-}
 #modal-70w {
   min-width: 70%;
 }

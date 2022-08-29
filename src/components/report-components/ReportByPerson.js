@@ -103,9 +103,10 @@ function ReportByPerson(props) {
 
   useEffect(() => {
     if (scheArr.length > 0) {
+      const scheArrCopy = [...scheArr];
       // Calculate total working hour from timestamps
       let tempTotalSche = 0;
-      scheArr.forEach((day) => {
+      scheArrCopy.forEach((day) => {
         if (day.schedules.length > 0) {
           console.log(day);
           const dailySched = dateHandler2(day.schedules[0].outStamp, "int", ":").toInt - dateHandler2(day.schedules[0].inStamp, "int", ":").toInt;
@@ -138,10 +139,10 @@ function ReportByPerson(props) {
     }
 
     if (scheArr.length > 0 && hourArr.length > 0) {
+      const scheArrCopy = [...scheArr];
       // Generate compared working hours and return status array
       let tempXArr = [];
       let total = 0;
-      console.log("array", scheArr, hourArr);
       hourArr.forEach((day, index) => {
         let inArr,
           outArr,
@@ -156,10 +157,10 @@ function ReportByPerson(props) {
           if (inArr) inTime = inArr.timeStamp;
           if (outArr) outTime = outArr.timeStamp;
         }
-        if (scheArr[index].schedules.length > 0) {
-          inSche = scheArr[index].schedules[0].inStamp;
-          outSche = scheArr[index].schedules[0].outStamp;
-          isOvertime = scheArr[index].schedules[0].isOvertime;
+        if (scheArrCopy[index] && scheArrCopy[index].schedules.length > 0) {
+          inSche = scheArrCopy[index].schedules[0].inStamp;
+          outSche = scheArrCopy[index].schedules[0].outStamp;
+          isOvertime = scheArrCopy[index].schedules[0].isOvertime;
         }
 
         tempXArr.push([inTime, outTime, inSche, outSche, isOvertime]);
@@ -282,7 +283,7 @@ function ReportByPerson(props) {
       </Fragment>
       {dateRange.length > 0 &&
         dateRange.map((date, index) => (
-          <tr className={status.length > 0 ? `report check-status ${status[index][1]}` : `report check-status`} key={"report check-status-" + date[0] + "-" + employeeID}>
+          <tr className={(status && status.length > 0) ? ((status[index] && status[index].length) > 0 && `report check-status ${status[index][1]}`)  : `report check-status`} key={"report check-status-" + date[0] + "-" + employeeID}>
             <td className="report table-section add-record-cell" width={"0.5%"} data-exclude={"true"}>
               <span
                 className="report table-section date-cell add-record-part"
@@ -306,9 +307,9 @@ function ReportByPerson(props) {
                 {date[2]}
               </span>
             </td>
-            <td>{hourArr.length > 0 ? <ReportTimeStamp timeStamp={hourArr[index].events} shopId={shopId} empId={employeeID} /> : <div>"Now loading..."</div>}</td>
-            <td>{xHourArr.length > 0 ? <CompareTimeStamp arr={xHourArr[index]} /> : <div>Loading...</div>}</td>
-            <td>{scheArr.length > 0 ? <ScheduleForReport sched={scheArr[index].schedules[0]} /> : <div>Loading...</div>}</td>
+            <td className="report table-section record-part">{(hourArr && hourArr.length) > 0 ? <ReportTimeStamp timeStamp={hourArr[index].events} shopId={shopId} empId={employeeID} /> : <div>"Now loading..."</div>}</td>
+            <td className="report table-section compare-part">{(xHourArr && xHourArr.length) > 0 ? <CompareTimeStamp arr={xHourArr[index]} /> : <div>Loading...</div>}</td>
+            <td className="report table-section schedule-part">{(scheArr && scheArr.length > 0 && scheArr[index] && scheArr[index].schedules.length > 0) ? <ScheduleForReport sched={scheArr[index].schedules[0]} /> : <div>Loading...</div>}</td>
           </tr>
         ))}
       <tr className="report table-section table-row">
@@ -321,12 +322,12 @@ function ReportByPerson(props) {
             {isTotal ? `${timeConverter(totalHour).h} ${t("hours.")}` : `${timeConverter(totalHour).h2} ${t("hours.")} ${timeConverter(totalHour).m} ${t("minutes")}.`}
           </span>
         </td>
-        <td>
+        <td className="report table-section compare-part">
           <span>
           {isTotal ? `${timeConverter(totalXHour).h} ${t("hours.")}` : `${timeConverter(totalXHour).h2} ${t("hours.")} ${timeConverter(totalXHour).m} ${t("minutes")}.`}
           </span>
         </td>
-        <td>
+        <td className="report table-section schedule-part">
           <span>
           {isTotal ? `${timeConverter(totalSchedule).h} ${t("hours.")}` : `${timeConverter(totalSchedule).h2} ${t("hours.")} ${timeConverter(totalSchedule).m} ${t("minutes")}.`}
           </span>

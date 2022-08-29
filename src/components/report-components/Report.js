@@ -9,6 +9,7 @@ import { dateArr, dateHandler } from "../../js/tool_function";
 import { CSVLink } from "react-csv";
 import { useTranslation } from "react-i18next";
 import ReportByPerson from "./ReportByPerson";
+import useWindowDimensions from "../extra/WindowDimension";
 
 
 function Report() {
@@ -19,7 +20,9 @@ function Report() {
   const [groupList, setGroupList] = useState([]);
   const [chosenGroup, setChosenGroup] = useState([]);
   const [empDataArr, setEmpDataArr] = useState([]);
-  const [isTotal, changeTotal] = useState(localStorage.getItem("total"))
+  const [isTotal, changeTotal] = useState(localStorage.getItem("total"));
+  const { width } = useWindowDimensions();
+
 
   const { t } = useTranslation("translation", { keyPrefix: "report" });
 
@@ -69,6 +72,53 @@ function Report() {
     });
   }
 
+  const showTheCalendar = () => {
+    if (width > 455)
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar picker">
+            <td>
+              <input readOnly title="start-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDate.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+              <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar board" id="datepick-row">
+            <th>
+              <Calendar className={showStartCalendar ? "" : "hide"} onChange={(e) => {onStartDateChange(e); onEndDateChange()}} value={startDate} maxDate={endDate}/>
+            </th>
+            <th>
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+            </th>
+          </tr>
+        </tbody>
+      );
+    else
+      return (
+        <tbody>
+          <tr className="noBorder schedule calendar">
+            <td>
+              <input readOnly title="start-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDate.toLocaleDateString("FI-fi")} />
+            </td>
+            <td>
+            <Calendar className={showStartCalendar ? "" : "hide"} onChange={(e) => {onStartDateChange(e); onEndDateChange()}} value={startDate} maxDate={endDate}/>
+            </td>
+          </tr>
+
+          <tr className="noBorder schedule calendar" id="datepick-row">
+            <td>
+              <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
+            </td>
+            <td>
+            <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+            </td>
+          </tr>
+        </tbody>
+      );
+  };
+
   // Getting the groups
   useEffect(() => {
     onValue(empRef(shopId), (snap) => {
@@ -115,53 +165,8 @@ function Report() {
     <div className="report">
       <div className="date-picker-section">
         <div className="report title">{t("REPORT")}</div>
-        <table border={"0"} align={"center"}>
-          <tbody>
-            <tr className="noBorder">
-              <th>{t("From")}</th>
-              <th>{t("To")}</th>
-            </tr>
-            <tr className="noBorder" id="datepick-row">
-              <th>
-                <input
-                  readOnly
-                  title={"start-date"}
-                  onClick={() => {
-                    setShowStartCalendar(!showStartCalendar);
-                  }}
-                  value={startDate.toLocaleDateString("fi-FI")}
-                ></input>
-              </th>
-              <th>
-                <input
-                  readOnly
-                  title="end-date"
-                  onClick={() => {
-                    setShowEndCalendar(!showEndCalendar);
-                  }}
-                  value={endDate ? endDate.toLocaleDateString("fi-FI") : ""}
-                ></input>
-              </th>
-            </tr>
-            <tr className="noBorder">
-              <th>
-                {" "}
-                <Calendar
-                  className={showStartCalendar ? "" : "hide"}
-                  onChange={(e) => {
-                    onStartDateChange(e);
-                    onEndDateChange();
-                  }}
-                  value={startDate}
-                  maxDate={endDate}
-                ></Calendar>
-              </th>
-              <th>
-                {" "}
-                <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate} minDate={startDate}></Calendar>
-              </th>
-            </tr>
-          </tbody>
+        <table border={"0"} align={"center"} className="calendar">
+          {showTheCalendar()}
         </table>
       </div>
       <hr></hr>
