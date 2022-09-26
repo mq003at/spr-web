@@ -29,7 +29,6 @@ function dateHandler(date) {
 
 // Function generating array from startDay to endDay
 const dateArr = (startDay, endDay, mode) => {
-  console.log(startDay, endDay, mode)
   if (mode === "arr") {
     let tempArr = [];
     const start = new Date(startDay.getTime());
@@ -66,7 +65,6 @@ const nameHandler = (name, option) => {
       const data = name.split(",");
       let firstN = data[1].split(" ");
       let lastN = data[0].split(" ");
-      console.log(firstN, lastN);
 
       return `${firstN[1]} ${lastN[0]}`;
     }
@@ -140,7 +138,6 @@ const dateHandler2 = (date, option, separator) => {
       if (!separator || !date) { return null }
       else {
         let d = date.toString();
-        console.log(date)
         let hour =  (d.substring(8, 10)) 
         let minute = (d.substring(10, 12)) 
         let second = (d.substring(12, 14)) 
@@ -189,11 +186,10 @@ const getDateData = () => {
 const timeConverter = (time) => {
   const hour = Math.floor(time / 60);
   let obj = {
-    h: Math.round(time * 100) / 6000,
+    h: Math.round((time / 60) * 100) / 100,
     h2: hour,
     m: time - hour * 60 
   }
-  console.log("tCon", time, obj)
   return obj
 }
 

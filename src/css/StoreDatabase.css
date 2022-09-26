@@ -28,7 +28,12 @@
   border-spacing: 0px;
   margin-bottom: 0px;
   display: table;
-  width: 100%
+  width: 100%;
+  table-layout: fixed;
+}
+
+.message-table td {
+  word-break: break-all;
 }
 
 .message-data {

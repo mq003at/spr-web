@@ -13,7 +13,6 @@ function User(props) {
   const [userSession, setUserSession] = useState(user);
 
   const setUserContext = (userContext) => {
-    console.log(userSession);
     setUserSession({ ...userSession, ...userContext });
   };
 

@@ -98,7 +98,6 @@ function Todo() {
 
   function clickTodo (todo) {
     if (width < 455) {
-      console.log(todo)
       changeTodo(todo.key, !todo.check)
     }
   }

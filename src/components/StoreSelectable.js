@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { Button } from "react-bootstrap";
 
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 function StoreSelectable() {
   let navigate = useNavigate();
@@ -105,7 +105,7 @@ function StoreSelectable() {
           </tbody>
         </table>
 
-        <div className="ui labeled input" align="center">
+        <div className="ui labeled input pinBox" align="center">
           <div className="ui label" align="center">
             PIN
           </div>
@@ -116,9 +116,9 @@ function StoreSelectable() {
         </div>
       </form>
 
-      <div className="mt-2" align="center">
+      {/* <div className="mt-2" align="center">
         <Button onClick={portUserPin()}>User PIN</Button>
-      </div>
+      </div> */}
     </div>
   );
 }

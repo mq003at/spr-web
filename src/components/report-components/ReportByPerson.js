@@ -62,7 +62,6 @@ function ReportByPerson(props) {
       const eVal = snap.val();
       let tempEvent = tempArr.map((day) => ({ date: dateHandler(day).dateStamp, events: [] }));
       if (eVal) {
-        console.log("eVal", eVal);
         Object.keys(eVal).forEach((key, index) => {
           tempEvent.forEach((day) => {
             if (day.date === eVal[key].dateStamp)
@@ -74,7 +73,6 @@ function ReportByPerson(props) {
           });
         });
       }
-      console.log("tempEvent", tempEvent);
       setHourArr([...tempEvent]);
     });
 
@@ -96,7 +94,6 @@ function ReportByPerson(props) {
           });
         });
       }
-      console.log("sche", tempSche);
       setScheArr([...tempSche]);
     });
   }, [startDate, endDate, shopId, employeeID]);
@@ -108,7 +105,6 @@ function ReportByPerson(props) {
       let tempTotalSche = 0;
       scheArrCopy.forEach((day) => {
         if (day.schedules.length > 0) {
-          console.log(day);
           const dailySched = dateHandler2(day.schedules[0].outStamp, "int", ":").toInt - dateHandler2(day.schedules[0].inStamp, "int", ":").toInt;
           tempTotalSche += dailySched;
         }
@@ -120,19 +116,18 @@ function ReportByPerson(props) {
       // Calculate total working hours required
       let tempTotalHour = 0;
       hourArr.forEach((day) => {
-        console.log(day, "e");
         if (day.events.length > 0 ) {
           const dayForCsv = (day.date.toString()).substring(0,4) + "-" + (day.date.toString()).substring(4,6) + "-" + (day.date.toString()).substring(6,8);
           let csvData = []
           day.events.forEach(record => {
-            csvData.push([employeeID, record.direction, "" , `${dayForCsv} ${dateHandler2(record.timeStamp, "int", ":").shortTime}`])
-            console.log("before", csvData, employeeID, dayForCsv)
+            let numDirection = 0;
+            if (record.direction === "in") numDirection = 1;
+            csvData.push([employeeID, numDirection, "" , `${dayForCsv} ${dateHandler2(record.timeStamp, "int", ":").shortTime}`])
           })
           addCsvLog(csvData, employeeID, dayForCsv )
         }
         let inArr = day.events.filter((e) => e.direction === "in");
         let outArr = day.events.filter((e) => e.direction === "out");
-        console.log("inout", inArr, outArr);
         if (inArr[0] && outArr[0]) tempTotalHour += dateHandler2(outArr[outArr.length - 1].timeStamp, "int", ":").toInt - dateHandler2(inArr[0].timeStamp, "int", ":").toInt;
       });
       setTotalHour(tempTotalHour);
@@ -178,7 +173,6 @@ function ReportByPerson(props) {
         }
       });
 
-      console.log("list", xArr, statusArr, total);
       setXHourArr([...xArr]);
       setStatus([...statusArr]);
       setTotalXHour(total);
@@ -234,7 +228,6 @@ function ReportByPerson(props) {
   };
 
   function showModal(modal, date, dateStr, dateStamp, empId, empName) {
-    console.log("modal", modal, date, dateStr, dateStamp, empId, empName);
     if (modal === "add") {
       const obj = {
         date: date,
@@ -307,9 +300,9 @@ function ReportByPerson(props) {
                 {date[2]}
               </span>
             </td>
-            <td className="report table-section record-part">{(hourArr && hourArr.length) > 0 ? <ReportTimeStamp timeStamp={hourArr[index].events} shopId={shopId} empId={employeeID} /> : <div>"Now loading..."</div>}</td>
-            <td className="report table-section compare-part">{(xHourArr && xHourArr.length) > 0 ? <CompareTimeStamp arr={xHourArr[index]} /> : <div>Loading...</div>}</td>
-            <td className="report table-section schedule-part">{(scheArr && scheArr.length > 0 && scheArr[index] && scheArr[index].schedules.length > 0) ? <ScheduleForReport sched={scheArr[index].schedules[0]} /> : <div>Loading...</div>}</td>
+            <td className="report table-section record-part">{(hourArr && hourArr.length) > 0 ? <ReportTimeStamp timeStamp={hourArr[index].events} shopId={shopId} empId={employeeID} /> : <div>{t("Loading database...")}</div>}</td>
+            <td className="report table-section compare-part">{(xHourArr && xHourArr.length) > 0 ? <CompareTimeStamp arr={xHourArr[index]} /> : <div>{t("Loading database...")}</div>}</td>
+            <td className="report table-section schedule-part">{(scheArr && scheArr.length > 0 && scheArr[index] && scheArr[index].schedules.length > 0) ? <ScheduleForReport sched={scheArr[index].schedules[0]} /> : <div></div>}</td>
           </tr>
         ))}
       <tr className="report table-section table-row">
@@ -319,17 +312,17 @@ function ReportByPerson(props) {
         </td>
         <td className="report table-section time-stamp-cell">
           <span>
-            {isTotal ? `${timeConverter(totalHour).h} ${t("hours.")}` : `${timeConverter(totalHour).h2} ${t("hours.")} ${timeConverter(totalHour).m} ${t("minutes")}.`}
+            {isTotal ? `${timeConverter(totalHour).h} ${t("hours")}` : `${timeConverter(totalHour).h2} ${t("hours")}, ${timeConverter(totalHour).m} ${t("minutes")}.`}
           </span>
         </td>
         <td className="report table-section compare-part">
           <span>
-          {isTotal ? `${timeConverter(totalXHour).h} ${t("hours.")}` : `${timeConverter(totalXHour).h2} ${t("hours.")} ${timeConverter(totalXHour).m} ${t("minutes")}.`}
+          {isTotal ? `${timeConverter(totalXHour).h} ${t("hours")}` : `${timeConverter(totalXHour).h2} ${t("hours")}, ${timeConverter(totalXHour).m} ${t("minutes")}.`}
           </span>
         </td>
         <td className="report table-section schedule-part">
           <span>
-          {isTotal ? `${timeConverter(totalSchedule).h} ${t("hours.")}` : `${timeConverter(totalSchedule).h2} ${t("hours.")} ${timeConverter(totalSchedule).m} ${t("minutes")}.`}
+          {isTotal ? `${timeConverter(totalSchedule).h} ${t("hours")}` : `${timeConverter(totalSchedule).h2} ${t("hours")}, ${timeConverter(totalSchedule).m} ${t("minutes")}.`}
           </span>
         </td>
       </tr>

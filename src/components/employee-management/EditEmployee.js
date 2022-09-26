@@ -17,7 +17,6 @@ function EditEmployees(props) {
   const name = emp.name;
 
   const [status, setStatus] = useState("");
-  const [check, onCheck] = useState(false);
   const {t} = useTranslation("translation", {keyPrefix: "employee"})
 
 
@@ -30,16 +29,9 @@ function EditEmployees(props) {
       empFullName: name,
     },
     onSubmit: (values) => {
-      console.log("Props", props.emp, groupId, id);
-      if (!check) {
+        console.log("props", props);
+        console.log("values", values)
         handleEditEmp(values.empFirstName, values.empLastName, values.empTagId, values.groupId, values.empFullName);
-      } else {
-        let nameArr = values.empFirstName.split(" ");
-        let fn = nameArr[0];
-        let ln = nameArr[1];
-        console.log(fn, ln, "fl");
-        handleEditEmp(fn, ln, values.empTagId, values.groupId, values.empFullName);
-      }
     },
   });
 

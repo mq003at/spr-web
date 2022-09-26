@@ -28,7 +28,6 @@ function MessageModalForEmployer(props) {
   function addTodo(name, message, rec) {
     if (name !== "" && message !== "" && rec !== "") {
       let today = getDateData();
-      console.log(name, message, today.documentStamp, today.dateStamp, rec, shopId)
       set(child(todoRef(shopId), today.documentStamp + "Todo") , {
         name: name,
         message: message,
@@ -58,9 +57,6 @@ function MessageModalForEmployer(props) {
     }
   }
 
-  useEffect(() => {
-    console.log(isTodo, "isTodo");
-  }, [isTodo]);
   return (
     <Modal className="inv" show={props.show} onHide={props.onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>

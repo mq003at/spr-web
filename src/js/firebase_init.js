@@ -14,10 +14,6 @@ const config = {
 const app = initializeApp(config);
 const db = getDatabase(app);
 const dbRef = ref(db);
-// get(child(dbRef, "shop_data")).then((snap) => {
-// 	if(snap.exists) console.log(snap.val());
-// 	else console.log("No data");
-// })
 
 const employeePath = (shopId) => "shop_data/" + shopId + "/employee_data/";
 const shopPath = (shopId) => "shop_events/" + shopId + "/authorised_id/";

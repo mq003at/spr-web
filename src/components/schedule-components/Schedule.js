@@ -27,10 +27,12 @@ function Schedule() {
 
   // Date checker (in case glass breaks)
   useEffect(() => {
-    if (startDay.getTime() > endDay.getTime()) {
-      const temp = startDay;
-      setStartDay(endDay);
-      setEndDay(temp);
+    if (startDay && endDay) {
+      if (startDay.getTime() > endDay.getTime()) {
+        const temp = startDay;
+        setStartDay(endDay);
+        setEndDay(temp);
+      }
     }
   }, [startDay, endDay]);
 
@@ -49,11 +51,6 @@ function Schedule() {
     });
   }, [shopId]);
 
-  // Console.log
-  useEffect(() => {
-    console.log(shopId);
-  }, [shopId]);
-
   const showTheCalendar = () => {
     if (width > 455)
       return (
@@ -63,16 +60,23 @@ function Schedule() {
               <input readOnly title="start-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDay.toLocaleDateString("FI-fi")} />
             </td>
             <td>
-              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay.toLocaleDateString("FI-fi")} />
+              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay ? endDay.toLocaleDateString("FI-fi") : ""} />
             </td>
           </tr>
 
           <tr className="noBorder schedule calendar board" id="datepick-row">
             <th>
-              <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  setStartDay(e);
+                  setEndDay();
+                }}
+                value={startDay}
+              />
             </th>
             <th>
-              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={startDay} maxDate={maxSchedule} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={endDay ? endDay : ""} maxDate={maxSchedule} />
             </th>
           </tr>
         </tbody>
@@ -85,16 +89,23 @@ function Schedule() {
               <input readOnly title="start-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDay.toLocaleDateString("FI-fi")} />
             </td>
             <td>
-              <Calendar className={showStartCalendar ? "" : "hide"} onChange={setStartDay} value={startDay} />
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  setStartDay(e);
+                  setEndDay();
+                }}
+                value={startDay}
+              />
             </td>
           </tr>
 
           <tr className="noBorder schedule calendar" id="datepick-row">
             <td>
-              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay.toLocaleDateString("FI-fi")} />
+              <input readOnly title="end-day" placeholder={startDay.toLocaleString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDay ? endDay.toLocaleDateString("FI-fi") : ""} />
             </td>
             <td>
-              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={endDay} maxDate={maxSchedule} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={setEndDay} value={endDay ? endDay : ""} maxDate={maxSchedule} />
             </td>
           </tr>
         </tbody>
@@ -114,13 +125,13 @@ function Schedule() {
         <table className="schedule showcase" id="schedule-table">
           <thead>
             <tr>
-              <td colSpan={"2"}>
-                <div className="schedule date-range">{dateArr(startDay, endDay, "range")}</div>
-              </td>
+              <td colSpan={"2"}>{endDay && <div className="schedule date-range">{dateArr(startDay, endDay, "range")}</div>}</td>
             </tr>
             <tr>
               <td className="csv-import-cell">
-                <Button id="schedule-csv-button" onClick={() => setShowScheduleUploadModal(true)}>{t("Upload Schedule CSV file")}</Button>
+                <Button id="schedule-csv-button" onClick={() => setShowScheduleUploadModal(true)}>
+                  {t("Upload Schedule CSV file")}
+                </Button>
               </td>
               <td>
                 <Button>{t("Export as Excel File")}</Button>
@@ -149,19 +160,27 @@ function Schedule() {
             </tr>
           </tbody>
           <tbody>
-            {chosenGroup.map((group, index) => {
-              return (
-                <Fragment key={`schedule-gnm-${group.id}`}>
-                  <tr>
-                    <th colSpan={"2"}>
-                      <div className="group-name">{group.name}</div>
-                    </th>
-                  </tr>
-                  {/* Table placement for each group*/}
-                  <ScheduleByGroup shopId={shopId} groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
-                </Fragment>
-              );
-            })}
+            {endDay ? (
+              chosenGroup.map((group, index) => {
+                return (
+                  <Fragment key={`schedule-gnm-${group.id}`}>
+                    <tr>
+                      <th colSpan={"2"}>
+                        <div className="group-name">{group.name}</div>
+                      </th>
+                    </tr>
+                    {/* Table placement for each group*/}
+                    <ScheduleByGroup shopId={shopId} groupName={group.name} groupId={group.id} startDay={startDay} endDay={endDay} />
+                  </Fragment>
+                );
+              })
+            ) : (
+              <tr>
+                <td>
+                  <div>{t("Please enter end date")}</div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

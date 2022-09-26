@@ -49,7 +49,7 @@ function ReportWorkday() {
               />
             </th>
             <th>
-              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate && endDate} minDate={startDate} />
             </th>
           </tr>
         </tbody>
@@ -79,7 +79,7 @@ function ReportWorkday() {
               <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
             </td>
             <td>
-              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate && endDate} minDate={startDate} />
             </td>
           </tr>
         </tbody>
@@ -128,7 +128,7 @@ function ReportWorkday() {
       let temp = [...groupWorkday];
       if (groupWorkday.length > 0) {
         temp[index] = day;
-      }
+      } 
       return temp;
     });
   }, []);
@@ -222,14 +222,14 @@ function ReportWorkday() {
                                 <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                               </td>
                             </tr>
-                            <WorkdayByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
+                            <WorkdayByPerson position={index} startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} shopId={shopId} toGroupArr={toGroupArr} index={index} />
                             <tr></tr>
                           </tbody>
                         ))}
                         <tbody>
                           <tr className="report group-total">
                             <td colSpan={"4"} data-f-color="FF0000" data-f-bold={true}>
-                              {t("Group's total workday:")} {totalGroupWorkday}.
+                              {t("Group's total workday")} {totalGroupWorkday}.
                             </td>
                           </tr>
                         </tbody>
@@ -238,7 +238,7 @@ function ReportWorkday() {
                       <tbody>
                         <tr>
                           <td>
-                            <div>Please choose the date your want to search</div>
+                            <div>{t("Please enter end date")}</div>
                           </td>
                         </tr>
                       </tbody>

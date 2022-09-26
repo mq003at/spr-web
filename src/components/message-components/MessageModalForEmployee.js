@@ -25,7 +25,6 @@ function MessageModalForEmployee(props) {
   function addTodo(name, message, rec) {
     if (name !== "" && message !== "" && rec !== "") {
       let today = getDateData();
-      console.log(name, message, today.documentStamp, today.dateStamp, rec, shopId)
       set(child(todoRef(shopId), today.documentStamp + "Todo") , {
         name: name,
         message: message,

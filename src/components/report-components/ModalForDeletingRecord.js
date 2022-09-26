@@ -12,10 +12,8 @@ function ModalForDeletingRecord(props) {
     const qDay = query(child(shopRef(props.shopId), `${id}/log_events/`), orderByChild("dateStamp"), equalTo(dateStamp));
     get(qDay).then((snap) => {
       let val = snap.val();
-      console.log(val);
       if (val !== null) {
         Object.keys(val).forEach((key) => {
-          console.log(key);
           remove(child(shopRef(props.shopId), `${id}/log_events/${key}`));
         });
       }

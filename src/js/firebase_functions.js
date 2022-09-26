@@ -81,8 +81,6 @@ const addSchedule = (id, dateStamp, inStamp, outStamp, isOvertime) => {
   if (!inStamp) return "Cannot get the login Stamp. Please check your input.";
   if (!outStamp) return "Cannot get the logout Stamp. Please check your input.";
 
-  console.log("sched-upload", id, dateStamp, inStamp, outStamp);
-
   update(child(fb.logSchRef(shopId, id), "/" + dateStamp + id + "Sch"), {
     dateStamp: dateStamp,
     inStamp: inStamp,

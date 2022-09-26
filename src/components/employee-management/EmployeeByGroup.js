@@ -37,6 +37,7 @@ function EmployeeByGroup(props) {
     const qEmp = query(child(empRef(shopId), `${groupId}/employees/`));
     return onValue(qEmp, (snap) => {
       let val = snap.val();
+      console.log("employee", val)
       let tempArr = [];
 
       if (val) {
@@ -59,7 +60,7 @@ function EmployeeByGroup(props) {
         });
         tempArr.sort((a, b) => a.id - b.id);
         setEmpList(tempArr.map((x) => x));
-      }
+      } else setEmpList([])
     });
   }, [groupId, shopId]);
 
@@ -89,7 +90,6 @@ function EmployeeByGroup(props) {
   }, [empList, shopId, today.dateStamp]);
 
   const handleInOut = (id, state) => {
-    console.log("tday", today);
     if (state === "in") {
       set(child(shopRef(shopId), `${id}/log_events/${today.documentStamp}`), {
         dateStamp: today.dateStamp,
@@ -110,6 +110,10 @@ function EmployeeByGroup(props) {
       });
     }
   };
+
+  useEffect(() => {
+    console.log("statusList", statusList)
+  }, [statusList])
 
   const inOutButton = (status, id) => {
     if (status === "in")

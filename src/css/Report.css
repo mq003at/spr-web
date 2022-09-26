@@ -136,4 +136,7 @@
   .export-report {
     margin: 0px;
   }
+  table.add-record.table tr td input {
+    width: 35vw;
+  }
 }

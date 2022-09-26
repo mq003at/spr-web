@@ -59,7 +59,6 @@ function EmployeeList(props) {
     const watchState = onChildChanged(qState, (snap) => {
       let key = snap.key;
       let changedState = snap.val()["actual_state"];
-      console.log(snap.key, "childchange");
       if (empListRef) {
         const newArr = empListRef.current.map((nested) => {
           return {
@@ -138,7 +137,6 @@ function EmployeeList(props) {
         nested.employee.map((empData, index) => {
           if (empData.state === "in") {
             let today = getDateData();
-            // console.log("DateStamp: " + time)
             logInOrOut(shopId, empData.id, empData.state, today);
           }
         })

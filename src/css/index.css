@@ -387,6 +387,14 @@ tr.strikeout td:after {
     display: grid;
   }
 
+  .pinBox {
+    padding-top: 3.5vh;
+  }
+
+  #pinInput {
+    width: 35vw;
+  }
+
 }
 
 

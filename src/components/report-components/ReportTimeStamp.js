@@ -11,7 +11,7 @@ function ReportTimeStamp(props) {
 
   const stampMaker = (time, separator, direction) => {
     return (
-      <label onClick={() => deleteStamp(time)} key={"report-timestamp" + time + "-" + empId} title={direction}>
+      <label onClick={() => deleteStamp(time)} key={"report-timestamp" + time + "-" + direction + "-" + empId} title={direction}>
         {dateHandler2(time, "int", ":").shortTime}
         {separator === "-" ? separator : separator + " "}
       </label>
@@ -25,12 +25,11 @@ function ReportTimeStamp(props) {
 
   useEffect(() => {
     if (arr) {
-      console.log(arr, "arr");
       let tempStampArr = [];
       arr.forEach((time, index, { [index + 1]: next }) => {
         if (next) {
           if (time.direction === "in" && next.direction === "out") {
-            tempStampArr.push([time.timeStamp, "-", time.direction]);
+            tempStampArr.push([time.timeStamp, " - ", time.direction]);
           } else tempStampArr.push([time.timeStamp, ",", time.direction]);
         } else {
           tempStampArr.push([time.timeStamp, ".", time.direction]);

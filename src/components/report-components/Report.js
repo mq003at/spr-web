@@ -1,7 +1,7 @@
-import { child, endAt, equalTo, onChildChanged, onValue, orderByChild, orderByValue, query, startAt } from "firebase/database";
-import { createRef, lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { child, onValue } from "firebase/database";
+import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { Calendar } from "react-calendar";
-import { empRef, shopRef } from "../../js/firebase_init";
+import { empRef } from "../../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import TableToExcel from "@linways/table-to-excel";
 import "../../css/Report.css";
@@ -90,7 +90,7 @@ function Report() {
               <Calendar className={showStartCalendar ? "" : "hide"} onChange={(e) => {onStartDateChange(e); onEndDateChange()}} value={startDate} maxDate={endDate}/>
             </th>
             <th>
-              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate ? endDate : ""} minDate={startDate} />
             </th>
           </tr>
         </tbody>
@@ -112,7 +112,7 @@ function Report() {
               <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
             </td>
             <td>
-            <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={startDate} minDate={startDate} />
+            <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate ? endDate : ""} minDate={startDate} />
             </td>
           </tr>
         </tbody>
@@ -144,7 +144,6 @@ function Report() {
         let tempData = [];
         if (!val) setEmpDataArr([{ name: "There is no employee in this group.", id: "000000" }]);
         else {
-          console.log(val);
           Object.keys(val).forEach((key, index) => {
             tempData.push({
               name: val[key].name,
@@ -195,7 +194,7 @@ function Report() {
                             </CSVLink>
                           </Button>
                           <div>{"    "}</div>
-                          <Button title="Change Total's format" onClick={() => {changeTotal(!isTotal); localStorage.setItem("total", isTotal)}}>
+                          <Button title={t("Change Total's format")} onClick={() => {changeTotal(!isTotal); localStorage.setItem("total", isTotal)}}>
                             {t("Change format")}
                           </Button>
                         </div>
@@ -231,7 +230,7 @@ function Report() {
                           <span>-- {data.last_name ? data.last_name + ", " + data.first_name : data.name} --</span>
                         </td>
                       </tr>
-                      <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} isTotal={isTotal} />
+                      {data.id !== "000000" && <ReportByPerson startDate={startDate} endDate={endDate} employeeID={data.id} employeeName={data.name} addCsvLog={addCsvLog} shopId={shopId} isTotal={isTotal} />}
                       <tr></tr>
                     </tbody>
                   ))
@@ -239,7 +238,7 @@ function Report() {
                   <tbody>
                     <tr>
                       <td>
-                        <div>Please choose the date your want to search</div>
+                        <div>{t("Please enter end date")}</div>
                       </td>
                     </tr>
                   </tbody>

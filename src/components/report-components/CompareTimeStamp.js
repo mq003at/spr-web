@@ -3,7 +3,7 @@ function CompareTimeStamp(props) {
   if (arr) {
       return (
         <label>
-          {arr[0]} - {arr[1]}
+          {(arr[0] && arr[1]) && `${arr[0]} - ${arr[1]}`}
         </label>
       );
   }

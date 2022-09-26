@@ -3,9 +3,9 @@ import { shopRef } from "../../js/firebase_init";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { dateHandler } from "../../js/tool_function";
 import { useTranslation } from "react-i18next";
 
+// Adding records
 function ModalForAddRecord(props) {
   const [addRecordStatus, setAddRecordStatus] = useState("");
   const { t } = useTranslation("translation", {keyPrefix: "report"})
@@ -35,9 +35,6 @@ function ModalForAddRecord(props) {
     if (time && time.trim() !== "") {
       let dateStamp = props.dateStamp;
       let timeStamp = dateStamp + time;
-      console.log(time, dateStamp, timeStamp);
-
-      // console.log("path", child(shopRef(props.shopId), `${props.empId}/log_events/${timeStamp + props.empId}`).toString())
 
       set(child(shopRef(props.shopId), `${props.empId}/log_events/${timeStamp + props.empId}`), {
         dateStamp: dateStamp,
@@ -55,10 +52,6 @@ function ModalForAddRecord(props) {
     setAddRecordStatus("");
   }
 
-  useEffect(() => {
-    console.log("reach modal", props.show)
-
-  }, [props.show])
 
   return (
     <div className="modal-for-add-record">

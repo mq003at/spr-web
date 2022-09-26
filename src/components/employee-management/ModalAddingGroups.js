@@ -20,7 +20,6 @@ function ModalAddingGroup(props) {
   });
 
   function handleAddGroup(name) {
-    console.log(name);
     if (!name) setStatus("Group name cannot be empty.");
     else {
       const qGroup = query(empRef(props.shopId), orderByChild("name"), equalTo(name));
@@ -33,6 +32,7 @@ function ModalAddingGroup(props) {
             set(child(empRef(props.shopId), id), {
                 name: name
             })
+            props.resetChosen();
             props.onHide();
           }
         },
@@ -55,10 +55,10 @@ function ModalAddingGroup(props) {
           </div>
         </Modal.Body>
         <Modal.Footer>
+        <Button onClick={props.onHide} variant="secondary">{t("Close")}</Button>
           <Button type="submit" id="group-submit">
             {t("Submit")}
           </Button>
-          <Button onClick={props.onHide}>{t("Close")}</Button>
         </Modal.Footer>
       </form>
     </Modal>

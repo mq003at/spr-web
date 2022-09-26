@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
-import { onValue } from "firebase/database";
+import { onValue, orderByChild, query } from "firebase/database";
 import { empRef } from "../../js/firebase_init";
 import EmployeeByGroup from "./EmployeeByGroup";
 import "../../css/EmployeeManagement.css";
@@ -16,23 +16,24 @@ function EmployeeManagement(props) {
   const [showDeleteGroup, setShowDeleteGroup] = useState(false);
   const [showAddEmp, setShowAddEmp] = useState(false);
   const groupRef = useRef([]);
+  const chosenRef = useRef();
   const { t } = useTranslation("translation", { keyPrefix: "employee" });
 
   const shopId = sessionStorage.getItem("shop_id");
 
   useEffect(() => {
-    return onValue(empRef(shopId), (snap) => {
+    const qGroup = query(empRef(shopId), orderByChild("name"))
+    return onValue(qGroup, (snap) => {
       let val = snap.val();
       let groupArr = [];
-      Object.keys(val).forEach((key, index) => {
+      Object.keys(val).forEach((key) => {
         groupArr.push({
           id: key,
           name: val[key].name,
-          index: index,
         });
       });
       groupArr.sort((a, b) => a.name.localeCompare(b.name));
-      setGroupList(groupArr.map((x) => x));
+      setGroupList(groupArr.map((x, index) => ({...x, index: index})));
     });
   }, [shopId]);
 
@@ -43,6 +44,11 @@ function EmployeeManagement(props) {
       groupRef.current = groupList;
     }
   }, [groupList]);
+
+  useEffect(() => {
+    console.log("chosen", chosenGroup)
+    console.log("list", groupList)
+  }, [chosenGroup, groupList])
 
   return (
     <div className="employees">
@@ -77,7 +83,7 @@ function EmployeeManagement(props) {
             <tr>
               <td colSpan={"6"}>
                 <div className="employees group-list">
-                  <ToggleButtonGroup className="rounded-0 mb-2 flex-wrap" variant="danger" type="checkbox" name="group-checkbox" value={chosenGroup} onChange={(group) => setChosenGroup(group)}>
+                  <ToggleButtonGroup id="tg-btn-emp-mn" className="rounded-0 mb-2 flex-wrap" variant="danger" type="checkbox" name="group-checkbox" value={chosenGroup} onChange={(group) => setChosenGroup(group)}>
                     {groupList.length > 0 ? (
                       groupList.map((group, index) => {
                         return (
@@ -101,20 +107,20 @@ function EmployeeManagement(props) {
                   <Fragment key={`schedule-gnm-${group.id}`}>
                     <tr>
                       <th colSpan={"6"}>
-                        <div className="employees group-name" onClick={() => setShowDeleteGroup(true)}>{`--- ${group.name} ---`}</div>
+                        <div className="employees group-name" onClick={() => {setShowDeleteGroup(true); chosenRef.current = group.index}}>{`--- ${group.name} ---`}</div>
                       </th>
                     </tr>
 
-                    <EmployeeByGroup shopId={shopId} groupId={group.id} groupList={groupList} groupName={groupList[group.index].name} />
-                    {showDeleteGroup && <ModalDeletingGroup show={showDeleteGroup} onHide={() => setShowDeleteGroup(false)} shopId={shopId} groupId={group.id} groupName={groupList[group.index].name} />}
+                    <EmployeeByGroup shopId={shopId} groupId={group.id} groupList={groupList} groupName={group.name} />
+                    <tr></tr>
                   </Fragment>
                 );
               })}
           </tbody>
         </table>
       </div>
-
-      {showAddGroup && <ModalAddingGroup show={showAddGroup} onHide={() => setShowAddGroup(false)} shopId={shopId} />}
+      {showDeleteGroup && <ModalDeletingGroup show={showDeleteGroup} onHide={() => setShowDeleteGroup(false)} shopId={shopId} resetChosen={() => setChosenGroup([])} groupId={groupList[chosenRef.current].id} groupName={groupList[chosenRef.current].name} />}
+      {showAddGroup && <ModalAddingGroup show={showAddGroup} onHide={() => setShowAddGroup(false)} shopId={shopId} resetChosen={() => setChosenGroup([])}/>}
       {showAddEmp && <ModalAddingEmp show={showAddEmp} onHide={() => setShowAddEmp(false)} shopId={shopId} groupList={groupList} />}
     </div>
   );

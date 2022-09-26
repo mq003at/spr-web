@@ -7,12 +7,13 @@ import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 
 function ModalForDayStatus(props) {
-  const dateStr = props.date.toLocaleDateString("FI-fi");
+  console.log(props)
+  const dateStr = props.dateStr;
   const [check, onCheck] = useState(props.isWorkday);
   const { t } = useTranslation('translation', { keyPrefix: 'report-workday' });
   const formik = useFormik({
     initialValues: {
-      status: "",
+      status: props.status,
     },
     onSubmit: (values) => {
       handleDayStatus(values.status);
@@ -21,6 +22,7 @@ function ModalForDayStatus(props) {
   const handleDayStatus = (status) => {
     // onSubmit: If the user want to change the Status
     update(child(logSchRef(props.shopId, props.empId), props.dateStamp + props.empId + "Sch"), {
+      dateStamp: props.dateStamp,
       special_status: status,
       isWorkday: check,
     });
@@ -47,7 +49,7 @@ function ModalForDayStatus(props) {
                 </Trans>
               </h6>
               <p>{t("Enter this employee's new status in the field below. If this day is still considered as work day although they do not show up, check the box below.")}</p>
-              <input className="text-center" id="status" name="status" type="text" onChange={formik.handleChange} value={formik.values.status} placeholder={t(props.status)}></input>
+              <input className="text-center" id="status" name="status" type="text" onChange={formik.handleChange} placeholder={t(props.status)}></input>
               <br></br> <br></br>
               <label>
                 <label>
