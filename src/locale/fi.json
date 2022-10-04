@@ -160,7 +160,9 @@
         "Nothing to change.":  "Ei mitään muutettavaa.",
         "Add employee to group": "Lisää työntekijä ryhmään",
         "Velho's full name must be the same": "Velhon koko nimen on oltava sama",
-        "Ideal Format GGYYXXXX": "Ihanteellinen muoto: RRVVXXXX"
+        "Ideal Format GGYYXXXX": "Ihanteellinen muoto: RRVVXXXX",
+        "in": "sisään",
+        "out": "ulos"
     },
     "header": {
         "LOGOUT": "ULOS",

@@ -16,6 +16,8 @@ function EditEmployees(props) {
   const lname = emp.lname;
   const name = emp.name;
 
+  console.log("empinfo", emp)
+
   const [status, setStatus] = useState("");
   const {t} = useTranslation("translation", {keyPrefix: "employee"})
 
@@ -61,20 +63,18 @@ function EditEmployees(props) {
             const dateStamp = dateHandler(new Date()).dateStamp;
             let tempVal;
             remove(child(empRef(shopId), "/" + groupId + "/employees/" + key));
-            set(child(empRef(shopId), "/" + grId + "/employees/" + dateStamp + t_id + "Emp"), {
+            set(child(empRef(shopId), "/" + grId + "/employees/" + key), {
               name: n,
               first_name: fn,
               last_name: ln,
               tag_id: t_id,
-            });
-            update(child(shopRef(props.shopId), "/" + t_id), {
-              actual_state: "out",
             });
 
             if (t_id !== id) {
               get(child(shopRef(shopId), "/" + id))
                 .then((snap) => {
                   if (snap) tempVal = snap.val();
+                  else tempVal = {actual_state: "out"};
                 })
                 .then(() => {
                   set(child(shopRef(shopId), "/" + t_id), tempVal);

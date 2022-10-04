@@ -58,7 +58,7 @@ function StoreDatabase(props) {
         });
         if (message.length < 5) setModMessage([...message]);
         else setModMessage(message.slice(message.length - 4, message.length));
-      }
+      } else setModMessage([]);
     });
   }, [shopId]);
   const deleteMess = (key) => {

@@ -18,6 +18,8 @@ function EmployeeByGroup(props) {
   const [statusList, setStatusList] = useState([]);
   const [overtimeList, setOvertimeList] = useState([]);
   const [showManageEmp, setShowManageEmp] = useState(false);
+
+  const watchState = useRef();
   const edittedEmp = useRef();
 
   const handleClickEmp = (emp) => {
@@ -37,7 +39,6 @@ function EmployeeByGroup(props) {
     const qEmp = query(child(empRef(shopId), `${groupId}/employees/`));
     return onValue(qEmp, (snap) => {
       let val = snap.val();
-      console.log("employee", val)
       let tempArr = [];
 
       if (val) {
@@ -67,7 +68,7 @@ function EmployeeByGroup(props) {
   useEffect(() => {
     if (empList.length > 0) {
       empList.forEach((emp, index) => {
-        const watchState = onValue(child(shopRef(shopId), `${emp.id}/actual_state`), (snap) => {
+        watchState.current = onValue(child(shopRef(shopId), `${emp.id}/actual_state`), (snap) => {
           let val = snap.val();
           setStatusList((status) => {
             let temp = [...status];
@@ -159,8 +160,8 @@ function EmployeeByGroup(props) {
             <td className="employees tag" onClick={() => handleClickEmp(emp)}>{emp.id}</td>
             <td className="employees fn" onClick={() => handleClickEmp(emp)}>{emp.fname}</td>
             <td className="employees ln" onClick={() => handleClickEmp(emp)}>{emp.lname}</td>
-            <td className="employees status">{statusList[index] ? statusList[index] : t("Loading Status")}</td>
-            <td className="employees inout">{statusList[index] ? inOutButton(statusList[index], emp.id) : t("Loading Status")}</td>
+            <td className="employees status">{statusList.length > 0 && statusList[index] ? t(statusList[index]) : t("Loading Status")}</td>
+            <td className="employees inout">{statusList.length > 0 && statusList[index] ? inOutButton(statusList[index], emp.id) : t("Loading Status")}</td>
             <td className="employees overtime">
               <input type="checkbox" checked={overtimeList[index] ? true : false} onChange={() => changeTodayOvertime(overtimeList[index], emp.id)}></input>
             </td>

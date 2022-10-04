@@ -21,6 +21,7 @@ function EmployeeManagement(props) {
 
   const shopId = sessionStorage.getItem("shop_id");
 
+
   useEffect(() => {
     const qGroup = query(empRef(shopId), orderByChild("name"))
     return onValue(qGroup, (snap) => {
@@ -33,15 +34,18 @@ function EmployeeManagement(props) {
         });
       });
       groupArr.sort((a, b) => a.name.localeCompare(b.name));
-      setGroupList(groupArr.map((x, index) => ({...x, index: index})));
+      if (groupArr.length !== groupList.length) setGroupList(groupArr.map((x, index) => ({...x, index: index})));
     });
-  }, [shopId]);
+  }, [shopId, groupList]);
 
   useEffect(() => {
     if (groupList.length > 0) {
       const tempGroup = [...groupList];
-      if (tempGroup.length !== groupRef.current.length) setChosenGroup([]);
-      groupRef.current = groupList;
+      if (tempGroup.length !== groupRef.current.length) 
+      {
+        setChosenGroup([]);
+        groupRef.current = groupList;
+      }
     }
   }, [groupList]);
 

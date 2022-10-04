@@ -160,7 +160,9 @@
         "Nothing to change.":  "Nothing to change.",
         "Add employee to group": "Add employee to group",
         "Velho's full name must be the same": "Velho's full name must be the same",
-        "Ideal Format GGYYXXXX": "Ideal Format: GGYYXXXX"
+        "Ideal Format GGYYXXXX": "Ideal Format: GGYYXXXX",
+        "in": "in",
+        "out": "out"
     },
     "header": {
         "LOGOUT": "LOGOUT",

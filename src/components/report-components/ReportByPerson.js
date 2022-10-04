@@ -139,6 +139,7 @@ function ReportByPerson(props) {
       let tempXArr = [];
       let total = 0;
       hourArr.forEach((day, index) => {
+        console.log("data", day)
         let inArr,
           outArr,
           inSche,
@@ -148,9 +149,10 @@ function ReportByPerson(props) {
           isOvertime = "";
         if (day.events.length > 0) {
           inArr = day.events.filter((e) => e.direction === "in")[0];
-          outArr = day.events.filter((e) => e.direction === "out")[0];
+          outArr = day.events.filter((e) => e.direction === "out");
+          let outT = outArr[outArr.length - 1];
           if (inArr) inTime = inArr.timeStamp;
-          if (outArr) outTime = outArr.timeStamp;
+          if (outT) outTime = outT.timeStamp;
         }
         if (scheArrCopy[index] && scheArrCopy[index].schedules.length > 0) {
           inSche = scheArrCopy[index].schedules[0].inStamp;
