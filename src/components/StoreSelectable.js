@@ -4,7 +4,6 @@ import { child, get, update } from "firebase/database";
 import { createRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { Button } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -15,20 +14,20 @@ function StoreSelectable() {
   const inputPinRef = createRef();
   const shopId = sessionStorage.getItem("shopId");
 
-  const portUserPin = () => {
-    update(child(dbRef, "shop_data/b4b8bb4ceeaa2aee"), {
-      pin_user: "spr6789",
-    });
-    update(child(dbRef, "shop_data/a1a1a1a1a1a1a1a1"), {
-      pin_user: "spr9999",
-    });
-    update(child(dbRef, "shop_data/D0ED5D57F47580F2"), {
-      pin_user: "spr1234",
-    });
-    update(child(dbRef, "shop_data/6899bc73da4ace09"), {
-      pin_user: "spr0001",
-    });
-  };
+  // const portUserPin = () => {
+  //   update(child(dbRef, "shop_data/b4b8bb4ceeaa2aee"), {
+  //     pin_user: "spr6789",
+  //   });
+  //   update(child(dbRef, "shop_data/a1a1a1a1a1a1a1a1"), {
+  //     pin_user: "spr9999",
+  //   });
+  //   update(child(dbRef, "shop_data/D0ED5D57F47580F2"), {
+  //     pin_user: "spr1234",
+  //   });
+  //   update(child(dbRef, "shop_data/6899bc73da4ace09"), {
+  //     pin_user: "spr0001",
+  //   });
+  // };
 
   const formik = useFormik({
     initialValues: {

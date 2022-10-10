@@ -1,10 +1,9 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import ModalForAddRecord from "../report-components/ModalForAddRecord";
 import ModalForDeletingRecord from "../report-components/ModalForDeletingRecord";
-import WorkdayByDate from "./WorkdaySpecial";
 import * as FaIcons from "react-icons/fa";
-import { dateHandler, dateHandler2 } from "../../js/tool_function";
+import { dateHandler } from "../../js/tool_function";
 import { child, endAt, onValue, orderByChild, query, startAt } from "firebase/database";
 import { logSchRef, shopRef } from "../../js/firebase_init";
 import WorkdayTimeStamp from "./WorkdayTimeStamp";
