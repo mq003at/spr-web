@@ -1,5 +1,6 @@
 import { child, onValue } from "firebase/database";
-import { createRef, useCallback, useEffect, useRef, useState } from "react";
+import { createRef, useCallback, useEffect, useRef, useState, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "react-calendar";
 import { empRef } from "../../js/firebase_init";
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
@@ -11,8 +12,8 @@ import { useTranslation } from "react-i18next";
 import ReportByPerson from "./ReportByPerson";
 import useWindowDimensions from "../extra/WindowDimension";
 
-
 function Report() {
+  const navigate = useNavigate();
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [startDate, onStartDateChange] = useState(new Date(Date.now() - 3600 * 1000 * 24));
@@ -22,7 +23,6 @@ function Report() {
   const [empDataArr, setEmpDataArr] = useState([]);
   const [isTotal, changeTotal] = useState(localStorage.getItem("total"));
   const { width } = useWindowDimensions();
-
 
   const { t } = useTranslation("translation", { keyPrefix: "report" });
 
@@ -61,7 +61,6 @@ function Report() {
     }
   }, [startDate, endDate]);
 
-
   // Handling CSV (now this function export the report as xlsx file -> Csv functions moved to the upper functions)
   function csvHandler() {
     TableToExcel.convert(tableRef.current, {
@@ -87,7 +86,15 @@ function Report() {
 
           <tr className="noBorder schedule calendar board" id="datepick-row">
             <th>
-              <Calendar className={showStartCalendar ? "" : "hide"} onChange={(e) => {onStartDateChange(e); onEndDateChange()}} value={startDate} maxDate={endDate}/>
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  onStartDateChange(e);
+                  onEndDateChange();
+                }}
+                value={startDate}
+                maxDate={endDate}
+              />
             </th>
             <th>
               <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate ? endDate : ""} minDate={startDate} />
@@ -103,7 +110,15 @@ function Report() {
               <input readOnly title="start-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowStartCalendar(!showStartCalendar)} value={startDate.toLocaleDateString("FI-fi")} />
             </td>
             <td>
-            <Calendar className={showStartCalendar ? "" : "hide"} onChange={(e) => {onStartDateChange(e); onEndDateChange()}} value={startDate} maxDate={endDate}/>
+              <Calendar
+                className={showStartCalendar ? "" : "hide"}
+                onChange={(e) => {
+                  onStartDateChange(e);
+                  onEndDateChange();
+                }}
+                value={startDate}
+                maxDate={endDate}
+              />
             </td>
           </tr>
 
@@ -112,7 +127,7 @@ function Report() {
               <input readOnly title="end-day" placeholder={startDate.toLocaleDateString("FI-fi")} onClick={() => setShowEndCalendar(!showEndCalendar)} value={endDate ? endDate.toLocaleDateString("FI-fi") : ""} />
             </td>
             <td>
-            <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate ? endDate : ""} minDate={startDate} />
+              <Calendar className={showEndCalendar ? "" : "hide"} onChange={onEndDateChange} value={endDate ? endDate : ""} minDate={startDate} />
             </td>
           </tr>
         </tbody>
@@ -186,19 +201,32 @@ function Report() {
                   </tr>
                   <tr>
                     <th colSpan={"5"} data-exclude="true">
-                      {dataCsv.length > 0 && endDate && (
-                        <div className="report-option">
-                          <Button title={t("Download a preview of this report as CSV file")}>
-                            <CSVLink data={dataCsv} separator=";" filename={`SPR-Report-${dateArr(startDate, endDate, "range")}.csv`} enclosingCharacter={``}>
-                              {t("Export as CSV")}
-                            </CSVLink>
-                          </Button>
-                          <div>{"    "}</div>
-                          <Button title={t("Change Total's format")} onClick={() => {changeTotal(!isTotal); localStorage.setItem("total", isTotal)}}>
-                            {t("Change format")}
-                          </Button>
-                        </div>
-                      )}
+                      <div className="report-option">
+                        {dataCsv.length > 0 && endDate && (
+                          <Fragment>
+                            <Button title={t("Download a preview of this report as CSV file")}>
+                              <CSVLink data={dataCsv} separator=";" filename={`SPR-Report-${dateArr(startDate, endDate, "range")}.csv`} enclosingCharacter={``}>
+                                {t("Export as CSV")}
+                              </CSVLink>
+                            </Button>
+                            <div>{"    "}</div>
+                            <Button
+                              title={t("Change Total's format")}
+                              onClick={() => {
+                                changeTotal(!isTotal);
+                                localStorage.setItem("total", isTotal);
+                              }}
+                            >
+                              {t("Change format")}
+                            </Button>
+                          </Fragment>
+                        )}
+
+                        <div>{"    "}</div>
+                        <Button title="Upload CSV" onClick={() => window.open("http://testnode-env.eba-hfb3zjmm.eu-west-2.elasticbeanstalk.com/csv/1", "__blank", "popup")}>
+                          Upload CSV
+                        </Button>
+                      </div>
                     </th>
                   </tr>
                   <tr data-exclude="true">

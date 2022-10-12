@@ -26,6 +26,10 @@ function App() {
             <Route path="/management/workday" element={<Management />}></Route>
             <Route path="/management/todo" element={<Management />}></Route>
             <Route path="/management/help" element={<Management />}></Route>
+            <Route path="/csv" component={() => {
+              window.open("http://testnode-env.eba-hfb3zjmm.eu-west-2.elasticbeanstalk.com/csv/1", "__blank", "popup");
+              return null;
+            }}></Route>
             <Route path="*" element={<ErrorPage />}></Route>
           </Routes>
           <Footer></Footer>
