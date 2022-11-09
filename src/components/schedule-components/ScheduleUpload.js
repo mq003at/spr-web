@@ -1,13 +1,17 @@
 import { useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { dateHandler2, nameHandler } from "../../js/tool_function";
-import { addSchedule, findId } from "../../js/firebase_functions";
+import { addSchedule, cacheEmployeeList, findId } from "../../js/firebase_functions";
 import { useTranslation } from "react-i18next";
 
 function ScheduleUpload(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [statusText, setStatusText] = useState("Placeholder");
   const { t } = useTranslation("translation", {keyPrefix: "schedule"})
+  const shopId = sessionStorage.getItem("shop_id")
+  const cache = cacheEmployeeList();
+  console.log("cache", cache)
+  
 
   const uploadErr = useRef(null);
 
@@ -49,7 +53,7 @@ function ScheduleUpload(props) {
   }
 
   function addScheduleStamp(dateStamp, employeeName, inStamp, outStamp) {
-    let id = findId(employeeName);
+    let id = findId(employeeName, cache, shopId);
     let result = addSchedule(id, dateStamp, inStamp + "00", outStamp + "00");
     if (result) uploadErr.current = result;
   }

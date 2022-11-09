@@ -23,6 +23,7 @@ function StoreDatabase(props) {
 
   const sidebar = props.sidebar;
   const user = sessionStorage.getItem("shop_user");
+  console.log("us", user)
   const shopId = sessionStorage.getItem("shop_id");
 
   // Extra functions
@@ -94,18 +95,18 @@ function StoreDatabase(props) {
               <tbody>
                 {modMessage.map((message, index) => (
                   <tr className="message" key={"message" + index}>
-                    <td className="message-date" width={"15%"}>
-                      {message[3]}
-                    </td>
-                    <td className="message-name" width={"10%"}>
-                      {message[1]}
-                    </td>
-                    <td className="message-data" width={"70%"}>
-                      {message[2]}
-                    </td>
-                    <td className="message-delete" onClick={() => deleteMess(message[0])}>
-                      X
-                    </td>
+                    <div className="container">
+                      <div className="row">
+                        <td className="message-date d-flex col align-middle justify-content-center"><div className="align-middle">{message[3]}</div></td>
+                        <td className="message-name d-flex col justify-content-center"><div className="align-middle">{message[1]}</div></td>
+                        <td className="message-data d-flex col-9"><div className="align-middle">{message[2]}</div></td>
+                        {user === "manager" && (
+                          <td className="message-delete d-flex col align-middle justify-content-end" onClick={() => deleteMess(message[0])}>
+                            <div className="align-middle">X</div>
+                          </td>
+                        )}
+                      </div>
+                    </div>
                   </tr>
                 ))}
               </tbody>

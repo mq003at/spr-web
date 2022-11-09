@@ -12,6 +12,7 @@ import useWindowDimensions from "../extra/WindowDimension";
 
 function Schedule() {
   const shopId = sessionStorage.getItem("shop_id");
+  const user = sessionStorage.getItem("shop_user");
   const maxSchedule = new Date(Date.now() + 31 * 24 * 3600 * 1000);
   const { width } = useWindowDimensions();
 
@@ -127,16 +128,18 @@ function Schedule() {
             <tr>
               <td colSpan={"2"}>{endDay && <div className="schedule date-range">{dateArr(startDay, endDay, "range")}</div>}</td>
             </tr>
-            <tr>
-              <td className="csv-import-cell">
-                <Button id="schedule-csv-button" onClick={() => setShowScheduleUploadModal(true)}>
-                  {t("Upload Schedule CSV file")}
-                </Button>
-              </td>
-              <td>
-                <Button>{t("Export as Excel File")}</Button>
-              </td>
-            </tr>
+            {user === "manager" && (
+              <tr>
+                <td className="csv-import-cell">
+                  <Button id="schedule-csv-button" onClick={() => setShowScheduleUploadModal(true)}>
+                    {t("Upload Schedule CSV file")}
+                  </Button>
+                </td>
+                <td>
+                  <Button>{t("Export as Excel File")}</Button>
+                </td>
+              </tr>
+            )}
           </thead>
           <tbody>
             <tr>
@@ -184,7 +187,7 @@ function Schedule() {
           </tbody>
         </table>
       </div>
-      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)} shopId={shopId} />}
+      {showScheduleUploadModal && <ScheduleUpload show={showScheduleUploadModal} onHide={() => setShowScheduleUploadModal(false)} />}
     </div>
   );
 }

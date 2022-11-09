@@ -10,25 +10,41 @@
   border: 1px solid var(--yellow-grey);
 }
 
-@media only screen and (max-width: 450px) {
+.todo.date {
+  width: 10%;
+}
+.todo.sender {
+  width: 10%;
+}
+.todo.rec {
+  width: 10%;
+}
+.todo.mess {
+  width: 50%;
+}
+.todo.delete {
+  width: 10%;
+}
+.todo.complete {
+  width: 10%;
+}
+
+
+@media only screen and (max-width: 850px) {
   #todo-table {
     margin: 0;
   }
   .todo.date {
-    display: none
+    display: none;
   }
   .todo.complete {
-    display: none
+    display: none;
   }
   .todo.delete {
-    display: none
+    display: none;
   }
   .todo.complete {
-    display: none
-  }}
-  .todo.sender{
-    width: 20%;
+    display: none;
   }
-  .todo.rec{
-    width: 20%
-  }
+}
+

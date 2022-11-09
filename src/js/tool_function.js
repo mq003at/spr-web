@@ -141,7 +141,8 @@ const dateHandler2 = (date, option, separator) => {
         let hour =  (d.substring(8, 10)) 
         let minute = (d.substring(10, 12)) 
         let second = (d.substring(12, 14)) 
-
+        if (!second) second = 0;
+        if (!minute) minute = 0;
         let obj = {
           fullTime: hour + separator + minute + separator + second,
           shortTime: hour + separator + minute,

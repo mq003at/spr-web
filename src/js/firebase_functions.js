@@ -1,7 +1,6 @@
 import { child, equalTo, onValue, orderByChild, query, update } from "firebase/database";
 import * as fb from "./firebase_init";
 
-const shopId = sessionStorage.getItem("shop_id")
 
 /**
  * Cache employeeList into sessionStorage as JSON String. Use JSON.paarse(sessionStorage.getItem("cache_emp_list")) to retrieve employeeList. The cache will be removed after 5 seconds.
@@ -11,6 +10,7 @@ const shopId = sessionStorage.getItem("shop_id")
  * @returns {Object} employeeList as Object. Use Object.keys(val).forEach to get the data you want.
  */
 const cacheEmployeeList = () => {
+  const shopId = sessionStorage.getItem("shop_id")
   let data = "";
   onValue(
     fb.empRef(shopId),
@@ -21,7 +21,6 @@ const cacheEmployeeList = () => {
   );
 
   sessionStorage.setItem("cache_emp_list", JSON.stringify(data));
-  setTimeout(sessionStorage.removeItem("cache_emp_list"), 5000);
   return data;
 };
 
@@ -32,13 +31,8 @@ const cacheEmployeeList = () => {
  * @param {String} name Full name of the person
  * @returns ID of that person, null if the person cannot be found.
  */
-const findId = (name) => {
-  let empList = "";
-  let sEmpList = sessionStorage.getItem("cache_emp_list");
+const findId = (name, empList, shopId) => {
   let returnValue = "";
-
-  if (!sEmpList) empList = cacheEmployeeList();
-  else empList = JSON.parse(sEmpList);
 
   Object.keys(empList).forEach((groupID) => {
     const qName = query(child(fb.empRef(shopId), `${groupID}/employees`), orderByChild("name"), equalTo(name));
@@ -75,7 +69,10 @@ const findId = (name) => {
  * @return String of the error if there is problem
  */
 const addSchedule = (id, dateStamp, inStamp, outStamp, isOvertime) => {
+  const shopId = sessionStorage.getItem("shop_id")
+
   if (!isOvertime) isOvertime = false;
+  if (!shopId) return "Cannot get shopID. Please go to the homepage and restart it."
   if (!id) return "Cannot get the ID of the employee. Please check your input.";
   if (!dateStamp) return "Something wrong with the date. Please check your input.";
   if (!inStamp) return "Cannot get the login Stamp. Please check your input.";
@@ -92,4 +89,4 @@ const addSchedule = (id, dateStamp, inStamp, outStamp, isOvertime) => {
 
 
 
-export { addSchedule, findId };
+export { addSchedule, findId, cacheEmployeeList };

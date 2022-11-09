@@ -79,9 +79,11 @@ function Todo() {
       }
 
       if (isSortByComplete) {
+        console.log("reach", temp)
         temp.sort((a, b) => {
-          return Number(a.check) - Number(b.check);
+          return Number(b.check) - Number(a.check);
         });
+        console.log("after", temp)
       }
       setTodoList(() => temp.map((x) => x));
     }
@@ -110,22 +112,22 @@ function Todo() {
         <Table className="todo showcase" id="todo-table">
           <thead>
             <tr>
-              <th className={"todo date cursor-pointer " + isSortByDate} onClick={() => setIsSortByDate(!isSortByDate)}>
+              <th scope="col" className={"todo date cursor-pointer " + isSortByDate} onClick={() => setIsSortByDate(!isSortByDate)}>
                 {t("todo.Date")}
               </th>
-              <th className={"todo sender cursor-pointer " + isSortBySender} onClick={() => setIsSortBySender(!isSortBySender)}>
+              <th scope="col" className={"todo sender cursor-pointer " + isSortBySender} onClick={() => setIsSortBySender(!isSortBySender)}>
                 {" "}
                 {t("todo.Sender")}
               </th>
-              <th className={"todo rec cursor-pointer " + isSortByRecipient} onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
+              <th scope="col" className={"todo rec cursor-pointer " + isSortByRecipient} onClick={() => setIsSortByRecipient(!isSortByRecipient)}>
                 {t("todo.Recipient")}
               </th>
-              <th className={"todo mess"}> {t("todo.Message")}</th>
-              <th className={"todo complete cursor-pointer " + isSortByComplete} onClick={() => setIsSortByComplete(!isSortByComplete)}>
+              <th scope="col" className={"todo mess"}> {t("todo.Message")}</th>
+              <th scope="col" className={"todo complete cursor-pointer " + isSortByComplete} onClick={() => setIsSortByComplete(!isSortByComplete)}>
                 {" "}
                 {t("todo.Complete?")}
               </th>
-              <th className={"todo delete cursor-pointer"}> {t("todo.Delete")}</th>
+              <th scope="col" className={"todo delete cursor-pointer"}> {t("todo.Delete")}</th>
             </tr>
           </thead>
           <tbody>
@@ -149,7 +151,7 @@ function Todo() {
             ) : (
               <tr>
                 <td>
-                  <div> {t("todo.Nothing in here.")}</div>
+                  <div className="text-center"> {t("todo.Nothing in here.")}</div>
                 </td>
               </tr>
             )}

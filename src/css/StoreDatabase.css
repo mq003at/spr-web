@@ -33,7 +33,8 @@
 }
 
 .message-table td {
-  word-break: break-all;
+  word-break: break-word;
+  text-align: justify;
 }
 
 .message-data {
@@ -59,21 +60,30 @@
 }
 .alert-header {
     text-align: center;
-
+}
+.justify-content-end {
+  margin-right: 10px;
+}
+.btn-close {
+  float: right;
+  display: inline-flex !important;
 }
 
-@media only screen and (max-width: 450px){
+@media only screen and (max-width: 1000px){
   .message-date {
-    display: none;
+    display: none !important;
   }
   .message-name {
-    display: none;
+    display: none !important;
   }
   .store-database.true {
-    display: none
+    display: none !important
   }
   .message-section {
     padding: 0;
+  }
+  .message-delete {
+    justify-content: center !important;
   }
   .store-database.false {
     display: block;
