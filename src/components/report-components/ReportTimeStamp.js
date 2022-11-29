@@ -4,6 +4,8 @@ import { dateHandler2 } from "../../js/tool_function";
 import { shopRef } from "../../js/firebase_init";
 
 function ReportTimeStamp(props) {
+
+  // Error at this part -> it missing the second
   const arr = props.timeStamp;
   const empId = props.empId;
 
@@ -20,6 +22,8 @@ function ReportTimeStamp(props) {
 
   const deleteStamp = (time) => {
     const id = time + empId;
+    console.log("arr", arr)
+
     remove(child(shopRef(props.shopId), `${props.empId}/log_events/${id}`));
   }
 
