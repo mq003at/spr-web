@@ -11,7 +11,6 @@ import ModalForDeletingRecord from "./ModalForDeletingRecord";
 import ScheduleForReport from "./ScheduleForReport";
 import CompareTimeStamp from "./CompareTimeStamp";
 
-// Need to rewrite this
 function ReportByPerson(props) {
 
   const shopId = props.shopId;
