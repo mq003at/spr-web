@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# Welcome to SPR-Management-Portal
+This Portal is an internship project that will be used in real store. At first, the goal of the project is to fix bugs in the old site running in PHP. However, due to the amount of free time from the internship, I have rewrote the project using ReactJS and Firebase.
+<ins>Demo</ins>: [Deployed with Firebase](https://spr-kirppis-kok.web.app/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Tech used
+![Generic badge](https://img.shields.io/badge/React-v.18.2-orange.svg)
+![Generic badge](https://img.shields.io/badge/ReactBootstrap-v.2.4.0-8A2BE2.svg)
+![Generic badge](https://img.shields.io/badge/Firebase-v.9.8.2-yellow.svg)
+![Generic badge](https://img.shields.io/badge/i18next-v.21.9.0-#009687.svg)
+![Generic badge](https://img.shields.io/badge/formik-v.2.2.9-#172B4D.svg)
 
-## Available Scripts
+# Guide
+## 1. Running locally
+Just like any other Reactjs project, you need to run **npm run start** using a terminal.
+Or, you can go to the **build** directory and run the **.html** file. The directory is made to host into Firebase server.
+This is a showcase project so it will have limited features, and the data in Firebase is just one snapshot from Firebase.
 
-In the project directory, you can run:
+## 2. This project includes
+* A full database of all the employees working in the store.
+* Monitoring the time employees log in or out, and can manually log them if needed.
+* A text message service that employees can send their messages directly to the manager.
+* A to-do list for the manager.
+* A file transfer system using SFTP to send the employee's salaries directly to a government agency (disabled in the showcase version).
+* Extract employee's data into XLS/PDF file (disabled in showcase version).
 
-### `npm start`
+## 3. Project Structure
+<details>
+<summary>Open Project Structure</summary>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+frontend/
+├─ firebase/
+├─ public/
+│  ├─ favicon.ico
+│  ├─ index.html
+│  ├─ robots.txt
+├─ src/
+│  ├─ component/
+│  │  ├─ employee-management/
+│  │  │  ├─ EditEmployee.js
+│  │  │  ├─ EmployeeByGroup.js
+│  │  │  ├─ EmployeeManagement.js
+│  │  │  ├─ ModalAddingEmp.js
+│  │  │  ├─ ModalAddingGroup.js
+│  │  │  ├─ ModalDeletingGroup.js
+│  │  ├─ extra/
+│  │  │  ├─ Extra.js
+│  │  │  ├─ Help.js
+│  │  │  ├─ Loading.js
+│  │  │  ├─ Setting.js
+│  │  │  ├─ WindowDimension.js
+│  │  ├─ message-components/
+│  │  │  ├─ ForEmployees.js
+│  │  │  ├─ ForEmployers.js
+│  │  ├─ report-components/
+│  │  │  ├─ CompareTimeStamp.js
+│  │  │  ├─ ModalForAddRecord.js
+│  │  │  ├─ ModalForDeletingRecord.js
+│  │  │  ├─ Report.js
+│  │  │  ├─ ReportByPerson.js
+│  │  │  ├─ ReportTimeStamp.js
+│  │  │  ├─ ScheduleForReport.js
+│  │  ├─ report-workday/
+│  │  │  ├─ ModalForDayStatus.js
+│  │  │  ├─ ReportWorkday.js
+│  │  │  ├─ WorkdayByPerson.js
+│  │  │  ├─ WorkdaySpecial.js
+│  │  │  ├─ WorkdayTimestamp.js
+│  │  ├─ schedule-components/
+│  │  │  ├─ Schedule.js
+│  │  │  ├─ ScheduleByGroup.js
+│  │  │  ├─ ScheduleByPerson.js
+│  │  │  ├─ ScheduleUpload.js
+│  │  ├─ todo-components/
+│  │  │  ├─ Todo.js
+│  │  ├─ EmployeeList.js
+│  │  ├─ ErrorPage.js
+│  │  ├─ Footer.js
+│  │  ├─ FunctionSelector.js
+│  │  ├─ Header.js
+│  │  ├─ Management.js
+│  │  ├─ StoreDatabase.js
+│  │  ├─ StoreSelectable.js
+│  │  ├─ User.js
+│  ├─ css/
+│  ├─ img/
+│  ├─ js/
+│  ├─ locale/
+│  ├─ App.js
+│  ├─ index.js
+├─ .gitignore
+├─ package.json
+├─ README.md
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+</details>
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 4. Advanced Configuration
+Every configuration implementation needs to go through Janno, who is the manager of SPR-Kirppis. He owns the final version of the site and the Android Application.
