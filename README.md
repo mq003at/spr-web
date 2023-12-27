@@ -6,8 +6,8 @@ This Portal is an internship project that will be used in real store. At first, 
 ![Generic badge](https://img.shields.io/badge/React-v.18.2-orange.svg)
 ![Generic badge](https://img.shields.io/badge/ReactBootstrap-v.2.4.0-8A2BE2.svg)
 ![Generic badge](https://img.shields.io/badge/Firebase-v.9.8.2-yellow.svg)
-![Generic badge](https://img.shields.io/badge/i18next-v.21.9.0-#009687.svg)
-![Generic badge](https://img.shields.io/badge/formik-v.2.2.9-#172B4D.svg)
+![Generic badge](https://img.shields.io/badge/i18next-v.21.9.0-009687.svg)
+![Generic badge](https://img.shields.io/badge/formik-v.2.2.9-172B4D.svg)
 
 # Guide
 ## 1. Running locally
