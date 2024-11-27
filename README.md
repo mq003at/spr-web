@@ -4,7 +4,7 @@ This Portal is an internship project that will be used in real store. At first, 
 **Note:** This is a copy version of an unpublished old version of SPR-Management-Portal. Many functionalities will not trigger due to security policies.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/2834925d-410e-45ba-833a-477e033f3290" alt="SPR-Kirrpis" width="200"/>
+  <img src="https://github.com/user-attachments/assets/2834925d-410e-45ba-833a-477e033f3290" alt="SPR-Kirrpis" width="900"/>
   
   <p align="center"><i>Example</i></p>
 </p>
