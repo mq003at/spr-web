@@ -1,6 +1,13 @@
 # Welcome to SPR-Management-Portal
 This Portal is an internship project that will be used in real store. At first, the goal of the project is to fix bugs in the old site running in PHP. However, due to the amount of free time from the internship, I have rewrote the project using ReactJS and Firebase.
 <ins>Demo</ins>: [Deployed with Firebase](https://spr-kirppis-kok.web.app/)
+**Note:** This is a copy version of an unpublished old version of SPR-Management-Portal. Many functionalities will not trigger due to security policies.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2834925d-410e-45ba-833a-477e033f3290" alt="SPR-Kirrpis" width="200"/>
+  
+  <p align="center"><i>Example</i></p>
+</p>
 
 # Tech used
 ![Generic badge](https://img.shields.io/badge/React-v.18.2-orange.svg)
